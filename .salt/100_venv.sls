@@ -50,11 +50,17 @@
   cmd.run:
     - name: |
             . {{data.py_root}}/bin/activate;
-            pip install -e .
+            if test -e setup.py;then
+              pip install --no-deps -e .
+            elif test -e ../setup.py;then
+              cd .. && pip install --no-deps -e .
+            else
+              exit 1
+            fi
     - env:
        - CFLAGS: "-I/usr/include/gdal"
     - cwd: {{data.app_root}}
-    - onlyif: test -e setup.py
+    - onlyif: test -e setup.py || test -e ../setup.py
     - use_vt: true
     - download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}

@@ -32,12 +32,16 @@ src_dir = 'src'
 install_requires = ["setuptools"]
 extra_requires = {}
 candidates = {}
-reqs_files_re = re.compile('.*requirements?(\\.(txt|pip))?',
+
+# ADAPT the files regex tp adapt to your requirements file(s)
+reqs_files_re = re.compile('.*(base|prod)?(\\.(txt|pip))?',
                            re.S | re.I | re.U)
 entry_points = {
     # z3c.autoinclude.plugin": ["target = plone"],
     # console_scripts": ["myscript = mysite:main"],
 }
+
+# search for requirements files and sync them to setup.py:install_requires
 if HAS_PIP:
     reqs_files = []
     for req_folder in ['.', 'requirements', 'reqs', 'pip']:
