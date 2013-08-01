@@ -75,6 +75,8 @@ makina-projects.projectname:
     #          user: eib-user, shell: /bin/bash, mode: "0771"}
     #  - ftpuser: {'password': 'xxx', "home": "{data_root}/foo"}
     create_admins: true
+    # salt-call  mc_macros.get_local_registry local_passwords registry_format=pack
+    #
     admins:
       {% for i in ['sysadmin'] %}
       - {{i}}:
@@ -93,6 +95,7 @@ makina-projects.projectname:
     collect_static: true
     do_syncdb: false
     do_migrate: true
+    do_reset_site: false
     do_syncdb_only_first_time: false
     # http_users:
     #   - root: foo
@@ -100,6 +103,7 @@ makina-projects.projectname:
     # to the file
     django_settings:
       # order is important
+      DOMAIN: "{domain}"
       ADMINS: "placeholder (totally computed)"
       SITE_ID: 1
       DATABASES:

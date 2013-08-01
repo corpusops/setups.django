@@ -102,6 +102,44 @@ media-{{cfg.name}}:
       - cmd: {{cfg.name}}-start-all
 {% endif %}
 
+{% if data.get('do_reset_site', False) %}
+{% set f = data.app_root + '/salt_reset_site.py' %}
+{{cfg.name}}-reset-django-site:
+  file.managed:
+    - name: "{{f}}"
+    - contents: |
+                #!{{data.py}}
+                import os
+                try:
+                    import django;django.setup()
+                except Exception:
+                    pass
+                from django.contrib.sites.shortcuts.get_current_site
+                site = get_current_site()
+                site.domain = '{{data.domain}}'
+                site.name = '{{data.domain}}'
+                site.save()
+    - mode: 700
+    - template: jinja
+    - user: {{cfg.user}}
+    - group: {{cfg.group}}
+    - source: ""
+    - cwd: {{data.app_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - mc_proxy: {{cfg.name}}-configs-post
+      - cmd: syncdb-{{cfg.name}}
+  cmd.run:
+    - name: {{data.py}} {{f}}
+    {{set_env()}}
+    - cwd: {{data.app_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - mc_proxy: {{cfg.name}}-configs-post
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
+{%endif%}
+
 {% if data.get('create_admins', True) %}
 {% for dadmins in data.admins %}
 {% for admin, udata in dadmins.items() %}
@@ -181,6 +219,45 @@ superuser-{{cfg.name}}-{{admin}}:
 {%endfor %}
 {%endfor %}
 {%endif %}
+
+{% if data.get('do_reset_site', False) %}
+{% set f = data.app_root + '/salt_reset_site.py' %}
+{{cfg.name}}-reset-django-site:
+  file.managed:
+    - name: "{{f}}"
+    - contents: |
+                #!{{data.py}}
+                import os
+                try:
+                    import django;django.setup()
+                except Exception:
+                    pass
+                from django.contrib.sites.models import Site
+                import settings
+                site = Site.objects.get(id=settings.SITE_ID)
+                site.domain = settings.DOMAIN
+                site.name = settings.DOMAIN
+                site.save()
+    - mode: 700
+    - template: jinja
+    - user: {{cfg.user}}
+    - group: {{cfg.group}}
+    - source: ""
+    - cwd: {{data.app_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - mc_proxy: {{cfg.name}}-configs-post
+      - cmd: syncdb-{{cfg.name}}
+  cmd.run:
+    - name: {{data.py}} {{f}}
+    {{set_env()}}
+    - cwd: {{data.app_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - mc_proxy: {{cfg.name}}-configs-post
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
+{%endif%}
 
 {{cfg.name}}-start-all:
   cmd.run:
