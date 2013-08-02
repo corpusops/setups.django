@@ -31,14 +31,8 @@ include:
               fi
             fi
     - watch_in:
-      - file: {{cfg.name}}-config
-      - cmd: {{cfg.name}}-start-all
-
-{{cfg.name}}-config:
-  file.exists:
-    - name: "{{data.configs['local.py']['target']}}"
-    - watch:
       - mc_proxy: "{{cfg.name}}-configs-post"
+      - cmd: {{cfg.name}}-start-all
 
 {% if data.get('collect_static', True) %}
 static-{{cfg.name}}:
@@ -103,7 +97,7 @@ media-{{cfg.name}}:
     - use_vt: true
     - output_loglevel: info
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
     - watch_in:
       - cmd: {{cfg.name}}-start-all
 {% endif %}
