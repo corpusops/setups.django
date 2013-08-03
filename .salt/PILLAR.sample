@@ -114,7 +114,7 @@ makina-projects.projectname:
           USER: '{name}'
           PORT: 5432
           HOST: '127.0.0.1'
-          NAME: 'db'
+          NAME: '{name}'
           PASSWORD: '{name}secret'
           #ENGINE: 'django.db.backends.mysql'
           #USER: '{name}'
