@@ -9,6 +9,16 @@
   mc_proxy.hook:
       - require_in:
         - mc_proxy: {{cfg.name}}-post-npm
+{{cfg.name}}-pre-manual-npm:
+  mc_proxy.hook:
+      - require:
+        - mc_proxy: {{cfg.name}}-pre-npm
+      - require_in:
+        - mc_proxy: {{cfg.name}}-post-manual-npm
+{{cfg.name}}-post-manual-npm:
+  mc_proxy.hook:
+    - watch_in:
+        - mc_proxy: {{cfg.name}}-post-npm
 {{cfg.name}}-post-npm:
   mc_proxy.hook:
     - watch_in:
@@ -57,25 +67,30 @@ include:
 {% endmacro %}
 
 {% if data.get('npm', True) %}
+{%if data.get('npms', None)%}
+{{node_run('{name}-manual-npm'.format(**cfg))}}
+    - require:
+      - mc_proxy: {{cfg.name}}-pre-manual-npm
+    - require_in:
+      - mc_proxy: {{cfg.name}}-post-manual-npm
+    - name: npm install {{data.npms}}
+{% endif %}
+{%if data.get('global_npms', None)%}
+{{node_run('{name}-global-npm'.format(**cfg), user='root')}}
+    - require:
+      - mc_proxy: {{cfg.name}}-pre-manual-npm
+    - require_in:
+      - mc_proxy: {{cfg.name}}-post-manual-npm
+    - name: npm install -g {{data.global_npms}}
+{% endif %}
 {{node_run('{name}-npm'.format(**cfg))}}
     - require:
       - mc_proxy: {{cfg.name}}-pre-npm
+      - mc_proxy: {{cfg.name}}-post-manual-npm
     - require_in:
       - mc_proxy: {{cfg.name}}-post-npm
     - onlyif: test -e "{{data.js_dir}}/package.json"
-    - name: |
-            set -ex
-            npm install
-            {%if data.get('npms', None)%}
-            npm install {{data.npms}}
-            {%endif%}
-{{node_run('{name}-global-npm'.format(**cfg), user='root')}}
-    - require:
-      - mc_proxy: {{cfg.name}}-pre-npm
-    - require_in:
-      - mc_proxy: {{cfg.name}}-post-npm
-    - onlyif: test -e "{{data.js_dir}}/package.json"
-    - name: npm install -g {{data.global_npms}}
+    - name: npm install
 {% endif %}
 
 {% if data.get('do_bower', False) %}
