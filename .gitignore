@@ -33,7 +33,7 @@ salt*check.py
 *.sqlite3
 
 # Frontend
-node_modules
+/node_modules
 
 # Tests, docs, etc
 .coverage

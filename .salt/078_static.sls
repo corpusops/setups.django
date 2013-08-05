@@ -37,11 +37,11 @@
 include:
   - makina-states.localsettings.nodejs
 
-{% macro node_run(id, require=None) %}
+{% macro node_run(id, user=cfg.user, require=None) %}
 {{id}}:
   cmd.run:
     - cwd: "{{data.js_dir}}"
-    - user: {{cfg.user}}
+    - user: {{user}}
     - unless: test ! -e "{{data.get('js_dir', '/dev/nonexisting')}}"
     - use_vt: true
     - env:
@@ -69,6 +69,13 @@ include:
             {%if data.get('npms', None)%}
             npm install {{data.npms}}
             {%endif%}
+{{node_run('{name}-global-npm'.format(**cfg), user='root')}}
+    - require:
+      - mc_proxy: {{cfg.name}}-pre-npm
+    - require_in:
+      - mc_proxy: {{cfg.name}}-post-npm
+    - onlyif: test -e "{{data.js_dir}}/package.json"
+    - name: npm install -g {{data.global_npms}}
 {% endif %}
 
 {% if data.get('do_bower', False) %}

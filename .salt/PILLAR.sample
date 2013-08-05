@@ -28,6 +28,8 @@ makina-projects.projectname:
     #app_archive_test_exists: 'test ! -e {data_root}/www/index.php'
     js_dir: "{app_root}"
     gulp_targets: ["clean-build"]
+    #npms: "less"
+    #global_npms: "less"
     do_node: false
     do_bower: false
     do_gulp: false
