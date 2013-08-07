@@ -31,7 +31,7 @@
 
     - env:
        - CFLAGS: "-I/usr/include/gdal"
-    - cwd: {{data.app_root}}
+    - cwd: {{data.pip_root}}
     - use_vt: true
     - download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}
