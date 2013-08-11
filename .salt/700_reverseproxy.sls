@@ -5,14 +5,9 @@
 include:
   - makina-states.services.http.nginx
 
-# inconditionnaly reboot circus & nginx upon deployments
-/bin/true:
-  cmd.run:
-    - watch_in:
-      - mc_proxy: nginx-pre-conf-hook
-
 {{ nginx.virtualhost(domain=data.domain, doc_root=data.doc_root,
                      server_aliases=data.server_aliases,
+                     force_reload=True,
                      vhost_basename='corpus-'+cfg.name,
                      loglevel=data.nginx_loglevel,
                      vh_top_source=data.nginx_upstreams,
