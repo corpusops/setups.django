@@ -180,13 +180,13 @@ makina-projects.projectname:
       #ADDITIONAL_TEMPLATE_DIRS:
       #  - '{project_root}/calanques'
       # add custom extra_settings which will be processed at end only
-      #extra_django_settings:
-      #  FOO: bar
-      #  BAR: true
-      # settings rendered as is (not via the macro
-      #extra_settings:
-      #  FOO: "'bar'"
-      #  BAR: "True"
+    #extra_django_settings:
+    #  FOO: bar
+    #  BAR: true
+    # settings rendered as is (not via the macro
+    #extra_settings:
+    #  FOO: "'bar'"
+    #  BAR: "True"
   env_defaults:
     dev:
       django_settings:
