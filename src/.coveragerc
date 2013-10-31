@@ -1,0 +1,19 @@
+[run]
+source = .
+branch = True
+omit =
+    */.tox/*
+    setup.py
+    **/settings/*
+    **/manage.py
+    **/*/wsgi.py
+    **/tests/*
+    **/test_*.py
+    # project specific
+    **/apptest/admin.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    raise AssertionError
+    raise NotImplementedError
