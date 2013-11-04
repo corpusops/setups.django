@@ -44,7 +44,7 @@ makina-projects.projectname:
     #orig_py: /usr/bin/python3
     py: "{py_root}/bin/python"
     py_root: "{project_root}/venv"
-    media_source: "{project_root/media"
+    media_source: "{project_root}/media"
     domain: "{fqdn}"
     requirements: "{project_root}/requirements/prod.txt"
     server_aliases: []
