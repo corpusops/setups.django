@@ -3,7 +3,7 @@ import tempfile
 
 from django.utils import six
 
-from .base import *
+from .base import *  # noqa
 
 
 SECRET_KEY = 'spam-spam-spam-spam'
@@ -19,11 +19,11 @@ PASSWORD_HASHERS = (
 
 # Force every loggers to use null handler only. Note that using 'root'
 # logger is not enough if children don't propage.
-for logger in six.itervalues(LOGGING['loggers']):
+for logger in six.itervalues(LOGGING['loggers']):  # noqa
     logger['handlers'] = ['console']
 
 
 try:
-    from .local import *
+    from .local import *  # noqa
 except ImportError:
     pass
