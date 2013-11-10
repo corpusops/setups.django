@@ -3,7 +3,7 @@
 {% set data = cfg.data %}
 
 {% if data.get('do_npm', False) or data.get('do_gulp', False) %}
-{% set path = ('{data[app_root]}/vaultier/scripts/node_modules/.bin:'
+{% set path = ('{project_root}/node_modules/.bin:'
                '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:'
                '/sbin:/bin:/usr/games:/usr/local/games').format(**cfg) %}
 
