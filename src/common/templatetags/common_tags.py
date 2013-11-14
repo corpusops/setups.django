@@ -17,7 +17,9 @@ def display_messages(messages):
         'debug': 'info',
     }
     for message in messages:
-        message.type = classes[message.tags] if message.tags and message.tags in classes else None
+        message.type = classes[message.tags] \
+                if message.tags and message.tags in classes \
+                else None
 
     return {
         'messages': messages
