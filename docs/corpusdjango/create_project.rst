@@ -19,7 +19,7 @@ Beginning a project from corpus-django
    You will also have some stuff to remove or review, like :
 
       * dummy global site CSS in src/project/static/project/css/styles.css
-      * cleanup global templates src/project/templates/*.html
+      * cleanup global templates src/project/templates/\*.html
       * cleanup urlconf root at src/project/urls.py
       * cleanup dummy locales translations at src/project/locales
       * cleanup dummy locale formats at src/project/formats
