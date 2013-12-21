@@ -15,7 +15,8 @@ import os
 from django.utils.log import DEFAULT_LOGGING
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+SRC_DIR = os.path.dirname(PROJECT_DIR)
+BASE_DIR = os.path.dirname(SRC_DIR)
 PROJECT_NAME = os.path.basename(PROJECT_DIR)
 
 

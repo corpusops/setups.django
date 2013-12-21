@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 import unittest
 
 from django.conf import settings
@@ -28,17 +27,10 @@ class ConfigTestCase(TestCase):
         """
         self.assertEqual(settings.TIME_ZONE, 'Europe/Paris')
 
-    def test_hook_pre(self):
-        logger = logging.getLogger('apptest')
-        self.assertEqual(logger.handlers[0].name, 'console')
-
-    def test_hook_post(self):
-        self.assertIn('apptest', settings.INSTALLED_APPS)
-
 
 @unittest.skipIf(
     'apptest' not in settings.INSTALLED_APPS,
-    'You MUST copy/paste <project>.settings.local_test.py.dist and add '
+    'You MUST copy/paste <project>.settings.local.py.dist and add '
     'apptest in INSTALLED_APPS'
 )
 class AppTestTestCase(TestCase):
