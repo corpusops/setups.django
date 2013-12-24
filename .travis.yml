@@ -19,9 +19,9 @@ install:
 before_script:
     - createuser -U postgres -d makina
     - createdb -U postgres -O makina makina
-    - cp src/*/settings/local.py.dist src/*/settings/local.py
-    - sed -i 's/<DB_NAME>/makina/g' src/*/settings/local.py
-    - sed -i 's/<DB_USER>/makina/g' src/*/settings/local.py
+    - cp src/*/settings/local.py.dist   $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
+    - sed -i -re 's/<DB_NAME>/makina/g' $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
+    - sed -i -re 's/<DB_USER>/makina/g' $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
 script:
     - tox
 after_success:
