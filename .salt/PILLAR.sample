@@ -31,10 +31,10 @@ makina-projects.projectname:
     do_bower: false
     do_gulp: false
     configs:
-      {% for i in ['base_pre.py', 'base_post.py',] %}
+      {% for i in ['local.py',] %}
       "{{i}}":
         source: "salt://makina-projects/{name}/files/config.py"
-        target: "{app_root}/{PROJECT}/settings/local/{{i}}"
+        target: "{app_root}/{PROJECT}/settings/{{i}}"
         mode: 640
       {%endfor%}
       #foo.py:
