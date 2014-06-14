@@ -1,0 +1,39 @@
+#
+# This file contains default values which are used
+# by the salt states deploying your project.
+# you may copy them to your relevant PILLAR file
+# before editing them.
+# If you need to add variables, this is where to begin.
+# Please keep defaults in there, but real passwords
+# must be putted inside pillar
+#
+# replace project_name in your pillar by
+# the current projectname
+# you can also merge parts of this file
+# with the relevant pillar
+makina-projects.projectname:
+  data:
+    PROJECT: mysite
+    domain: "{PROJECT}.mydomain.tld"
+    LANGUAGE_CODE: fr-fr
+    DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
+    WSGI: "{PROJECT}.wsgi:application"
+    nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf
+    nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
+    admins:
+      foo:
+        password: fadmin
+        mail: "root@{domain}"
+    db:
+      ENGINE: 'django.db.backends.sqlite3'
+      NAME: "{data_root}/{PROJECT}.sqlite"
+    static: "{data_root}/static"
+    host: localhost
+    port: 8180
+    workers: 1
+    DEBUG: False
+  env_defaults:
+    dev:
+      DEBUG: True
+
+# vim:set ft=yaml:
