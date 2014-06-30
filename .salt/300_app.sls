@@ -23,7 +23,7 @@ static-{{cfg.name}}:
 
 syncdb-{{cfg.name}}:
   cmd.run:
-    - name: {{cfg.project_root}}/bin/django-admin.py syncdb
+    - name: {{cfg.project_root}}/bin/django-admin.py syncdb --noinput
     - cwd: {{cfg.project_root}}
     - user: {{cfg.user}}  
     - use_vt: true
