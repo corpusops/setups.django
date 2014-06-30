@@ -21,9 +21,9 @@ makina-projects.projectname:
     nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf
     nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
     admins:
-      foo:
-        password: fadmin
-        mail: "root@{domain}"
+      - foo:
+          password: fadmin
+          mail: "root@{domain}"
     db:
       ENGINE: 'django.db.backends.sqlite3'
       NAME: "{data_root}/{PROJECT}.sqlite"
