@@ -25,11 +25,14 @@ syncdb-{{cfg.name}}:
   cmd.run:
     - name: {{cfg.project_root}}/bin/django-admin.py syncdb
     - cwd: {{cfg.project_root}}
-    - user: {{cfg.user}}
+    - user: {{cfg.user}}  
+    - use_vt: true
+    - output_loglevel: info
     - watch:
       - file: {{cfg.name}}-config
 
-{% for admin, udata in data.admins.items() %}
+{% for dadmins in data.admins %}
+{% for admin, udata in dadmins.items() %}
 user-{{cfg.name}}-{{admin}}:
   cmd.run:
     - name: {{cfg.project_root}}/bin/django-admin.py createsuperuser --username="{{admin}}" --email="{{udata.mail}}"
@@ -62,4 +65,5 @@ superuser-{{cfg.name}}-{{admin}}:
     - watch:
       - cmd: user-{{cfg.name}}-{{admin}}
       - file: superuser-{{cfg.name}}-{{admin}}
+{%endfor %}
 {%endfor %}
