@@ -9,8 +9,10 @@ DATABASES = {
 """.strip()),
 }
 ADMINS = (
-    {% for admin, data in data.admins.items() %}
+    {% for dadmins in data.admins %}
+    {% for admin, data in dadmins.items() %}
     ('{{admin}}', '{{data.mail}}'),
+    {% endfor %}
     {% endfor %}
 )
 DEBUG = {%if data.DEBUG%}True{%else%}False{%endif%}
