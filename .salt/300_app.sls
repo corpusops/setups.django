@@ -33,6 +33,15 @@ syncdb-{{cfg.name}}:
 
 {% for dadmins in data.admins %}
 {% for admin, udata in dadmins.items() %}
+user-{{cfg.name}}-{{admin}}:
+  cmd.run:
+    - name: {{cfg.project_root}}/bin/django-admin.py createsuperuser --username="{{admin}}" --email="{{udata.mail}}" --noinput
+    - unless: {{cfg.project_root}}/bin/mypy -c "from django.contrib.auth.models import User;User.objects.filter(username='{{admin}}')[0]"
+    - cwd: {{cfg.project_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - file: {{cfg.name}}-config
+      - cmd: syncdb-{{cfg.name}}
 
 superuser-{{cfg.name}}-{{admin}}:
   file.managed:
