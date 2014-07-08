@@ -13,6 +13,10 @@
 # with the relevant pillar
 makina-projects.projectname:
   data:
+   buildout:
+      settings:
+        buildout:
+          newest: 'false'
     PROJECT: mysite
     domain: "{PROJECT}.mydomain.tld"
     LANGUAGE_CODE: fr-fr
