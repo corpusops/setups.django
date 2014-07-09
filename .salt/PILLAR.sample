@@ -17,6 +17,7 @@ makina-projects.projectname:
       settings:
         buildout:
           newest: 'false'
+          unzip: 'true'
     PROJECT: mysite
     domain: "{PROJECT}.mydomain.tld"
     LANGUAGE_CODE: fr-fr
