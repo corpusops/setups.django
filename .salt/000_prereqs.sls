@@ -70,3 +70,11 @@ prepreqs-{{cfg.name}}:
       - {{cfg.data.static}}
       - {{cfg.data.media}}
 
+{% for i in ['parts', 'eggs', 'cache'] %}
+{{cfg.name}}-l-dirs-{{i}}:
+  file.symlink:
+    - watch:
+      - file: {{cfg.name}}-dirs
+    - name: {{cfg.project_root}}/{{i}}
+    - target: {{cfg.data_root}}/{{i}}
+{%endfor %}
