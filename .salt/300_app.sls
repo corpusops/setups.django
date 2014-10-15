@@ -31,6 +31,17 @@ syncdb-{{cfg.name}}:
     - watch:
       - file: {{cfg.name}}-config
 
+media-{{cfg.name}}:
+  cmd.run:
+    - name: rsync -av {{data.media_source}}/ {{data.media}}/
+    - onlyif: test -e {{data.media_source}}
+    - cwd: {{cfg.project_root}}
+    - user: {{cfg.user}}
+    - use_vt: true
+    - output_loglevel: info
+    - watch:
+      - file: {{cfg.name}}-config
+
 {% for dadmins in data.admins %}
 {% for admin, udata in dadmins.items() %}
 user-{{cfg.name}}-{{admin}}:
