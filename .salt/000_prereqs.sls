@@ -14,6 +14,7 @@ prepreqs-{{cfg.name}}:
       - user: {{cfg.name}}-www-data
     - pkgs:
       - sqlite3
+      - liblcms2-2
       - liblcms2-dev
       - libsqlite3-dev
       - apache2-utils
