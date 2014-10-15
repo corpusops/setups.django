@@ -13,7 +13,7 @@
 # with the relevant pillar
 makina-projects.projectname:
   data:
-   buildout:
+    buildout:
       settings:
         buildout:
           newest: 'false'
