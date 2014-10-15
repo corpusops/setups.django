@@ -68,4 +68,5 @@ prepreqs-{{cfg.name}}:
       - {{cfg.data_root}}/eggs
       - {{cfg.data_root}}/cache
       - {{cfg.data.static}}
+      - {{cfg.data.media}}
 
