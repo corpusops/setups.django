@@ -33,7 +33,15 @@ makina-projects.projectname:
     db:
       ENGINE: 'django.db.backends.sqlite3'
       NAME: "{data_root}/{PROJECT}.sqlite"
+    #db:
+    #  ENGINE: 'django.db.backends.postgresql'
+    #  USER: 'moneconome'
+    #  PORT: '5432'
+    #  HOST: '127.0.0.1'
+    #  NAME: 'moneconome'
+    #  PASSWORD: 'totosecret'      
     static: "{data_root}/static"
+    media_source: "{project_root}/{PROJECT}/media"
     media: "{data_root}/media"
     host: localhost
     port: 8180
