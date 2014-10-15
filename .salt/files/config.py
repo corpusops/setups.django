@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+{% set cfg = salt['mc_utils.json_load'](cfg) %}
+{% set data = cfg.data %}
 {% macro renderbool(opt)%}
 {{opt}} = {%if data.get(opt, False)%}True{%else%}False{%endif%}
 {% endmacro %}
