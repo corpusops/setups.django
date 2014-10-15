@@ -20,6 +20,7 @@ makina-projects.projectname:
           unzip: 'true'
     PROJECT: mysite
     domain: "{PROJECT}.mydomain.tld"
+    server_aliases: []
     LANGUAGE_CODE: fr-fr
     DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
     WSGI: "{PROJECT}.wsgi:application"
