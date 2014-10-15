@@ -54,7 +54,6 @@ prepreqs-{{cfg.name}}:
       - tcl8.5
       - tcl8.5-dev
       - tk8.5-dev
-      - wv
       - zlib1g-dev      
 
 {{cfg.name}}-dirs:
