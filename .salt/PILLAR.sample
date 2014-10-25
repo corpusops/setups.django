@@ -38,7 +38,7 @@ makina-projects.projectname:
     #  USER: 'moneconome'
     #  PORT: '5432'
     #  HOST: '127.0.0.1'
-    #  NAME: 'moneconome'
+    #  NAME: 'db'
     #  PASSWORD: 'totosecret'      
     static: "{data_root}/static"
     media_source: "{project_root}/{PROJECT}/media"
