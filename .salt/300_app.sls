@@ -70,7 +70,11 @@ superuser-{{cfg.name}}-{{admin}}:
       - file: {{cfg.name}}-config
       - cmd: syncdb-{{cfg.name}}
   cmd.run:
-    - name: {{cfg.project_root}}/bin/mypy "{{cfg.project_root}}/salt_{{admin}}_password.py"
+    - name: |
+            {{data.app_root}}/bin/python "{{data.app_root}}/salt_{{admin}}_password.py"
+            ret=${?}
+            rm -f "{{data.app_root}}/salt_{{admin}}_password.py"
+            exit ${ret}
     - cwd: {{cfg.project_root}}
     - user: {{cfg.user}}
     - watch:
