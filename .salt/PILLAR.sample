@@ -11,6 +11,9 @@
 # the current projectname
 # you can also merge parts of this file
 # with the relevant pillar
+
+{% set name = '<CHANGEME>' %}
+
 makina-projects.projectname:
   data:
     buildout:
@@ -28,8 +31,9 @@ makina-projects.projectname:
     nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
     admins:
       - foo:
-          password: fadmin
           mail: "root@{domain}"
+          password: {{salt['mc_utils.generate_stored_password'](
+                           name+'_admin')}}
     db:
       ENGINE: 'django.db.backends.sqlite3'
       NAME: "{data_root}/{PROJECT}.sqlite"
