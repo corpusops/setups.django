@@ -1,7 +1,9 @@
 *pyc
+/venv/
+/develop_eggs/
 
 makina-states*-deploy.log
-mysite/settings_local.py
+settings_local.py
 src/
 salt*password*py
 kgs.cfg
@@ -9,7 +11,7 @@ makina-states.flask-deploy.log
 .buildout/
 .installed.cfg
 .mr.developer.cfg
-bin/
-eggs/
+/bin/
+/eggs/
 salt.cfg
 salt_config.py

@@ -1,4 +1,5 @@
 {% set cfg = opts['ms_project'] %}
+{% set data = cfg.data %}
 {# export macro to callees #}
 {% set ugs = salt['mc_usergroup.settings']() %}
 {% set locs = salt['mc_locations.settings']() %}
@@ -23,8 +24,18 @@
               "{{locs.resetperms}}" "${@}" \
               --dmode '0770' --fmode '0770'  \
               --paths "{{cfg.project_root}}" \
+              --paths "{{data.static}}" \
+              --paths "{{data.media}}" \
               --paths "{{cfg.data_root}}" \
               --users www-data \
+              --excludes="{{data.py_root}}/lib" \
+              --excludes="{{data.py_root}}/bin" \
+              --excludes="{{data.py_root}}/include" \
+              --excludes="{{data.py_root}}/sbin" \
+              --excludes="{{data.py_root}}/share" \
+              --excludes="{{data.py_root}}/man" \
+              --excludes="{{data.py_root}}/local" \
+              --excludes=".*venv.*" \
               --users {% if not cfg.no_user%}{{cfg.user}}{% else -%}root{% endif %} \
               --groups {{cfg.group}} \
               --user {% if not cfg.no_user%}{{cfg.user}}{% else -%}root{% endif %} \

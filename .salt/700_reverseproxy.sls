@@ -16,22 +16,20 @@ include:
       - mc_proxy: nginx-pre-conf-hook
       - mc_proxy: circus-pre-conf
 
+{{ nginx.virtualhost(domain=data.domain, doc_root=data.static,
+                     server_aliases=data.server_aliases,
+                     vhost_basename='corpus-'+cfg.name,
+                     vh_top_source=data.nginx_upstreams,
+                     vh_content_source=data.nginx_vhost,
+                     cfg=cfg)}}
 {% set circus_data = {
-    'cmd': 'bin/gunicorn -w {2} -b {0}:{1} {3}'.format(
-      data.host, data.port, data.workers, data.WSGI
-  ),
+  'cmd': '{4}/bin/gunicorn -t 9000 -w {2} -b {0}:{1} {3}'.format(
+      data.host, data.port, data.workers, data.WSGI, data.py_root),
   'environment': {'DJANGO_SETTINGS_MODULE': cfg.data.DJANGO_SETTINGS_MODULE},
   'uid': cfg.user,
   'gid': cfg.group,
   'copy_env': True,
-  'working_dir': cfg.project_root,
+  'working_dir': data.app_root,
   'warmup_delay': "10",
-  'max_age': 24*60*60}%}
-
-{{ circus.circusAddWatcher(cfg.name, **circus_data) }}
-
-{{ nginx.virtualhost(domain=data.domain, doc_root=data.static,
-                     server_aliases=data.server_aliases,
-                     vh_top_source=data.nginx_upstreams,
-                     vh_content_source=data.nginx_vhost,
-                     cfg=cfg)}}
+  'max_age': 24*60*60} %}
+{{ circus.circusAddWatcher(cfg.name+'-django', **circus_data) }}
