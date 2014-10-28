@@ -1,6 +1,30 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
+{{cfg.name}}-htaccess:
+  file.managed:
+    - name: {{data.htaccess}}
+    - source: ''
+    - user: www-data
+    - group: www-data
+    - mode: 770
+
+{% if data.get('http_users', {}) %}
+{% for userrow in data.http_users %}
+{% for user, passwd in userrow.items() %}
+{{cfg.name}}-{{user}}-htaccess:
+  webutil.user_exists:
+    - name: {{user}}
+    - password: {{passwd}}
+    - htpasswd_file: {{data.htaccess}}
+    - options: m
+    - force: true
+    - watch:
+      - file: {{cfg.name}}-htaccess
+{% endfor %}
+{% endfor %}
+{% endif %}  
+
 {{cfg.name}}-www-data:
   user.present:
     - name: www-data
