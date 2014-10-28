@@ -67,6 +67,7 @@ user-{{cfg.name}}-{{admin}}:
                 if os.path.isfile("{{data.app_root}}/salt_{{admin}}_check.py"):
                     os.unlink("{{data.app_root}}/salt_{{admin}}_check.py")
     - mode: 700
+    - template: jinja
     - user: {{cfg.user}}
     - group: {{cfg.group}}
     - source: ""
@@ -101,6 +102,7 @@ superuser-{{cfg.name}}-{{admin}}:
                 user.save()
                 if os.path.isfile("{{data.app_root}}/salt_{{admin}}_password.py"):
                     os.unlink("{{data.app_root}}/salt_{{admin}}_password.py")
+    - template: jinja
     - mode: 700
     - user: {{cfg.user}}
     - group: {{cfg.group}}
