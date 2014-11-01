@@ -48,12 +48,13 @@ makina-projects.projectname:
       NAME: "{data_root}/{PROJECT}.sqlite"
     ### 
     #db:
-    #  ENGINE: 'django.db.backends.postgresql_psycopg2'
-    #  USER: '{name}'
-    #  PORT: '5432'
-    #  HOST: '127.0.0.1'
-    #  NAME: 'db'
-    #  PASSWORD: '{name}secret'
+    #  default:
+    #    ENGINE: 'django.db.backends.postgresql_psycopg2'
+    #    USER: '{name}'
+    #    PORT: '5432'
+    #    HOST: '127.0.0.1'
+    #    NAME: 'db'
+    #    PASSWORD: '{name}secret'
     static: "{data_root}/static"
     media: "{data_root}/media"
     host: localhost

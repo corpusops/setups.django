@@ -11,11 +11,9 @@ import json
 from django.utils.translation import gettext_lazy as _
 SITE_ID={{data.SITE_ID}}
 SERVER_EMAIL = DEFAULT_FROM_EMAIL = 'root@{{cfg.fqdn}}'
-DATABASES = {
-    'default': json.loads("""
+DATABASES = json.loads("""
 {{salt['mc_utils.json_dump'](data.db)}}
-""".strip()),
-}
+""".strip())
 {% set admint = None %}
 ADMINS = (
     {% for dadmins in data.admins %}
