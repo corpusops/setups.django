@@ -20,7 +20,8 @@ makina-projects.projectname:
     htaccess: "/etc/{name}.webaccess"
     py_root: "{project_root}/venv"
     media_source: "{app_root}/media"
-    domain: "{PROJECT}.mydomain.tld"
+    domain: "{fqdn}"
+    requirements: "{app_root}/requirements.txt"
     server_aliases: []
     LANGUAGE_CODE: fr-fr
     DATE_FORMAT: 'iso-8601'
@@ -52,7 +53,7 @@ makina-projects.projectname:
     #  PORT: '5432'
     #  HOST: '127.0.0.1'
     #  NAME: 'db'
-    #  PASSWORD: '{name}secret'      
+    #  PASSWORD: '{name}secret'
     static: "{data_root}/static"
     media: "{data_root}/media"
     host: localhost
@@ -65,8 +66,9 @@ makina-projects.projectname:
                            'corpus-django_web_secret_key', 64)}}"
     # http_users:
     #   - root: foo
+    #ADDITIONAL_TEMPLATE_DIRS:
+    #  - '{project_root}/calanques'
   env_defaults:
     dev:
       DEBUG: True
-
 # vim:set ft=yaml:

@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+__docformat__ = 'restructuredtext en'
 {% set cfg = salt['mc_utils.json_load'](cfg) %}
 {% set data = cfg.data %}
+{% set settings = cfg.data.settings %}
 {% macro renderbool(opt)%}
 {{opt}} = {%if data.get(opt, False)%}True{%else%}False{%endif%}
 {% endmacro %}
 import json
 from django.utils.translation import gettext_lazy as _
 SITE_ID={{data.SITE_ID}}
-SERVER_EMAIL = DEFAULT_FROM_EMAIL ='root@{{cfg.fqdn}}'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL = 'root@{{cfg.fqdn}}'
 DATABASES = {
     'default': json.loads("""
 {{salt['mc_utils.json_dump'](data.db)}}
@@ -46,5 +48,7 @@ LANGUAGES = (
     ('it', _('Italia')),
     ('en', _('English'))
 )
-
+{% if data.get('ADDITIONAL_TEMPLATE_DIRS', None) %}
+ADDITIONAL_TEMPLATE_DIRS = tuple({{data.ADDITIONAL_TEMPLATE_DIRS}})
+{% endif %}
 # vim:set et sts=4 ts=4 tw=80:

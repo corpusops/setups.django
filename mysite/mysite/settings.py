@@ -83,8 +83,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+ADDITIONAL_TEMPLATE_DIRS = tuple()
 try:
     from .settings_local import *
 except ImportError:
     pass
 
+TEMPLATE_DIRS = ADDITIONAL_TEMPLATE_DIRS + TEMPLATE_DIRS
