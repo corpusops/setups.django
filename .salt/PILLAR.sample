@@ -21,7 +21,7 @@ makina-projects.projectname:
     py_root: "{project_root}/venv"
     media_source: "{app_root}/media"
     domain: "{fqdn}"
-    requirements: "{app_root}/requirements.txt"
+    requirements: "{project_root}/requirements.txt"
     server_aliases: []
     LANGUAGE_CODE: fr-fr
     DATE_FORMAT: 'iso-8601'

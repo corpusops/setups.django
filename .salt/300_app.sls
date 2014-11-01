@@ -31,7 +31,8 @@ static-{{cfg.name}}:
 
 syncdb-{{cfg.name}}:
   cmd.run:
-    - name: {{data.py}} manage.py syncdb --noinput
+    #- name: {{data.py}} manage.py syncdb --noinput
+    - name: {{data.py}} manage.py syncdb --noinput && {{data.py}} manage.py migrate --noinput
     {{set_env()}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}

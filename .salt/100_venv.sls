@@ -13,6 +13,8 @@
     - name: |
             . {{data.py_root}}/bin/activate;
             pip install -r "{{data.requirements}}" --download-cache "{{cfg.data_root}}/cache"
+    - env:
+       - CFLAGS: "-I/usr/include/gdal"
     - cwd: {{data.app_root}}
     - use_vt: true
     - download_cache: {{cfg.data_root}}/cache

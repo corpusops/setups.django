@@ -87,6 +87,13 @@ prepreqs-{{cfg.name}}:
       - cython
       - python-numpy
       - zlib1g-dev
+      # geodjango
+      - gdal-bin
+      - libgdal1-dev
+      - libgeos-dev
+      - geoip-bin
+      - libgeoip-dev 
+
 
 {{cfg.name}}-dirs:
   file.directory:
