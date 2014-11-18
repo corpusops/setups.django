@@ -23,8 +23,9 @@ include:
                      vh_content_source=data.nginx_vhost,
                      cfg=cfg)}}
 {% set circus_data = {
-  'cmd': '{4}/bin/gunicorn -t 9000 -w {2} -k {5} -b {0}:{1} {3}'.format(
-      data.host, data.port, data.workers, data.WSGI, data.py_root, data.worker_class),
+  'cmd': '{4}/bin/gunicorn -k {5} -t {6} -w {2} -b {0}:{1} {3}'.format(
+      data.host, data.port, data.workers, data.WSGI, data.py_root, data.worker_class,
+      data.worker_timeout),
   'environment': {'DJANGO_SETTINGS_MODULE': cfg.data.DJANGO_SETTINGS_MODULE},
   'uid': cfg.user,
   'gid': cfg.group,
