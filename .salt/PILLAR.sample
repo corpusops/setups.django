@@ -59,7 +59,8 @@ makina-projects.projectname:
     media: "{data_root}/media"
     host: localhost
     port: 8180
-    workers: 1
+    workers: 10
+    worker_class: sync
     DEBUG: False
     py: "{py_root}/bin/python"
     USE_X_FORWARDED_HOST: True
