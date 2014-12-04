@@ -14,5 +14,9 @@ makina-states.flask-deploy.log
 .mr.developer.cfg
 /bin/
 /eggs/
+/lib/
+/dist/
 salt.cfg
 salt_config.py
+local_settings.py
+settings_local.py 

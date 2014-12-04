@@ -3,7 +3,6 @@
 __docformat__ = 'restructuredtext en'
 {% set cfg = salt['mc_utils.json_load'](cfg) %}
 {% set data = cfg.data %}
-{% set settings = cfg.data.settings %}
 {% macro renderbool(opt)%}
 {{opt}} = {%if data.get(opt, False)%}True{%else%}False{%endif%}
 {% endmacro %}
@@ -69,7 +68,7 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
-        },        
+        },
         'django.request': {
             'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
@@ -79,10 +78,18 @@ LOGGING = {
             'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        }        
+        }
     }
 }
 {% if data.get('ADDITIONAL_TEMPLATE_DIRS', None) %}
 ADDITIONAL_TEMPLATE_DIRS = tuple({{data.ADDITIONAL_TEMPLATE_DIRS}})
 {% endif %}
+
+# Application specific settings
+{% for param, value in data.get('extra_settings', {}).items() %}
+{{param}} = {{value}}
+{% endfor %}
 # vim:set et sts=4 ts=4 tw=80:
+
+
+

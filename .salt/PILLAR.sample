@@ -44,9 +44,10 @@ makina-projects.projectname:
           password: {{salt['mc_utils.generate_stored_password'](
                            'corpus-django_web_admin')}}
     db:
-      ENGINE: 'django.db.backends.sqlite3'
-      NAME: "{data_root}/{PROJECT}.sqlite"
-    ### 
+      default:
+        ENGINE: 'django.db.backends.sqlite3'
+        NAME: "{data_root}/{PROJECT}.sqlite"
+    ###
     #db:
     #  default:
     #    ENGINE: 'django.db.backends.postgresql_psycopg2'
@@ -65,12 +66,19 @@ makina-projects.projectname:
     DEBUG: False
     py: "{py_root}/bin/python"
     USE_X_FORWARDED_HOST: True
+    USER_MODULE: django.contrib.auth.models
+    USER_CLASS: User
     SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
                            'corpus-django_web_secret_key', 64)}}"
     # http_users:
     #   - root: foo
     #ADDITIONAL_TEMPLATE_DIRS:
     #  - '{project_root}/calanques'
+    # extra django settings to add
+    # to the file
+    #extra_settings:
+    #  FOO: "'bar'"
+    #  BAR: "True"
   env_defaults:
     dev:
       DEBUG: True

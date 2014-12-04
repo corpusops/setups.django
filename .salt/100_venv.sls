@@ -29,6 +29,20 @@
     - require:
       - cmd: {{cfg.name}}-venv
 
+{# install the django app in develop if we have a setup.py #}
+{{cfg.name}}-develop:
+    - name: |
+            . {{data.py_root}}/bin/activate;
+            pip install -e .
+    - env:
+       - CFLAGS: "-I/usr/include/gdal"
+    - cwd: {{data.app_root}}
+    - onlyif: test -e setup.py
+    - use_vt: true
+    - download_cache: {{cfg.data_root}}/cache
+    - user: {{cfg.user}}
+    - require:
+      - file: {{cfg.name}}-venv
 {{cfg.name}}-venv-cleanup:
   file.absent:
     - name: {{cfg.project_root}}/develop_eggs
