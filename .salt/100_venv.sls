@@ -31,6 +31,7 @@
 
 {# install the django app in develop if we have a setup.py #}
 {{cfg.name}}-develop:
+  cmd.run:
     - name: |
             . {{data.py_root}}/bin/activate;
             pip install -e .
