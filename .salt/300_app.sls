@@ -117,6 +117,7 @@ superuser-{{cfg.name}}-{{admin}}:
                 from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
                 user=User.objects.filter(username='{{admin}}').all()[0]
                 user.set_password('{{udata.password}}')
+                user.email = '{{udata.mail}}'
                 user.save()
                 if os.path.isfile("{{f}}"):
                     os.unlink("{{f}}")
