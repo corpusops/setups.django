@@ -68,6 +68,7 @@ makina-projects.projectname:
     USE_X_FORWARDED_HOST: True
     USER_MODULE: django.contrib.auth.models
     USER_CLASS: User
+    compile_messages: true
     SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
                            'corpus-django_web_secret_key', 64)}}"
     # http_users:

@@ -32,6 +32,17 @@ static-{{cfg.name}}:
     - watch:
       - file: {{cfg.name}}-config
 
+{% if data.compile_messages %}
+msg-{{cfg.name}}:
+  cmd.run:
+    - name: {{data.py}} manage.py compilemessages --noinput
+    {{set_env()}}
+    - cwd: {{data.app_root}}
+    - user: {{cfg.user}}
+    - watch:
+      - file: {{cfg.name}}-config
+{% endif %}
+
 syncdb-{{cfg.name}}:
   cmd.run:
     #- name: {{data.py}} manage.py syncdb --noinput
