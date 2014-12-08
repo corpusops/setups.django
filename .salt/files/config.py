@@ -41,7 +41,7 @@ DATE_FORMAT = '{{data.DATE_FORMAT}}'
 TIME_ZONE = '{{data.timezone}}'
 LANGUAGE_CODE = '{{data.LANGUAGE_CODE}}'
 LANGUAGES = (
-    ('fr', _('Français')),
+    ('fr', _('French')),
     ('it', _('Italia')),
     ('en', _('English'))
 )
