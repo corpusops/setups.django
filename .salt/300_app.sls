@@ -18,8 +18,7 @@
     - template: jinja
     - user: {{cfg.user}}
     - defaults:
-      cfg: |
-           {{scfg}}
+        project: {{cfg.name}}
     - group: {{cfg.group}}
     - makedirs: true
 

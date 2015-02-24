@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __docformat__ = 'restructuredtext en'
-{% set cfg = salt['mc_utils.json_load'](cfg) %}
+{% set cfg = salt['mc_project.get_configuration'](project) %}
 {% set data = cfg.data %}
 {% macro renderbool(opt)%}
 {{opt}} = {%if data.get(opt, False)%}True{%else%}False{%endif%}
