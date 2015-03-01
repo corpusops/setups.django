@@ -5,9 +5,8 @@
 {{cfg.name}}-venv:
   virtualenv.managed:
     - name: {{data.py_root}}
-    - download_cache: {{cfg.data_root}}/cache
+    - pip_download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}
-    - runas: {{cfg.user}}
     - use_vt: true
   cmd.run:
     - name: |
