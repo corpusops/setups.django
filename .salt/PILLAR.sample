@@ -39,10 +39,12 @@ makina-projects.projectname:
     adminmail: "root@{domain}"
     timezone: 'Europe/Paris'
     admins:
-      - foo:
-          mail: "{adminmail}"
+      {% for i in ['sysadmin'] %}
+      - {{i}}:
+        mail: "{{i}}+{name}@{fqdn}"
           password: {{salt['mc_utils.generate_stored_password'](
-                           'corpus-django_web_admin')}}
+                           'corpus-django_web_admin'+i)}}
+      {%endfor %}
     db:
       default:
         ENGINE: 'django.db.backends.sqlite3'
@@ -69,6 +71,7 @@ makina-projects.projectname:
     USER_MODULE: django.contrib.auth.models
     USER_CLASS: User
     compile_messages: true
+    geodjango: false
     SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
                            'corpus-django_web_secret_key', 64)}}"
     # http_users:

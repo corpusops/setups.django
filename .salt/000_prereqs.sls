@@ -1,6 +1,11 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
+{% if data.geodjango %}
+include:
+  - makina-states.services.gis.ubuntugis
+  - makina-states.services.db.postgresql.client 
+{% endif %} 
 {{cfg.name}}-htaccess:
   file.managed:
     - name: {{data.htaccess}}
@@ -35,6 +40,9 @@
 prepreqs-{{cfg.name}}:
   pkg.installed:
     - watch:
+      {% if data.geodjango %}
+      - mc_proxy: ubuntugis-post-hardrestart-hook
+      {% endif %}
       - user: {{cfg.name}}-www-data
     - pkgs:
       - sqlite3
