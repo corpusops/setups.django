@@ -52,6 +52,9 @@ makina-projects.projectname:
     ###
     #db:
     #  default:
+    ## GEODJANGO BACKEND !
+    ##    ENGINE: 'django.contrib.gis.db.backends.postgis'
+    ## Classical pg backend
     #    ENGINE: 'django.db.backends.postgresql_psycopg2'
     #    USER: '{name}'
     #    PORT: '5432'
