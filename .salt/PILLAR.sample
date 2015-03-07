@@ -15,52 +15,52 @@
 makina-projects.projectname:
   data:
     PROJECT: mysite
-    SITE_ID: 1
     app_root: "{project_root}/{PROJECT}"
+    #app_url: "git@git.foo/goo.git"
+    #app_url_rev: "master"
+    #app_url_type: git
+    #app_url_tar_opt: "xzvf"
+    #app_url_archive_format: tar
+    #app_url_hash: "md5=123"
+    #app_archive_test_exists: 'test ! -e "{data_root}/www/index.php"'
+    js_dir: "{app_root}/front_end"
+    gulp_targets: ["clean-build"]
+    do_bower: false
+    do_gulp: false
+    settings_template: "config.py"
+    configs:
+      {% for i in ['settings_local.py',
+                   'localsettings.py',
+                   'local_settings.py'] %}
+      "{{i}}":
+        template: "{settings_template}"
+        target: "{app_root}/{PROJECT}/{{i}}"
+      {%endfor%}
     htaccess: "/etc/{name}.webaccess"
+    py: "{py_root}/bin/python"
     py_root: "{project_root}/venv"
     media_source: "{app_root}/media"
     domain: "{fqdn}"
     requirements: "{project_root}/requirements.txt"
     server_aliases: []
-    LANGUAGE_CODE: fr-fr
-    DATE_FORMAT: 'iso-8601'
+    #force_ssl: false
+    #disabled_urls []
+    #ldap_url: "ldap://ldap.net/dc=m,dc=com?uid?sub?(objectClass=person)"
+    #admin_url: /admin
+    #admin_allowed_ips :[]
     DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
     WSGI: "{PROJECT}.wsgi:application"
     nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf
     nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
-    ALLOWED_HOSTS:
-      - localhost
-      - 127.0.0.1
-      - "{domain}"
-      - "{fqdn}"
-      - "10.5.0.1"
-    CORS_ORIGIN_ALLOW_ALL: 'True'
     adminmail: "root@{domain}"
-    timezone: 'Europe/Paris'
+    create_admins: true
     admins:
       {% for i in ['sysadmin'] %}
       - {{i}}:
-        mail: "{{i}}+{name}@{fqdn}"
+          mail: "{{i}}+{name}@{fqdn}"
           password: {{salt['mc_utils.generate_stored_password'](
-                           'corpus-django_web_admin'+i)}}
+                             'corpus-django_web_admin'+i)}}
       {%endfor %}
-    db:
-      default:
-        ENGINE: 'django.db.backends.sqlite3'
-        NAME: "{data_root}/{PROJECT}.sqlite"
-    ###
-    #db:
-    #  default:
-    ## GEODJANGO BACKEND !
-    ##    ENGINE: 'django.contrib.gis.db.backends.postgis'
-    ## Classical pg backend
-    #    ENGINE: 'django.db.backends.postgresql_psycopg2'
-    #    USER: '{name}'
-    #    PORT: '5432'
-    #    HOST: '127.0.0.1'
-    #    NAME: 'db'
-    #    PASSWORD: '{name}secret'
     static: "{data_root}/static"
     media: "{data_root}/media"
     host: localhost
@@ -68,25 +68,94 @@ makina-projects.projectname:
     workers: 10
     worker_class: sync
     worker_timeout: 9000
-    DEBUG: False
-    py: "{py_root}/bin/python"
-    USE_X_FORWARDED_HOST: True
-    USER_MODULE: django.contrib.auth.models
-    USER_CLASS: User
     compile_messages: true
-    geodjango: false
-    SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
-                           'corpus-django_web_secret_key', 64)}}"
     # http_users:
     #   - root: foo
-    #ADDITIONAL_TEMPLATE_DIRS:
-    #  - '{project_root}/calanques'
     # extra django settings to add
     # to the file
-    #extra_settings:
-    #  FOO: "'bar'"
-    #  BAR: "True"
+    django_settings:
+      # order is important
+      ADMINS: "placeholder (totally computed)"
+      SITE_ID: 1
+      DATABASES:
+        default:
+          # SQLITE
+          # ENGINE: 'django.db.backends.sqlite3'
+          # NAME: "{data_root}/{PROJECT}.sqlite"
+          # GEODJANGO BACKEND !
+          #    ENGINE: 'django.contrib.gis.db.backends.postgis'
+          # Classical pg backend
+          ENGINE: 'django.db.backends.postgresql_psycopg2'
+          USER: '{name}'
+          PORT: 5432
+          HOST: '127.0.0.1'
+          NAME: 'db'
+          PASSWORD: '{name}secret'
+      DEFAULT_FROM_EMAIL: '{adminmail}'
+      SERVER_EMAIL: 'root@{fqdn}'
+      MEDIA_ROOT: '{media}'
+      STATIC_ROOT: '{static}'
+      LANGUAGE_CODE: fr-fr
+      DATE_FORMAT: 'iso-8601'
+      ALLOWED_HOSTS:
+        - localhost
+        - 127.0.0.1
+        - "{domain}"
+        - "{fqdn}"
+        - "10.5.0.1"
+      CORS_ORIGIN_ALLOW_ALL: True
+      # Internationalization
+      # https://docs.djangoproject.com/en/1.6/topics/i18n/
+      TIME_ZONE: 'Europe/Paris'
+      DEBUG: False
+      TEMPLATE_DEBUG: False
+      USE_X_FORWARDED_HOST: True
+      USER_MODULE: django.contrib.auth.models
+      USER_CLASS: User
+      SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
+                             'corpus-django_web_secret_key', 64)}}"
+      LOGGING:
+        version: 1
+        disable_existing_loggers: False
+        filters:
+          require_debug_false:
+            '()': django.utils.log.RequireDebugFalse
+        handlers:
+          mail_admins:
+            level: 'ERROR'
+            class: django.utils.log.AdminEmailHandler
+          console:
+            level: 'DEBUG'
+            class: 'logging.StreamHandler'
+        loggers:
+          '':
+            handlers: ['console']
+            level: 'DEBUG'
+            propagate: False
+          django.request:
+             handlers: ['console', 'mail_admins']
+             level: 'ERROR'
+             propagate: True
+          django:
+             handlers: ['console', 'mail_admins']
+             level: 'ERROR'
+             propagate': True
+      LANGUAGES:
+       - "('fr', _('French'))"
+       - "('en', _('English'))"
+       - "('it', _('Italia'))"
+      #ADDITIONAL_TEMPLATE_DIRS:
+      #  - '{project_root}/calanques'
+      # add custom extra_settings which will be processed at end only
+      #extra_django_settings:
+      #  FOO: bar
+      #  BAR: true
+      # settings rendered as is (not via the macro
+      #extra_settings:
+      #  FOO: "'bar'"
+      #  BAR: "True"
   env_defaults:
     dev:
-      DEBUG: True
+      django_setings:
+        DEBUG: True
 # vim:set ft=yaml:

@@ -1,26 +1,53 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
+{% set ds = data.django_settings %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
-
 
 {% macro set_env() %}
     - env:
       - DJANGO_SETTINGS_MODULE: "{{data.DJANGO_SETTINGS_MODULE}}"
 {% endmacro %}
 
+{{cfg.name}}-configs:
+  mc_proxy.hook:
+    - watch_in:
+      - mc_proxy: "{{cfg.name}}-end-configs"
+
+{{cfg.name}}-end-configs:
+  mc_proxy.hook: []
+
+{% for i, cdata in data.get('configs', {}).items() %}
+{% if not cdata.get('skip', false) %}
+config-{{i}}:
+  file.managed:
+    - source: "salt://makina-projects/{{cfg.name}}/files/{{cdata.get('template', i)}}"
+    - name: "{{cdata.get('target', '{0}/{1}'.format(cfg.project_root, i))}}"
+    - template: jinja
+    - mode: {{cdata.get('mode', '750')}}
+    - user: {{cfg.user}}
+    - group: {{cfg.group}}
+    - watch:
+      - mc_proxy: "{{cfg.name}}-configs"
+    - watch_in:
+      - mc_proxy: "{{cfg.name}}-end-configs"
+    - defaults:
+        cfg: "{{cfg.name}}"
+{% endif %}
+{% endfor %}
+
+# backward compatible ID !
 {{cfg.name}}-config:
   file.managed:
     - names:
-      - {{data.app_root}}/{{data.PROJECT}}/settings_local.py
-      - {{data.app_root}}/{{data.PROJECT}}/local_settings.py
-      - {{data.app_root}}/{{data.PROJECT}}/localsettings.py
-    - source: salt://makina-projects/{{cfg.name}}/files/config.py
-    - template: jinja
-    - user: {{cfg.user}}
-    - defaults:
-        project: {{cfg.name}}
-    - group: {{cfg.group}}
-    - makedirs: true
+      - "{{data.app_root}}/{{data.PROJECT}}/settings_local.py"
+      - "{{data.app_root}}/{{data.PROJECT}}/local_settings.py"
+      - "{{data.app_root}}/{{data.PROJECT}}/localsettings.py"
+    - user: "{{cfg.user}}"
+    - group: "{{cfg.group}}"
+    - mode: "640"
+    - watch:
+      - mc_proxy: "{{cfg.name}}-configs"
+      - mc_proxy: "{{cfg.name}}-end-configs"
 
 static-{{cfg.name}}:
   cmd.run:
@@ -34,7 +61,7 @@ static-{{cfg.name}}:
 {% if data.compile_messages %}
 msg-{{cfg.name}}:
   cmd.run:
-    - name: {{data.py}} manage.py compilemessages --noinput
+    - name: {{data.py}} manage.py compilemessages
     {{set_env()}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
@@ -65,6 +92,7 @@ media-{{cfg.name}}:
     - watch:
       - file: {{cfg.name}}-config
 
+{% if data.get('create_admins', True) %}
 {% for dadmins in data.admins %}
 {% for admin, udata in dadmins.items() %}
 {% set f = data.app_root + '/salt_' + admin + '_check.py' %}
@@ -78,7 +106,7 @@ user-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
+                from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
                 User.objects.filter(username='{{admin}}').all()[0]
                 if os.path.isfile("{{f}}"):
                     os.unlink("{{f}}")
@@ -113,7 +141,7 @@ superuser-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from {{data.USER_MODULE}} import {{data.USER_CLASS}} as User
+                from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
                 user=User.objects.filter(username='{{admin}}').all()[0]
                 user.set_password('{{udata.password}}')
                 user.email = '{{udata.mail}}'
@@ -138,3 +166,4 @@ superuser-{{cfg.name}}-{{admin}}:
       - file: superuser-{{cfg.name}}-{{admin}}
 {%endfor %}
 {%endfor %}
+{%endif %}

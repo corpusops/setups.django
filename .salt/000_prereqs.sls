@@ -1,7 +1,8 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
-{% if data.geodjango %}
+{% set is_pg = 'postg' in data.django_setings.DATABASES.default.ENGINE %}
+{% if is_pg %}
 include:
   - makina-states.services.gis.ubuntugis
   - makina-states.services.db.postgresql.client 
@@ -40,7 +41,7 @@ include:
 prepreqs-{{cfg.name}}:
   pkg.installed:
     - watch:
-      {% if data.geodjango %}
+      {% if is_pg %}
       - mc_proxy: ubuntugis-post-hardrestart-hook
       {% endif %}
       - user: {{cfg.name}}-www-data
@@ -101,7 +102,6 @@ prepreqs-{{cfg.name}}:
       - libgeos-dev
       - geoip-bin
       - libgeoip-dev 
-
 
 {{cfg.name}}-dirs:
   file.directory:
