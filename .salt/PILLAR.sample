@@ -16,6 +16,7 @@ makina-projects.projectname:
   data:
     PROJECT: mysite
     app_root: "{project_root}/{PROJECT}"
+    app_download_dir: "{app_root}"
     #app_url: "git@git.foo/goo.git"
     #app_url_rev: "master"
     #app_url_type: git
@@ -156,6 +157,6 @@ makina-projects.projectname:
       #  BAR: "True"
   env_defaults:
     dev:
-      django_setings:
+      django_settings:
         DEBUG: True
 # vim:set ft=yaml:

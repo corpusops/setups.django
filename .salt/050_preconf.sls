@@ -7,7 +7,7 @@
   mc_git.latest:
     - rev: "{{data.app_url_rev}}"
     - name: "{{data.app_url}}"
-    - target: "{{data.app_root}}"
+    - target: "{{data.app_download_dir}}"
     - user: "{{cfg.user}}"
     - watch_in:
       - mc_proxy: "{{cfg.name}}-end-download"

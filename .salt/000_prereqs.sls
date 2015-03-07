@@ -1,7 +1,7 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
-{% set is_pg = 'postg' in data.django_setings.DATABASES.default.ENGINE %}
+{% set is_pg = 'postg' in data.django_settings.DATABASES.default.ENGINE %}
 {% if is_pg %}
 include:
   - makina-states.services.gis.ubuntugis
