@@ -36,16 +36,20 @@ ADMINS = (
 {% elif salt['mc_utils.is_a_set'](value)
       or salt['mc_utils.is_a_list'](value)
       or salt['mc_utils.is_a_dict'](value) %}
-{{-setting}} = json.loads("""
-{{salt['mc_utils.json_dump'](value, pretty=True)}}
-""".strip())
+try:
+    {{setting}} = json.loads("""{{salt['mc_utils.json_dump'](value, pretty=True)}}""".strip())
+except ValueError:
+    try:
+        {{setting}} = json.loads("""{{salt['mc_utils.json_dump'](value)}}""".strip())
+    except ValueError:
+        {{setting}} = json.loads("""{{salt['mc_utils.json_dump'](value)}}""".replace('\n', '\\n').strip())
 {% elif (
     salt['mc_utils.is_a_bool'](value)
     or salt['mc_utils.is_a_number'](value)
 )%}
 {{-setting}} = {{value}}
 {% elif salt['mc_utils.is_a_str'](value) %}
-{{-setting}} = "{{value}}"
+{{-setting}} = """{{value}}"""
 {% else %}
 {{-setting}} = {{value}}
 {%- endif %}
