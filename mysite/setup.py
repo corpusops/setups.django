@@ -32,7 +32,8 @@ src_dir = '.'
 install_requires = ["setuptools"]
 extra_requires = {}
 candidates = {}
-reqs_files_re = re.compile('requirements?(\\.(txt|pip))?', re.S | re.I | re.U)
+reqs_files_re = re.compile('.*requirements?(\\.(txt|pip))?',
+                           re.S | re.I | re.U)
 entry_points = {
     # z3c.autoinclude.plugin": ["target = plone"],
     # console_script": ["myscript = mysite:main"],
@@ -43,14 +44,19 @@ if HAS_PIP:
         if os.path.exists(req_folder):
             for freq in os.listdir(req_folder):
                 req = os.path.join(req_folder, freq)
-                if reqs_files_re.match(req) and req not in reqs_files:
+                if reqs_files_re.match(freq) and req not in reqs_files:
                     reqs_files.append(req)
     for reqs_file in reqs_files:
         if os.path.isfile(reqs_file):
             reqs = []
             try:
-                reqs = [a.req for a in pip.req.parse_requirements(reqs_file)]
-            except Exception:
+                try:
+                    reqs = [a.req for a in pip.req.parse_requirements(reqs_file)]
+                except TypeError:
+                    from pip.download import PipSession
+                    reqs = [a.req for a in pip.req.parse_requirements(
+                        reqs_file, session=PipSession())]
+            except (Exception,) as exc:
                 sys.stderr.write(traceback.format_exc())
                 sys.stderr.write("\n")
                 sys.stderr.write(
