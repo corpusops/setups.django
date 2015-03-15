@@ -5,7 +5,6 @@ import re
 import sys
 import traceback
 from setuptools import setup, find_packages
-import pkg_resources
 
 try:
     import pip
@@ -61,7 +60,10 @@ if HAS_PIP:
             if not reqs:
                 continue
             for req in reqs:
-                if not isinstance(req, pkg_resources.Requirement):
+                pkgreq = "{0}".format(req.__class__)
+                # match pip._vendor.pkg_resources.Requirement
+                # match pkg_resources.Requirement
+                if "pkg_resources.Requirement" not in pkgreq:
                     sys.stderr.write('{0} is not a req\n'.format(req))
                 if req.project_name not in candidates:
                     candidates[req.project_name] = "{0}".format(req)
@@ -72,7 +74,6 @@ for c in [a for a in candidates]:
     val = candidates[c]
     if val not in install_requires:
         install_requires.append(val)
-
 setup(name=name,
       version=version,
       namespace_packages=[],
