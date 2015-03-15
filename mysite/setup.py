@@ -1,7 +1,18 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 import os
+import sys
+import traceback
 from setuptools import setup, find_packages
+import pkg_resources
+
+try:
+    import pip
+    HAS_PIP = True
+except:
+    HAS_PIP = False
+
+
 def read(*rnames):
     return open(
         os.path.join(".", *rnames)
@@ -18,6 +29,49 @@ classifiers = [
 name = 'app'
 version = "1.0dev"
 src_dir = '.'
+install_requires = ["setuptools"]
+candidates = {}
+if HAS_PIP:
+    reqs_files = ['requirements.pip',
+                  'REQUIREMENTS.pip'
+                  'REQUIREMENTS.PIP'
+                  'requirements.txt',
+                  'requirements',
+                  'REQUIREMENTS',
+                  'REQUIREMENTS.PIP',
+                  'REQUIREMENTS.TXT']
+    for req_folder in ['requirements']:
+        if os.path.exists(req_folder):
+            for freq in os.listdir(req_folder):
+                req = os.path.join(req_folder, freq)
+                if req not in reqs_files:
+                    reqs_files.append(req)
+    for reqs_file in reqs_files:
+        if os.path.isfile(reqs_file):
+            reqs = []
+            try:
+                reqs = [a.req for a in pip.req.parse_requirements(reqs_file)]
+            except Exception:
+                sys.stderr.write(traceback.format_exc())
+                sys.stderr.write("\n")
+                sys.stderr.write(
+                    '{0} unreadable, getting next req file'.format(reqs_file))
+                sys.stderr.write("\n")
+                continue
+            if not reqs:
+                continue
+            for req in reqs:
+                if not isinstance(req, pkg_resources.Requirement):
+                    sys.stderr.write('{0} is not a req\n'.format(req))
+                if req.project_name not in candidates:
+                    candidates[req.project_name] = "{0}".format(req)
+                else:
+                    raise ValueError(
+                        '{1}: conflict for {0}'.format(req, reqs_file))
+for c in [a for a in candidates]:
+    val = candidates[c]
+    if val not in install_requires:
+        install_requires.append(val)
 
 setup(
     name=name,
@@ -34,10 +88,7 @@ setup(
     packages=find_packages(src_dir),
     package_dir={"": src_dir},
     include_package_data=True,
-    install_requires=[
-        "setuptools",
-        # -*- Extra requirements: -*-
-    ],
+    install_requires=install_requires,
     extras_require= {
         #"test": ["plone.app.testing", "ipython"]
     },
