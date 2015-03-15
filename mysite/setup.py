@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import re
 import sys
 import traceback
 from setuptools import setup, find_packages
@@ -30,21 +31,20 @@ name = 'app'
 version = "1.0dev"
 src_dir = '.'
 install_requires = ["setuptools"]
+extra_requires = {}
 candidates = {}
+reqs_files_re = re.compile('requirements?(\\.(txt|pip))?', re.S | re.I | re.U)
+entry_points = {
+    # z3c.autoinclude.plugin": ["target = plone"],
+    # console_script": ["myscript = mysite:main"],
+}
 if HAS_PIP:
-    reqs_files = ['requirements.pip',
-                  'REQUIREMENTS.pip'
-                  'REQUIREMENTS.PIP'
-                  'requirements.txt',
-                  'requirements',
-                  'REQUIREMENTS',
-                  'REQUIREMENTS.PIP',
-                  'REQUIREMENTS.TXT']
-    for req_folder in ['requirements']:
+    reqs_files = []
+    for req_folder in ['.', 'requirements', 'reqs', 'pip']:
         if os.path.exists(req_folder):
             for freq in os.listdir(req_folder):
                 req = os.path.join(req_folder, freq)
-                if req not in reqs_files:
+                if reqs_files_re.match(req) and req not in reqs_files:
                     reqs_files.append(req)
     for reqs_file in reqs_files:
         if os.path.isfile(reqs_file):
@@ -73,27 +73,21 @@ for c in [a for a in candidates]:
     if val not in install_requires:
         install_requires.append(val)
 
-setup(
-    name=name,
-    version=version,
-    namespace_packages=[],
-    description=name,
-    long_description=long_description,
-    classifiers=classifiers,
-    keywords="",
-    author="foo",
-    author_email="foo@foo.com",
-    url="http://www.makina-corpus.com",
-    license="GPL",
-    packages=find_packages(src_dir),
-    package_dir={"": src_dir},
-    include_package_data=True,
-    install_requires=install_requires,
-    extras_require= {
-        #"test": ["plone.app.testing", "ipython"]
-    },
-    entry_points={
-        #z3c.autoinclude.plugin": ["target = plone"],
-    },
-)
+setup(name=name,
+      version=version,
+      namespace_packages=[],
+      description=name,
+      long_description=long_description,
+      classifiers=classifiers,
+      keywords="",
+      author="foo",
+      author_email="foo@foo.com",
+      url="http://www.makina-corpus.com",
+      license="GPL",
+      packages=find_packages(src_dir),
+      package_dir={"": src_dir},
+      include_package_data=True,
+      install_requires=install_requires,
+      extras_require=extra_requires,
+      entry_points=entry_points)
 # vim:set ft=python:
