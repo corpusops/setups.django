@@ -4,6 +4,8 @@
 {% set ugs = salt['mc_usergroup.settings']() %}
 {% set locs = salt['mc_locations.settings']() %}
 {% set cfg = opts['ms_project'] %}
+{% set data = cfg.data %}
+{% set ftp_root = data.get('ftp_root', cfg.data_root) %}
 {{cfg.name}}-restricted-perms:
   file.managed:
     - name: {{cfg.project_dir}}/global-reset-perms.sh
@@ -48,6 +50,21 @@
               --paths "{{cfg.project_dir}}"/.. \
               --paths "{{cfg.project_dir}}"/../.. \
               --users www-data ;
+              {% for users in data.get('ftp_users', []) %}
+              {% for user, udata in users.items()%}
+              {% set home = udata.get('home', ftp_root) %}
+              {% if home.endswith('/') %}{% set home = home[:-1]%}{%endif%}
+              {% set parents = home.split('/')[:-1] %}
+              {% for i in range(1 + parents|length) %}
+              {% set parent = '/'.join(parents[0:i]) %}
+              {% if parent %}
+              setfacl -m "u:{{user}}:--x" "{{parent}}"
+              {%endif%}
+              {%endfor%}
+              setfacl -R -m "u:{{user}}:rwx" "{{home}}"
+              setfacl -R -d -m "u:{{user}}:rwx" "{{home}}"
+              {% endfor %}
+              {% endfor %}
             fi
   cmd.run:
     - name: {{cfg.project_dir}}/global-reset-perms.sh
