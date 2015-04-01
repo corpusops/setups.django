@@ -51,6 +51,7 @@ makina-projects.projectname:
     #admin_allowed_ips :[]
     DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
     WSGI: "{PROJECT}.wsgi:application"
+    nginx_loglevel: "crit"
     nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf
     nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
     adminmail: "root@{domain}"

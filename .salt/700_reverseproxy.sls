@@ -19,6 +19,7 @@ include:
 {{ nginx.virtualhost(domain=data.domain, doc_root=data.static,
                      server_aliases=data.server_aliases,
                      vhost_basename='corpus-'+cfg.name,
+                     loglevel=data.nginx_loglevel,
                      vh_top_source=data.nginx_upstreams,
                      vh_content_source=data.nginx_vhost,
                      project=cfg.name)}}
