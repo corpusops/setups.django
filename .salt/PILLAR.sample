@@ -145,7 +145,7 @@ makina-projects.projectname:
           django:
              handlers: ['console', 'mail_admins']
              level: 'ERROR'
-             propagate': True
+             propagate: True
       LANGUAGES:
        - "('fr', _('French'))"
        - "('en', _('English'))"
