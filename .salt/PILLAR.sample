@@ -20,7 +20,7 @@ makina-projects.projectname:
     #app_url: "git@git.foo/goo.git"
     #app_url_rev: "master"
     #app_url_type: git
-    #app_url_tar_opt: "xzvf"
+    #app_url_tar_opts: "xzvf"
     #app_url_archive_format: tar
     #app_url_hash: "md5=123"
     #app_archive_test_exists: 'test ! -e "{data_root}/www/index.php"'
