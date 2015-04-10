@@ -16,27 +16,29 @@ makina-projects.projectname:
   data:
     PROJECT: mysite
     app_root: "{project_root}/{PROJECT}"
-    app_download_dir: "{app_root}"
     #app_url: "git@git.foo/goo.git"
     #app_url_rev: "master"
     #app_url_type: git
     #app_url_tar_opts: "xzvf"
     #app_url_archive_format: tar
+    #app_download_root: "{app_root}"
     #app_url_hash: "md5=123"
     #app_archive_test_exists: 'test ! -e {data_root}/www/index.php'
     js_dir: "{app_root}/front_end"
     gulp_targets: ["clean-build"]
     do_bower: false
     do_gulp: false
-    settings_template: "config.py"
     configs:
       {% for i in ['settings_local.py',
                    'localsettings.py',
                    'local_settings.py'] %}
       "{{i}}":
-        template: "{settings_template}"
+        source: "salt://makina-projects/{name}/files/config.py"
         target: "{app_root}/{PROJECT}/{{i}}"
+        mode: 640
       {%endfor%}
+      #foo.py:
+      #  target: "{data_root}/test/bar.py"
     htaccess: "/etc/{name}.webaccess"
     py: "{py_root}/bin/python"
     py_root: "{project_root}/venv"
@@ -75,6 +77,10 @@ makina-projects.projectname:
     worker_class: sync
     worker_timeout: 9000
     compile_messages: true
+    collect_static: true
+    do_syncdb: true
+    do_migrate: true
+    do_syncdb_only_first_time: false
     # http_users:
     #   - root: foo
     # extra django settings to add
@@ -97,6 +103,14 @@ makina-projects.projectname:
           HOST: '127.0.0.1'
           NAME: 'db'
           PASSWORD: '{name}secret'
+          #ENGINE: 'django.db.backends.mysql'
+          #USER: '{name}'
+          #PORT: 3306
+          #HOST: '127.0.0.1'
+          #NAME: 'db'
+          #PASSWORD: '{name}secret'
+          #OPTIONS:
+          #  init_command: 'SET storage_engine=INNODB'
       DEFAULT_FROM_EMAIL: '{adminmail}'
       SERVER_EMAIL: 'root@{fqdn}'
       MEDIA_ROOT: '{media}'
@@ -116,6 +130,10 @@ makina-projects.projectname:
       DEBUG: False
       TEMPLATE_DEBUG: False
       USE_X_FORWARDED_HOST: True
+      #CACHES:
+      #  default:
+      #    BACKEND: 'django.core.cache.backends.memcached.MemcachedCache'
+      #    LOCATION: '127.0.0.1:11211'
       USER_MODULE: django.contrib.auth.models
       USER_CLASS: User
       SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
@@ -164,4 +182,4 @@ makina-projects.projectname:
     dev:
       django_settings:
         DEBUG: True
-# vim:set ft=yaml:
+# vim:set ft=sls:

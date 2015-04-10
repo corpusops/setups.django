@@ -8,47 +8,17 @@
       - DJANGO_SETTINGS_MODULE: "{{data.DJANGO_SETTINGS_MODULE}}"
 {% endmacro %}
 
-{{cfg.name}}-configs:
-  mc_proxy.hook:
-    - watch_in:
-      - mc_proxy: "{{cfg.name}}-end-configs"
-
-{{cfg.name}}-end-configs:
-  mc_proxy.hook: []
-
-{% for i, cdata in data.get('configs', {}).items() %}
-{% if not cdata.get('skip', false) %}
-config-{{i}}:
-  file.managed:
-    - source: "salt://makina-projects/{{cfg.name}}/files/{{cdata.get('template', i)}}"
-    - name: "{{cdata.get('target', '{0}/{1}'.format(cfg.project_root, i))}}"
-    - template: jinja
-    - mode: {{cdata.get('mode', '750')}}
-    - user: {{cfg.user}}
-    - group: {{cfg.group}}
-    - watch:
-      - mc_proxy: "{{cfg.name}}-configs"
-    - watch_in:
-      - mc_proxy: "{{cfg.name}}-end-configs"
-    - defaults:
-        cfg: "{{cfg.name}}"
-{% endif %}
-{% endfor %}
+include:
+  - makina-projects.{{cfg.name}}.include.configs
 
 # backward compatible ID !
 {{cfg.name}}-config:
-  file.managed:
-    - names:
-      - "{{data.app_root}}/{{data.PROJECT}}/settings_local.py"
-      - "{{data.app_root}}/{{data.PROJECT}}/local_settings.py"
-      - "{{data.app_root}}/{{data.PROJECT}}/localsettings.py"
-    - user: "{{cfg.user}}"
-    - group: "{{cfg.group}}"
-    - mode: "640"
+  file.exists:
+    - name: "{{data.configs['localsettings.py']['target']}}"
     - watch:
-      - mc_proxy: "{{cfg.name}}-configs"
-      - mc_proxy: "{{cfg.name}}-end-configs"
+      - mc_proxy: "{{cfg.name}}-configs-post"
 
+{% if data.get('collect_static', True) %}
 static-{{cfg.name}}:
   cmd.run:
     - name: {{data.py}} manage.py collectstatic --noinput
@@ -56,9 +26,10 @@ static-{{cfg.name}}:
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
+{% endif %}
 
-{% if data.compile_messages %}
+{% if data.get('compile_messages', True) %}
 msg-{{cfg.name}}:
   cmd.run:
     - name: {{data.py}} manage.py compilemessages
@@ -66,21 +37,34 @@ msg-{{cfg.name}}:
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
 {% endif %}
 
 syncdb-{{cfg.name}}:
   cmd.run:
-    #- name: {{data.py}} manage.py syncdb --noinput
-    - name: {{data.py}} manage.py syncdb --noinput && {{data.py}} manage.py migrate --noinput
+    - name: |
+            set -e
+            {% if data.get('do_syncdb', True) %}
+            {{data.py}} manage.py syncdb --noinput
+            {% endif %}
+            {% if data.get('do_migrate', True) %}
+            {{data.py}} manage.py migrate --noinput
+            {% endif %}
+            {% if data.get('do_syncdb_only_first_time', False) %}
+            touch "{{cfg.data_root}}/installed"
+            {% endif %}
+    {% if data.get('do_syncdb_only_first_time', False) %}
+    - onlyif: test ! -e "{{cfg.data_root}}/installed"
+    {% endif %}
     {{set_env()}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
     - use_vt: true
     - output_loglevel: info
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
 
+{% if data.media_source != data.media %}
 media-{{cfg.name}}:
   cmd.run:
     - name: rsync -av {{data.media_source}}/ {{data.media}}/
@@ -91,6 +75,7 @@ media-{{cfg.name}}:
     - output_loglevel: info
     - watch:
       - file: {{cfg.name}}-config
+{% endif %}
 
 {% if data.get('create_admins', True) %}
 {% for dadmins in data.admins %}
@@ -118,7 +103,7 @@ user-{{cfg.name}}-{{admin}}:
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
       - cmd: syncdb-{{cfg.name}}
   cmd.run:
     - name: {{data.py}} manage.py createsuperuser --username="{{admin}}" --email="{{udata.mail}}" --noinput
@@ -127,7 +112,7 @@ user-{{cfg.name}}-{{admin}}:
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
       - cmd: syncdb-{{cfg.name}}
       - file: user-{{cfg.name}}-{{admin}}
 
@@ -154,7 +139,7 @@ superuser-{{cfg.name}}-{{admin}}:
     - group: {{cfg.group}}
     - name: "{{f}}"
     - watch:
-      - file: {{cfg.name}}-config
+      - mc_proxy: {{cfg.name}}-configs-post
       - cmd: syncdb-{{cfg.name}}
   cmd.run:
     {{set_env()}}

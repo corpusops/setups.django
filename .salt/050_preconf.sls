@@ -1,6 +1,9 @@
 {% set cfg = opts['ms_project'] %}
-{% set scfg = salt['mc_utils.json_dump'](cfg)%}
 {% set data = cfg.data %}
+
+include:
+  - makina-projects.{{cfg.name}}.include.configs
+
 {% if data.app_url %}
 {{cfg.name}}-download:
 {% if data.app_url_type == 'git' %}
@@ -15,7 +18,7 @@
   archive.extracted:
     - source: "{{data.app_url}}"
     - source_hash: "{{data.app_url_hash}}"
-    - name: "{{data.app_root}}"
+    - name: "{{data.app_download_root}}"
     - archive_format: "{{data.app_url_archive_format}}"
     - tar_options: "{{data.app_url_tar_opts}}"
     - user: "{{cfg.user}}"
@@ -27,4 +30,6 @@
 {% endif %}
 
 {{cfg.name}}-end-download:
-  mc_proxy.hook: []
+  mc_proxy.hook:
+    - watch_in:
+      - mc_proxy: {{cfg.name}}-configs-pre

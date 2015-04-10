@@ -1,8 +1,10 @@
 *pyc
+/develop_eggs
 /cache
 /venv/
 /develop_eggs/
 
+/corpus-django
 makina-states*-deploy.log
 settings_local.py
 src/

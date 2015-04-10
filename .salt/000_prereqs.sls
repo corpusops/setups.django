@@ -5,8 +5,8 @@
 {% if is_pg %}
 include:
   - makina-states.services.gis.ubuntugis
-  - makina-states.services.db.postgresql.client 
-{% endif %} 
+  - makina-states.services.db.postgresql.client
+{% endif %}
 {{cfg.name}}-htaccess:
   file.managed:
     - name: {{data.htaccess}}
@@ -29,7 +29,7 @@ include:
       - file: {{cfg.name}}-htaccess
 {% endfor %}
 {% endfor %}
-{% endif %}  
+{% endif %}
 
 {{cfg.name}}-www-data:
   user.present:
@@ -101,7 +101,7 @@ prepreqs-{{cfg.name}}:
       - libgdal1-dev
       - libgeos-dev
       - geoip-bin
-      - libgeoip-dev 
+      - libgeoip-dev
 
 {{cfg.name}}-dirs:
   file.directory:
