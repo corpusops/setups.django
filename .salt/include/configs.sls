@@ -1,6 +1,11 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 
+{{cfg.name}}-configs-before:
+  mc_proxy.hook:
+    - watch_in:
+      - mc_proxy: {{cfg.name}}-configs-pre
+
 {{cfg.name}}-configs-pre:
   mc_proxy.hook: []
 
@@ -30,5 +35,9 @@
 {% endfor %}
 
 {{cfg.name}}-configs-post:
-  mc_proxy.hook: []
+  mc_proxy.hook:
+    - watch_in:
+      - mc_proxy: {{cfg.name}}-configs-after
 
+{{cfg.name}}-configs-after:
+  mc_proxy.hook: []

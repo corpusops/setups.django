@@ -32,4 +32,4 @@ include:
 {{cfg.name}}-end-download:
   mc_proxy.hook:
     - watch_in:
-      - mc_proxy: {{cfg.name}}-configs-pre
+      - mc_proxy: {{cfg.name}}-configs-before
