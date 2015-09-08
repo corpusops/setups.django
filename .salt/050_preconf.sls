@@ -4,7 +4,7 @@
 include:
   - makina-projects.{{cfg.name}}.include.configs
 
-{% if data.app_url %}
+{% if data.get('app_url', '') %}
 {{cfg.name}}-download:
 {% if data.app_url_type == 'git' %}
   mc_git.latest:
