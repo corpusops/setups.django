@@ -12,6 +12,16 @@ include:
   - makina-projects.{{cfg.name}}.include.configs
 
 # backward compatible ID !
+
+{{cfg.name}}-stop-all:
+  cmd.run:
+    - name: |
+            if which nginx >/dev/null 2>&1;then service nginx stop || /bin/true;fi
+            if which circusctl >/dev/null 2>&1;then circusctl stop;fi
+    - watch_in:
+      - file: {{cfg.name}}-config
+      - cmd: {{cfg.name}}-start-all
+
 {{cfg.name}}-config:
   file.exists:
     - name: "{{data.configs['localsettings.py']['target']}}"
@@ -27,6 +37,9 @@ static-{{cfg.name}}:
     - user: {{cfg.user}}
     - watch:
       - mc_proxy: {{cfg.name}}-configs-post
+
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
 {% endif %}
 
 {% if data.get('compile_messages', True) %}
@@ -38,6 +51,8 @@ msg-{{cfg.name}}:
     - user: {{cfg.user}}
     - watch:
       - mc_proxy: {{cfg.name}}-configs-post
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
 {% endif %}
 
 syncdb-{{cfg.name}}:
@@ -63,6 +78,8 @@ syncdb-{{cfg.name}}:
     - output_loglevel: info
     - watch:
       - mc_proxy: {{cfg.name}}-configs-post
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
 
 {% if data.media_source != data.media %}
 media-{{cfg.name}}:
@@ -75,6 +92,8 @@ media-{{cfg.name}}:
     - output_loglevel: info
     - watch:
       - file: {{cfg.name}}-config
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
 {% endif %}
 
 {% if data.get('create_admins', True) %}
@@ -115,6 +134,8 @@ user-{{cfg.name}}-{{admin}}:
       - mc_proxy: {{cfg.name}}-configs-post
       - cmd: syncdb-{{cfg.name}}
       - file: user-{{cfg.name}}-{{admin}}
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
 
 {% set f = data.app_root + '/salt_' + admin + '_password.py' %}
 superuser-{{cfg.name}}-{{admin}}:
@@ -149,6 +170,14 @@ superuser-{{cfg.name}}-{{admin}}:
     - watch:
       - cmd: user-{{cfg.name}}-{{admin}}
       - file: superuser-{{cfg.name}}-{{admin}}
+    - watch_in:
+      - cmd: {{cfg.name}}-start-all
 {%endfor %}
 {%endfor %}
 {%endif %}
+
+{{cfg.name}}-start-all:
+  cmd.run:
+    - name: |
+            if which nginx >/dev/null 2>&1;then service nginx start || /bin/true;fi
+            if which circusctl >/dev/null 2>&1;then circusctl start;fi
