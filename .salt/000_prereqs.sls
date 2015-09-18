@@ -115,11 +115,13 @@ prepreqs-{{cfg.name}}:
       - {{cfg.data.static}}
       - {{cfg.data.media}}
 
-{% for i in ['cache'] %}
+{% for d, i in {
+      cfg.project_root+'/cache': cfg.data_root+'/cache',
+}.items() %}
 {{cfg.name}}-l-dirs-{{i}}:
   file.symlink:
     - watch:
       - file: {{cfg.name}}-dirs
-    - name: {{cfg.project_root}}/{{i}}
-    - target: {{cfg.data_root}}/{{i}}
+    - name: {{d}}
+    - target: {{i}}
 {%endfor %}
