@@ -49,6 +49,8 @@ makina-projects.projectname:
     #force_ssl: false
     #disabled_urls []
     #ldap_url: "ldap://ldap.net/dc=m,dc=com?uid?sub?(objectClass=person)"
+    #ldap_binddn: "uid=f,dc=e,dc=e"
+    #ldap_binddn_passwd: "foo"
     #admin_url: /admin
     #admin_allowed_ips :[]
     DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
