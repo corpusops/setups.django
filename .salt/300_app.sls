@@ -16,8 +16,17 @@ include:
 {{cfg.name}}-stop-all:
   cmd.run:
     - name: |
-            if which nginx >/dev/null 2>&1;then service nginx stop || /bin/true;fi
-            if which circusctl >/dev/null 2>&1;then circusctl stop;fi
+            if which nginx >/dev/null 2>&1;then
+                if [ ! -d /etc/nginx/disabled ];then mkdir /etc/nginx/disabled;fi
+                mv -f /etc/nginx/sites-enabled/corpus-{{cfg.name}}.conf /etc/nginx/disabled/corpus-{{cfg.name}}.conf
+                service nginx restart || /bin/true;
+            fi
+            # circusctl can make long to answer, try 3times
+            if which circusctl >/dev/null 2>&1;then
+                circusctl stop {{cfg.name}}-django ||\
+                ( sleep 1 && circusctl stop {{cfg.name}}-django ) ||\
+                ( sleep 1 && circusctl stop {{cfg.name}}-django )
+            fi
     - watch_in:
       - file: {{cfg.name}}-config
       - cmd: {{cfg.name}}-start-all
@@ -179,5 +188,14 @@ superuser-{{cfg.name}}-{{admin}}:
 {{cfg.name}}-start-all:
   cmd.run:
     - name: |
-            if which nginx >/dev/null 2>&1;then service nginx start || /bin/true;fi
-            if which circusctl >/dev/null 2>&1;then circusctl start;fi
+            if which nginx >/dev/null 2>&1;then
+                if [ ! -d /etc/nginx/disabled ];then mkdir /etc/nginx/disabled;fi
+                mv -f /etc/nginx/disabled/corpus-{{cfg.name}}.conf /etc/nginx/sites-enabled/corpus-{{cfg.name}}.conf &&\
+                service nginx restart || /bin/true;
+            fi
+            # circusctl can make long to answer, try 3times
+            if which circusctl >/dev/null 2>&1;then
+                circusctl stop {{cfg.name}}-django ||\
+                ( sleep 1 && circusctl start {{cfg.name}}-django ) ||\
+                ( sleep 1 && circusctl start {{cfg.name}}-django )
+            fi
