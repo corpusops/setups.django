@@ -195,7 +195,7 @@ superuser-{{cfg.name}}-{{admin}}:
             fi
             # circusctl can make long to answer, try 3times
             if which circusctl >/dev/null 2>&1;then
-                circusctl stop {{cfg.name}}-django ||\
+                circusctl start {{cfg.name}}-django ||\
                 ( sleep 1 && circusctl start {{cfg.name}}-django ) ||\
                 ( sleep 1 && circusctl start {{cfg.name}}-django )
             fi
