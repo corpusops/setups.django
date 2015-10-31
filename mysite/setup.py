@@ -36,7 +36,7 @@ reqs_files_re = re.compile('.*requirements?(\\.(txt|pip))?',
                            re.S | re.I | re.U)
 entry_points = {
     # z3c.autoinclude.plugin": ["target = plone"],
-    # console_script": ["myscript = mysite:main"],
+    # console_scripts": ["myscript = mysite:main"],
 }
 if HAS_PIP:
     reqs_files = []
