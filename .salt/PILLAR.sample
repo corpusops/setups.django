@@ -59,9 +59,13 @@ makina-projects.projectname:
     nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf
     nginx_vhost: salt://makina-projects/{name}/files/nginx.content.conf
     adminmail: "root@{domain}"
+    #ftp_root: "{data_root}/ftp"
     #ftp_ip: "x.x.x.x"
     #ftp_port_range: "22300 22400"
     #ftp_users:
+    #  - eib: {password: "{ftp_password}",
+    #          home: "{ftp_root}",
+    #          user: eib-user, shell: /bin/bash, mode: "0771"}
     #  - ftpuser: {'password': 'xxx', "home": "{data_root}/foo"}
     create_admins: true
     admins:

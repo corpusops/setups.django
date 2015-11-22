@@ -52,19 +52,21 @@
               --users www-data ;
               {% for users in data.get('ftp_users', []) %}
               {% for user, udata in users.items()%}
+              {% set sysuser = udata.get('user', user) %}
               {% set home = udata.get('home', ftp_root) %}
               {% if home.endswith('/') %}{% set home = home[:-1]%}{%endif%}
               {% set parents = home.split('/')[:-1] %}
               {% for i in range(1 + parents|length) %}
               {% set parent = '/'.join(parents[0:i]) %}
               {% if parent %}
-              setfacl -m "u:{{user}}:--x" "{{parent}}"
+              setfacl -m "u:{{sysuser}}:--x" "{{parent}}"
               {%endif%}
               {%endfor%}
-              setfacl -R -m "u:{{user}}:rwx" "{{home}}"
-              setfacl -R -d -m "u:{{user}}:rwx" "{{home}}"
+              setfacl -R -m "u:{{sysuser}}:rwx" "{{home}}"
+              setfacl -R -d -m "u:{{sysuser}}:rwx" "{{home}}"
               {% endfor %}
               {% endfor %}
+              
             fi
   cmd.run:
     - name: {{cfg.project_dir}}/global-reset-perms.sh

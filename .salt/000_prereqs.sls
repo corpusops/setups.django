@@ -113,6 +113,10 @@ prepreqs-{{cfg.name}}:
       - {{cfg.data_root}}/cache
       - {{cfg.data.static}}
       - {{cfg.data.media}}
+      {% if data.get('ftp_root', None) and (
+            data.get('ftp_users', None) or data.get('ftp_install', False)) %}
+      - {{data.ftp_root}}
+      {% endif %}
 
 {% for d, i in {
       cfg.project_root+'/cache': cfg.data_root+'/cache',
