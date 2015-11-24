@@ -21,11 +21,14 @@ include:
                 mv -f /etc/nginx/sites-enabled/corpus-{{cfg.name}}.conf /etc/nginx/disabled/corpus-{{cfg.name}}.conf
                 service nginx restart || /bin/true;
             fi
-            # circusctl can make long to answer, try 3times
-            if which circusctl >/dev/null 2>&1;then
-                circusctl stop {{cfg.name}}-django ||\
-                ( sleep 1 && circusctl stop {{cfg.name}}-django ) ||\
-                ( sleep 1 && circusctl stop {{cfg.name}}-django )
+            # onlyif circus running
+            if ps afux|grep "bin/circusd"|grep -v grep|grep -q circusd;then
+              # circusctl can make long to answer, try 3times
+              if which circusctl >/dev/null 2>&1;then
+                  circusctl stop {{cfg.name}}-django ||\
+                  ( sleep 1 && circusctl stop {{cfg.name}}-django ) ||\
+                  ( sleep 1 && circusctl stop {{cfg.name}}-django )
+              fi
             fi
     - watch_in:
       - file: {{cfg.name}}-config
@@ -192,6 +195,10 @@ superuser-{{cfg.name}}-{{admin}}:
                 if [ ! -d /etc/nginx/disabled ];then mkdir /etc/nginx/disabled;fi
                 mv -f /etc/nginx/disabled/corpus-{{cfg.name}}.conf /etc/nginx/sites-enabled/corpus-{{cfg.name}}.conf &&\
                 service nginx restart || /bin/true;
+            fi
+            # start circus if not working  yet
+            if ! ps afux|grep "bin/circusd"|grep -v grep|grep -q circusd;then
+              service circusd start
             fi
             # circusctl can make long to answer, try 3times
             if which circusctl >/dev/null 2>&1;then
