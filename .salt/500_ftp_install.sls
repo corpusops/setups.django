@@ -109,8 +109,17 @@ include:
       - mc_proxy: ftpd-post-configuration-hook
 {%endif%}
 
+{% if data.get('ftp_domain', '') %}
+add-pasv-ip:
+  cmd.run:
+    - name: printf "\n127.0.0.1 {{data.ftp_domain}}\n" >> /etc/hosts
+    - unless: grep "{{data.ftp_domain}}" /etc/hosts
+    - watch_in:
+      - mc_proxy: ftpd-post-configuration-hook
+{% endif %}
 
-{% if data.get('ftp_ip', '') %}
+{% set forcedip = data.get('ftp_domain', data.get('ftp_ip', ''))%}
+{% if forcedip %}
 /etc/pure-ftpd/conf/ForcePassiveIP:
   file.managed:
     - makedirs: true
