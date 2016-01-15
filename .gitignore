@@ -1,7 +1,8 @@
 *pyc
 /develop_eggs
 /cache
-/venv/
+/venv
+\.venv
 
 /corpus-django
 makina-states*-deploy.log
@@ -20,3 +21,7 @@ makina-states.flask-deploy.log
 salt.cfg
 salt_config.py
 local_settings.py
+*.egg-info
+*.mo
+salt*check.py
+*/*/localsettings.py

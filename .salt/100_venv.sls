@@ -7,21 +7,28 @@
     - name: {{data.py_root}}
     - pip_download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}
+    {% if data.get('orig_py', None) %}- python: {{data.get('orig_py', None)}}{% endif %}
     - use_vt: true
   cmd.run:
     - name: |
             . {{data.py_root}}/bin/activate;
+            if pip --help 2>&1| grep -q -- --download-cache;then
+              cacheopt="--download-cache"
+            else
+              cacheopt="--cache-dir"
+            fi
             if [ "x$(easy_install --version|awk '{print $2}')" = "x12.2" ];then
-              pip install --upgrade setuptools --download-cache "{{cfg.data_root}}/cache"
+              pip install --upgrade setuptools ${cacheopt} "{{cfg.data_root}}/cache"
             fi
             if [ "x$(pip --version|awk '{print $2}')" = "x1.5.6" ];then
-              pip install --upgrade pip --download-cache "{{cfg.data_root}}/cache"
+              pip install --upgrade pip ${cacheopt} "{{cfg.data_root}}/cache"
             fi
-            # to install ithe pip diversion, chicken & egg
+            # to install the pip diversion, chicken & egg
             if grep -iq pillow "{{data.requirements}}";then
-              pip install --upgrade $(egrep -i "^pillow" "{{data.requirements}}") --download-cache "{{cfg.data_root}}/cache"
+              pip install --upgrade $(egrep -i "^pillow" "{{data.requirements}}") ${cacheopt} "{{cfg.data_root}}/cache"
             fi
-            pip install -r "{{data.requirements}}" --download-cache "{{cfg.data_root}}/cache"
+            pip install -r "{{data.requirements}}" ${cacheopt} "{{cfg.data_root}}/cache"
+
     - env:
        - CFLAGS: "-I/usr/include/gdal"
     - cwd: {{data.app_root}}

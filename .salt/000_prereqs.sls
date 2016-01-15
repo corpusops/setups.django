@@ -6,36 +6,6 @@ include:
   - makina-states.services.gis.ubuntugis
   - makina-states.services.db.postgresql.client
 {% endif %}
-{{cfg.name}}-htaccess:
-  file.managed:
-    - name: {{data.htaccess}}
-    - source: ''
-    - user: www-data
-    - group: www-data
-    - mode: 770
-
-{% if data.get('http_users', {}) %}
-{% for userrow in data.http_users %}
-{% for user, passwd in userrow.items() %}
-{{cfg.name}}-{{user}}-htaccess:
-  webutil.user_exists:
-    - name: {{user}}
-    - password: {{passwd}}
-    - htpasswd_file: {{data.htaccess}}
-    - options: m
-    - force: true
-    - watch:
-      - file: {{cfg.name}}-htaccess
-{% endfor %}
-{% endfor %}
-{% endif %}
-
-{{cfg.name}}-www-data:
-  user.present:
-    - name: www-data
-    - optional_groups:
-      - {{cfg.group}}
-    - remove_groups: false
 
 prepreqs-{{cfg.name}}:
   pkg.installed:
@@ -43,7 +13,6 @@ prepreqs-{{cfg.name}}:
       {% if is_pg %}
       - mc_proxy: ubuntugis-post-hardrestart-hook
       {% endif %}
-      - user: {{cfg.name}}-www-data
     - pkgs:
       - sqlite3
       - liblcms2-2
@@ -108,7 +77,6 @@ prepreqs-{{cfg.name}}:
     - group: {{cfg.group}}
     - watch:
       - pkg: prepreqs-{{cfg.name}}
-      - user: {{cfg.name}}-www-data
     - names:
       - {{cfg.data_root}}/cache
       - {{cfg.data.static}}

@@ -1,3 +1,4 @@
+{% import "makina-states/_macros/h.jinja" as h with context %}
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 
@@ -9,30 +10,20 @@
 {{cfg.name}}-configs-pre:
   mc_proxy.hook: []
 
-{% for config, tdata in data.configs.items() %}
-{{cfg.name}}-{{config}}-conf:
-  file.managed:
+{% macro rmacro() %}
     - watch_in:
       - mc_proxy: {{cfg.name}}-configs-post
     - watch:
       - mc_proxy: {{cfg.name}}-configs-pre
-    - defaults:
-        project: "{{cfg.name}}"
-        cfg: "{{cfg.name}}"
-    - source: {{ tdata.get(
-          'source',
-          'salt://makina-projects/{0}/files/{1}'.format(
-           cfg.name, config))}}
-    - makedirs: {{tdata.get('makedirs', True)}}
-    - name: {{ tdata.get('target', '{0}/{1}'.format(
-                    data.app_root, config))}}
-    - user: {{tdata.get('user', cfg.user)}}
-    - group: {{tdata.get('group', cfg.group)}}
-    - mode: {{tdata.get('mode', 750)}}
-    {% if  data.get('template', 'jinja') %}
-    - template:  {{ data.get('template', 'jinja') }}
-    {% endif %}
-{% endfor %}
+{% endmacro %}
+{{ h.deliver_config_files(
+     data.get('configs', {}),
+     dir='makina-projects/{0}/files'.format(cfg.name),
+     mode='750',
+     user=cfg.user, group=cfg.group,
+     target_prefix=data.app_root+"/",
+     after_macro=rmacro, prefix=cfg.name+'-config-conf',
+     project=cfg.name, cfg=cfg.name)}}
 
 {{cfg.name}}-configs-post:
   mc_proxy.hook:
