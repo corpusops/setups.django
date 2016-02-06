@@ -5,13 +5,8 @@
 include:
   - makina-states.services.monitoring.circus
 
-# inconditionnaly reboot circus & nginx upon deployments
-/bin/true:
-  cmd.run:
-    - watch_in:
-      - mc_proxy: circus-pre-conf
-
 {% set circus_data = {
+  'manager_force_reload': true,
   'cmd': '{4}/bin/gunicorn -k {5} -t {6} -w {2} -b {0}:{1} {3}'.format(
       data.host, data.port, data.workers, data.WSGI, data.py_root, data.worker_class,
       data.worker_timeout),
@@ -23,3 +18,4 @@ include:
   'warmup_delay': "10",
   'max_age': 24*60*60} %}
 {{ circus.circusAddWatcher(cfg.name+'-django', **circus_data) }}
+
