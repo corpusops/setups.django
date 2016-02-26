@@ -30,12 +30,10 @@ makina-projects.projectname:
     do_bower: false
     do_gulp: false
     configs:
-      {% for i in ['settings_local.py',
-                   'localsettings.py',
-                   'local_settings.py'] %}
+      {% for i in ['local.py', 'local_{default_env}.py'] %}
       "{{i}}":
         source: "salt://makina-projects/{name}/files/config.py"
-        target: "{app_root}/{PROJECT}/{{i}}"
+        target: "{app_root}/{PROJECT}/settings/{{i}}"
         mode: 640
       {%endfor%}
       #foo.py:
@@ -55,7 +53,7 @@ makina-projects.projectname:
     #ldap_binddn_passwd: "foo"
     #admin_url: /admin
     #admin_allowed_ips :[]
-    DJANGO_SETTINGS_MODULE: "{PROJECT}.settings"
+    DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.{default_env}"
     WSGI: "{PROJECT}.wsgi:application"
     nginx_loglevel: "crit"
     nginx_upstreams: salt://makina-projects/{name}/files/nginx.upstreams.conf

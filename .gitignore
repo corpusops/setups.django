@@ -25,3 +25,8 @@ local_settings.py
 *.mo
 salt*check.py
 */*/localsettings.py
+local_dev.py
+local_prod.py
+local_test.py
+**/*/settings/local.py
+*.sqlite3
