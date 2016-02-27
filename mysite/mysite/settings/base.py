@@ -93,8 +93,6 @@ def load_env_settings(envfile, from_=__file__):
     modfic = os.path.abspath(envfile)
     if not modfic.endswith('.py'):
         modfic += '.py'
-    envfile = os.path.basename(modfic)
-    moddir = os.path.dirname(modfic)
     if not LOADED_ENVS.get((modfic, from_), False):
         try:
             LOADED_ENVS[(modfic, from_)] = True
