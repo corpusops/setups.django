@@ -10,6 +10,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import socket
+BASE_SETTINGS = os.path.abspath(__file__)
+SETTINGS_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -20,11 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'nnnl-r$97aj3z$0e$%arv7y@uz0%yhz&0%5tlt6)%6in%+kw)n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', socket.getfqdn()]
 
 
 # Application definition
@@ -82,11 +85,33 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+LOADED_ENVS = {}
+MODNAME = os.path.basename(__file__).split('.py')[0]
 
-ADDITIONAL_TEMPLATE_DIRS = tuple()
-try:
-    from .settings_local import *
-except ImportError:
-    pass
 
-TEMPLATE_DIRS = ADDITIONAL_TEMPLATE_DIRS + TEMPLATE_DIRS
+def load_env_settings(envfile, from_=__file__):
+    modfic = os.path.abspath(envfile)
+    if not modfic.endswith('.py'):
+        modfic += '.py'
+    envfile = os.path.basename(modfic)
+    moddir = os.path.dirname(modfic)
+    if not LOADED_ENVS.get((modfic, from_), False):
+        try:
+            LOADED_ENVS[(modfic, from_)] = True
+            try:
+                execfile(env)
+            except NameError:
+                # py3
+                with open(modfic) as f:
+                    code = compile(f.read(), os.path.basename(modfic), 'exec')
+                    exec(code)
+        except ImportError:
+            pass
+        except OSError:
+            pass
+        except Exception:
+            LOADED_ENVS.pop((modfic, from_), None)
+            raise
+
+
+load_env_settings(os.path.join(SETTINGS_DIR, 'local'), from_=__file__)

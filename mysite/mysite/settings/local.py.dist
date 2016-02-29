@@ -1,0 +1,2 @@
+# copy to local.py and override default django settings here
+DEBUG = True
