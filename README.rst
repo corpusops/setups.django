@@ -1,3 +1,76 @@
+===========
+Get started
+===========
+
+To start a new project from this template,
+
+* clone this repository, keep sources but remove repos :
+
+    .. code::
+
+        git clone git@github.com:makinacorpus/corpus-django.git
+        cd corpus-django
+        rm -Rf .git
+
+* create a virtual env and switch to it
+
+* replace all occurence of 'mysite' by our project namespace. First in files :
+
+    .. code::
+
+        grep -R 'mysite' -l * |xargs sed -i 's/mysite/<MY REAL PROJECT NAME>/g'
+
+  Then in directories :
+
+  .. code::
+
+        mv mysite <PROJECT_NAME>
+
+* install requirements for local development :
+
+    .. code::
+
+        pip install -r requirements/dev.txt
+
+* copy/paste dist files for every required environments, such as *dev* or
+  *test* :
+
+    .. code::
+
+        cp mysite/settings/local_dev.py.dist mysite/settings/local_dev.py
+        cp mysite/settings/local_test.py.dist mysite/settings/local_test.py
+
+    and override settings with your own.
+
+.. warning:: check requirements versions for every fixed packages. You can
+   achieve it by doing :
+
+       .. code::
+
+           pip list --outdated
+
+To see if everything goes fine, execute tests :
+
+.. code::
+
+   tox
+
+Then don't forgot to remove fake testing app :
+
+.. code::
+
+   rm -Rf <project>/apps/apptest
+
+and remove it from ``INSTALLED_APP``. You will also have some stuff to remove
+or reivew, like :
+
+* dummy global site CSS in <project>/static/<project>/css/styles.css
+* cleanup global templates <project>/templates/base.html
+* cleanup urlconf root at project.urls
+* cleanup dummy locales translations
+* cleanup dummy locale formats
+
+
 =====================================================================
 Exemple of a generic django deployment with salt/makina-states
 =====================================================================
