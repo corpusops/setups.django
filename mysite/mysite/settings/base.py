@@ -9,31 +9,27 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import copy
 import os
-import socket
-BASE_SETTINGS = os.path.abspath(__file__)
+
+from django.utils.log import DEFAULT_LOGGING
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SETTINGS_DIR = os.path.dirname(__file__)
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'nnnl-r$97aj3z$0e$%arv7y@uz0%yhz&0%5tlt6)%6in%+kw)n'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-TEMPLATE_DEBUG = False
-
-ALLOWED_HOSTS = ['localhost', socket.getfqdn()]
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = (
-    'myapp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,44 +43,64 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'mysite.urls'
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
+            ],
+        },
+    },
+]
+
 WSGI_APPLICATION = 'mysite.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locales'),
+)
+LANGUAGE_CODE = 'fr-fr'
+TIME_ZONE = 'Europe/Paris'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
+FORMAT_MODULE_PATH = [
+    'mysite.formats',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Just to be easily override by children conf files.
+LOGGING = copy.deepcopy(DEFAULT_LOGGING)
+
+# First local settings import so they can be re-used by environment config.
+
 LOADED_ENVS = {}
 MODNAME = os.path.basename(__file__).split('.py')[0]
 

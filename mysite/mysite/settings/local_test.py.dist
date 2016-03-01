@@ -1,2 +1,11 @@
-# copy to local.py and override default django settings here
-DEBUG = True
+"""
+Override final test environment settings
+"""
+import os
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
