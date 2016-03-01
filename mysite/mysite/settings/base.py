@@ -99,7 +99,7 @@ def load_env_settings(envfile, from_=__file__):
         try:
             LOADED_ENVS[(modfic, from_)] = True
             try:
-                execfile(env)
+                execfile(modfic)
             except NameError:
                 # py3
                 with open(modfic) as f:
@@ -107,7 +107,7 @@ def load_env_settings(envfile, from_=__file__):
                     exec(code)
         except ImportError:
             pass
-        except OSError:
+        except IOError:
             pass
         except Exception:
             LOADED_ENVS.pop((modfic, from_), None)
