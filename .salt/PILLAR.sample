@@ -44,7 +44,7 @@ makina-projects.projectname:
     py_root: "{project_root}/venv"
     media_source: "{app_root}/media"
     domain: "{fqdn}"
-    requirements: "{app_root}/requirements.txt"
+    requirements: "{project_root}/requirements/prod.txt"
     server_aliases: []
     #force_ssl: false
     #disabled_urls []
