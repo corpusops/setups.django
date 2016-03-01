@@ -9,8 +9,12 @@ ALLOWED_HOSTS = []  # Hostname is REQUIRED, add it!
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -18,6 +22,9 @@ DEFAULT_FROM_EMAIL = ''
 SERVER_EMAIL = ''
 ADMINS = ()
 
+# WARNING : don't collect static in the same directories global static non
+# collected are stored ! Most of the time, this is in a public directory
+# outside source code. Same goes for media, but this is more trivial.
 MYSITE_PUBLIC_DIR = os.path.join(BASE_DIR, '...', 'public')
 STATIC_ROOT = os.path.join(MYSITE_PUBLIC_DIR, 'static')
 MEDIA_ROOT = os.path.join(MYSITE_PUBLIC_DIR, 'media')

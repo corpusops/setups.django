@@ -98,34 +98,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Just to be easily override by children conf files.
 LOGGING = copy.deepcopy(DEFAULT_LOGGING)
-
-# First local settings import so they can be re-used by environment config.
-
-LOADED_ENVS = {}
-MODNAME = os.path.basename(__file__).split('.py')[0]
-
-
-def load_env_settings(envfile, from_=__file__):
-    modfic = os.path.abspath(envfile)
-    if not modfic.endswith('.py'):
-        modfic += '.py'
-    if not LOADED_ENVS.get((modfic, from_), False):
-        try:
-            LOADED_ENVS[(modfic, from_)] = True
-            try:
-                execfile(modfic)
-            except NameError:
-                # py3
-                with open(modfic) as f:
-                    code = compile(f.read(), os.path.basename(modfic), 'exec')
-                    exec(code)
-        except ImportError:
-            pass
-        except IOError:
-            pass
-        except Exception:
-            LOADED_ENVS.pop((modfic, from_), None)
-            raise
-
-
-load_env_settings(os.path.join(SETTINGS_DIR, 'local'), from_=__file__)

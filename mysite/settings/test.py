@@ -19,10 +19,4 @@ PASSWORD_HASHERS = (
 # Force every loggers to use null handler only. Note that using 'root'
 # logger is not enough if children don't propage.
 for logger in six.itervalues(LOGGING['loggers']):
-    logger['handlers'] = ['null']
-
-
-# Import twice test env settings to have the last word.
-MODNAME = os.path.basename(__file__).split('.py')[0]
-for fic in ['local', 'local_{0}'.format(MODNAME)]:
-    load_env_settings(os.path.join(SETTINGS_DIR, fic), from_=__file__)
+    logger['handlers'] = ['console']

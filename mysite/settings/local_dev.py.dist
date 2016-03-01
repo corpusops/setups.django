@@ -1,0 +1,15 @@
+"""
+Override final dev environment settings
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+DEFAULT_FROM_EMAIL = 'TRI@makina-corpus.com'
+
+# Used by app debug_toolbar. Sometimes, your network manager due some weird
+# stuff and you need to also set your network address!!
+INTERNAL_IPS = ('127.0.0.1', '10.6.155.14')

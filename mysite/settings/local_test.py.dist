@@ -3,6 +3,10 @@ Override final test environment settings
 """
 import os
 
+INSTALLED_APPS += (
+    'mysite.apps.apptest',  # required for testing some stuff
+)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

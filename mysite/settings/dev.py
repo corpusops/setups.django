@@ -25,8 +25,3 @@ for logger in six.itervalues(LOGGING['loggers']):
     logger['handlers'] = ['console']
 # Log every level.
 LOGGING['handlers']['console']['level'] = logging.NOTSET
-
-# Import twice local env settings to have the last word.
-MODNAME = os.path.basename(__file__).split('.py')[0]
-for fic in ['local', 'local_{0}'.format(MODNAME)]:
-    load_env_settings(os.path.join(SETTINGS_DIR, fic), from_=__file__)
