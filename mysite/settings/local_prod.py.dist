@@ -3,8 +3,6 @@ Override final prod environment settings
 """
 import os
 
-SECRET_KEY = ''  # Set a secure secret key please! Can we use env variable?
-
 ALLOWED_HOSTS = []  # Hostname is REQUIRED, add it!
 
 DATABASES = {
