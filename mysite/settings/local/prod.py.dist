@@ -3,6 +3,8 @@ Override final prod environment settings
 """
 import os
 
+from ...prod import *
+
 ALLOWED_HOSTS = []  # Hostname is REQUIRED, add it!
 
 DATABASES = {

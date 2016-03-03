@@ -5,6 +5,17 @@ from django.utils import six
 
 from .base import *
 
+try:
+    from .local.pre.base import *
+except ImportError:
+    pass
+
+try:
+    from .local.pre.test import *
+except ImportError:
+    pass
+
+
 SECRET_KEY = 'spam-spam-spam-spam'
 
 MEDIA_ROOT = tempfile.gettempdir()
@@ -20,3 +31,14 @@ PASSWORD_HASHERS = (
 # logger is not enough if children don't propage.
 for logger in six.itervalues(LOGGING['loggers']):
     logger['handlers'] = ['console']
+
+
+try:
+    from .local.post.base import *
+except ImportError:
+    pass
+
+try:
+    from .local.post.test import *
+except ImportError:
+    pass

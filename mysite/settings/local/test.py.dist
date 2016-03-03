@@ -3,8 +3,10 @@ Override final test environment settings
 """
 import os
 
+from ...test import *
+
 INSTALLED_APPS += (
-    'mysite.apps.apptest',  # required for testing some stuff
+    'mysite.apps.apptest',  # WARNING - just for testing, REMOVE ME!
 )
 
 DATABASES = {

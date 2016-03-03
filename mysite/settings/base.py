@@ -15,7 +15,6 @@ import os
 from django.utils.log import DEFAULT_LOGGING
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SETTINGS_DIR = os.path.dirname(__file__)
 
 
 # Quick-start development settings - unsuitable for production

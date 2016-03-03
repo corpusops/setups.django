@@ -5,6 +5,17 @@ from django.utils import six
 
 from .base import *
 
+try:
+    from .local.pre.base import *
+except ImportError:
+    pass
+
+try:
+    from .local.pre.dev import *
+except ImportError:
+    pass
+
+
 SECRET_KEY = 'dev-dev-dev-dev-dev-dev-dev'
 
 ALLOWED_HOSTS = []
@@ -25,3 +36,14 @@ for logger in six.itervalues(LOGGING['loggers']):
     logger['handlers'] = ['console']
 # Log every level.
 LOGGING['handlers']['console']['level'] = logging.NOTSET
+
+
+try:
+    from .local.post.base import *
+except ImportError:
+    pass
+
+try:
+    from .local.post.dev import *
+except ImportError:
+    pass

@@ -32,15 +32,35 @@ To start a new project from this template,
 
         pip install -r requirements/dev.txt
 
-* copy/paste dist files for every required environments, such as *dev* or
-  *test* :
+* duplicate dist files to override settings you would like. Any overrides are
+  located in ``<project>/settings/local/`` and are available for ``pre`` and
+  ``post`` hook.
+  In the local package, you have ``.dist`` module template to copy/paste.
+  Most of the time, you only care about post settings to have the last word.
+  But sometime, you may also want to override settings first in order to be
+  used next by *hardcoded* settings. In that way, you don't have to override
+  completly settings (think about settinsg which are a concatenation of further
+  settings).
+
+  In the most simple scenario for development, you only have to do :
 
     .. code::
 
-        cp mysite/settings/local_dev.py.dist mysite/settings/local_dev.py
-        cp mysite/settings/local_test.py.dist mysite/settings/local_test.py
+        cp mysite/settings/local/dev.py.dist mysite/settings/local/post/dev.py
+        cp mysite/settings/local/test.py.dist mysite/settings/local/post/test.py
 
-    and override settings with your own.
+    and then override settings with your own.
+
+   Of course, you can do what you want. You can play with symlinks if you want
+   a config in both pre and post hooks... For example :
+
+   .. code::
+
+        cp mysite/settings/local/dev.py.dist mysite/settings/local/post/dev.py
+        ln -nfs mysite/settings/local/post/dev.py mysite/settings/local/pre/dev.py
+
+   But that's more difficult to maintain. Having a proper module for each hooks
+   is more easier...
 
 .. warning:: check requirements versions for every fixed packages. You can
    achieve it by doing :
@@ -130,3 +150,34 @@ USE/Install With makina-states
     git fetch --all
     git push github master:prod
 
+
+============
+Contributing
+============
+
+Please, runs tests to be sure everything goes fine... And of course,
+write/update new ones! Hey, did you really think we do this for fun?! ;-)
+
+To do so, first copy config dist files for *test* environment :
+
+.. code::
+
+   cp mysite/settings/local/test_pre.py.dist mysite/settings/local/pre/test.py
+   cp mysite/settings/local/test.py.dist mysite/settings/local/post/test.py
+
+Then, just do :
+
+.. code::
+
+   tox
+
+.. warning::
+   Sometimes, you may need to rebuild the test env because there is new python
+   packages updated in requirements/test.txt. So think about doing :
+
+   .. code::
+
+      tox -r
+
+To improve tests, there are written in the dummy app
+``mysite.apps.apptest.tests``. You can used it or do what you can :-)

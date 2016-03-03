@@ -1,6 +1,10 @@
 """
 Override final dev environment settings
 """
+import os
+
+from ...dev import *
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

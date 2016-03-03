@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import unittest
 
 from django.conf import settings
@@ -26,6 +27,13 @@ class ConfigTestCase(TestCase):
         Most of the time, this is the timezone we want, not UTC.
         """
         self.assertEqual(settings.TIME_ZONE, 'Europe/Paris')
+
+    def test_hook_pre(self):
+        logger = logging.getLogger('apptest')
+        self.assertEqual(logger.handlers[0].name, 'console')
+
+    def test_hook_post(self):
+        self.assertIn('mysite.apps.apptest', settings.INSTALLED_APPS)
 
 
 @unittest.skipIf(

@@ -1,0 +1,10 @@
+"""
+Pre hook example just for testing that everything works fine.
+"""
+from ...test import *
+
+# Handlers should be changed to a list with only *console* handler.
+LOGGING['loggers']['apptest'] = {
+    'handlers': ['mail_admins'],
+    'level': 'INFO',
+}

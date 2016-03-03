@@ -27,13 +27,9 @@ salt_config.py
 *.mo
 salt*check.py
 
-# Django settings
-local_settings.py
-*/*/localsettings.py
-**/*/settings/local.py
-local_dev.py
-local_prod.py
-local_test.py
+# Django settings override
+*/**/settings/local/pre/
+*/**/settings/local/post/
 
 # BDD
 *.sqlite3
