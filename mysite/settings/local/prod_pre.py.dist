@@ -1,0 +1,16 @@
+from ..prod import *
+
+# WARNING : don't collect static in the same directories global static non
+# collected are stored ! Most of the time, this is in a public directory
+# outside source code. Same goes for media, but this is more trivial.
+MYSITE_PUBLIC_DIR = os.path.join(BASE_DIR, '...', 'public')
+
+# Generally, you may set these directories first if *static* config use it
+# later
+STATIC_ROOT = os.path.join(MYSITE_PUBLIC_DIR, 'static')
+MEDIA_ROOT = os.path.join(MYSITE_PUBLIC_DIR, 'media')
+
+# Same thing. Maybe *static* config would used it later to be concatenate with
+# other stuff.
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'

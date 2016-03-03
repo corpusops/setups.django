@@ -1,3 +1,80 @@
+===========
+Get started
+===========
+
+To start a new project from this template,
+
+* clone this repository, keep sources but remove repos :
+
+    .. code::
+
+        git clone git@github.com:makinacorpus/corpus-django.git
+        cd corpus-django
+        rm -Rf .git
+
+* create a virtual env and switch to it
+
+* replace all occurence of 'mysite' by our project namespace. First in files :
+
+    .. code::
+
+        grep -R 'mysite' -l * |xargs sed -i 's/mysite/<MY REAL PROJECT NAME>/g'
+
+  Then in directories :
+
+  .. code::
+
+        mv mysite <PROJECT_NAME>
+
+* install requirements for local development :
+
+    .. code::
+
+        pip install -r requirements/dev.txt
+
+* duplicate dist files to override settings you would like. Any overrides are
+  located in ``<project>/settings/local/`` and are available :
+
+  * per environment : base/dev/prod/test. ``base`` is apply to all env.
+  * per hooks : ``pre`` and ``post``
+
+  Most of the time, you only care about post settings. But sometime, you may
+  also want to set some settings first in order to be used next by *static*
+  settings. In that way, you don't have to override completly settings (think
+  about settings which are a concatenation of further settings).
+
+  In the most simple scenario for development, you only have to do :
+
+    .. code::
+
+        cp mysite/settings/local/dev_post.py.dist mysite/settings/local/dev_post.py
+        cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
+
+  and then override settings with your own.
+
+*  don't forgot to remove fake testing app :
+
+   .. code::
+
+      rm -Rf <project>/apps/apptest
+
+   and remove it from ``INSTALLED_APP``. You will also have some stuff to remove
+   or review, like :
+
+      * dummy global site CSS in <project>/static/<project>/css/styles.css
+      * cleanup global templates <project>/templates/base.html
+      * cleanup urlconf root at project.urls
+      * cleanup dummy locales translations
+      * cleanup dummy locale formats
+
+*  check requirements versions for every fixed packages. You can achieve it by
+   doing :
+
+      .. code::
+
+         pip list --outdated
+
+
 =====================================================================
 Exemple of a generic django deployment with salt/makina-states
 =====================================================================
@@ -57,3 +134,34 @@ USE/Install With makina-states
     git fetch --all
     git push github master:prod
 
+
+============
+Contributing
+============
+
+Please, runs tests to be sure everything goes fine... And of course,
+write/update new ones! Hey, did you really think we do this for fun?! ;-)
+
+To do so, first copy config dist files for *test* environment :
+
+.. code::
+
+   cp mysite/settings/local/test_pre.py.dist mysite/settings/local/test_pre.py
+   cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
+
+Then, just do :
+
+.. code::
+
+   tox
+
+.. warning::
+   Sometimes, you may need to rebuild the test env because there is new python
+   packages updated in requirements/test.txt. So think about doing :
+
+   .. code::
+
+      tox -r
+
+To improve tests, there are written in the dummy app
+``mysite.apps.apptest.tests``. You can used it or do what you can :-)

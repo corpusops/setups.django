@@ -1,0 +1,16 @@
+from ..test import *
+
+INSTALLED_APPS += (
+    'mysite.apps.apptest',  # WARNING - just for testing, REMOVE ME!
+)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}

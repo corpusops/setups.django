@@ -1,9 +1,12 @@
+# Python
 *pyc
+__pycache__
 /develop_eggs
 /cache
 /venv
 \.venv
 
+# Deployment
 /corpus-django
 makina-states*-deploy.log
 settings_local.py
@@ -20,13 +23,21 @@ makina-states.flask-deploy.log
 /dist/
 salt.cfg
 salt_config.py
-local_settings.py
 *.egg-info
 *.mo
 salt*check.py
-*/*/localsettings.py
-local_dev.py
-local_prod.py
-local_test.py
-**/*/settings/local.py
+
+# Django settings override
+*/**/settings/local/*.py
+!*/**/settings/local/__init__.py
+
+# BDD
 *.sqlite3
+
+# Tests, docs, etc
+.coverage
+.tox
+docs/_build/
+
+# IDE settings
+.idea
