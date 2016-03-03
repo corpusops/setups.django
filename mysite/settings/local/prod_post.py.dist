@@ -1,0 +1,18 @@
+from ..prod import *
+
+ALLOWED_HOSTS = []  # Hostname is REQUIRED, add it!
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+DEFAULT_FROM_EMAIL = ''
+SERVER_EMAIL = ''
+ADMINS = ()

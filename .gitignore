@@ -28,8 +28,8 @@ salt_config.py
 salt*check.py
 
 # Django settings override
-*/**/settings/local/pre/
-*/**/settings/local/post/
+*/**/settings/local/*.py
+!*/**/settings/local/__init__.py
 
 # BDD
 *.sqlite3

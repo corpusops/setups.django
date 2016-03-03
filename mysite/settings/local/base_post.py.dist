@@ -1,0 +1,5 @@
+"""
+Global post override to apply to ALL environments.
+Not recommanded. Use it only if you have no other choices...
+"""
+from ..base import *

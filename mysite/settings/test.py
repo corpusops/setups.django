@@ -6,12 +6,12 @@ from django.utils import six
 from .base import *
 
 try:
-    from .local.pre.base import *
+    from .local.base_pre import *
 except ImportError:
     pass
 
 try:
-    from .local.pre.test import *
+    from .local.test_pre import *
 except ImportError:
     pass
 
@@ -34,11 +34,11 @@ for logger in six.itervalues(LOGGING['loggers']):
 
 
 try:
-    from .local.post.base import *
+    from .local.base_post import *
 except ImportError:
     pass
 
 try:
-    from .local.post.test import *
+    from .local.test_post import *
 except ImportError:
     pass

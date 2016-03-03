@@ -33,62 +33,46 @@ To start a new project from this template,
         pip install -r requirements/dev.txt
 
 * duplicate dist files to override settings you would like. Any overrides are
-  located in ``<project>/settings/local/`` and are available for ``pre`` and
-  ``post`` hook.
-  In the local package, you have ``.dist`` module template to copy/paste.
-  Most of the time, you only care about post settings to have the last word.
-  But sometime, you may also want to override settings first in order to be
-  used next by *hardcoded* settings. In that way, you don't have to override
-  completly settings (think about settinsg which are a concatenation of further
-  settings).
+  located in ``<project>/settings/local/`` and are available :
+
+  * per environment : base/dev/prod/test. ``base`` is apply to all env.
+  * per hooks : ``pre`` and ``post``
+
+  Most of the time, you only care about post settings. But sometime, you may
+  also want to set some settings first in order to be used next by *static*
+  settings. In that way, you don't have to override completly settings (think
+  about settings which are a concatenation of further settings).
 
   In the most simple scenario for development, you only have to do :
 
     .. code::
 
-        cp mysite/settings/local/dev.py.dist mysite/settings/local/post/dev.py
-        cp mysite/settings/local/test.py.dist mysite/settings/local/post/test.py
+        cp mysite/settings/local/dev_post.py.dist mysite/settings/local/dev_post.py
+        cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
 
-    and then override settings with your own.
+  and then override settings with your own.
 
-   Of course, you can do what you want. You can play with symlinks if you want
-   a config in both pre and post hooks... For example :
+*  don't forgot to remove fake testing app :
 
    .. code::
 
-        cp mysite/settings/local/dev.py.dist mysite/settings/local/post/dev.py
-        ln -nfs mysite/settings/local/post/dev.py mysite/settings/local/pre/dev.py
+      rm -Rf <project>/apps/apptest
 
-   But that's more difficult to maintain. Having a proper module for each hooks
-   is more easier...
+   and remove it from ``INSTALLED_APP``. You will also have some stuff to remove
+   or review, like :
 
-.. warning:: check requirements versions for every fixed packages. You can
-   achieve it by doing :
+      * dummy global site CSS in <project>/static/<project>/css/styles.css
+      * cleanup global templates <project>/templates/base.html
+      * cleanup urlconf root at project.urls
+      * cleanup dummy locales translations
+      * cleanup dummy locale formats
 
-       .. code::
+*  check requirements versions for every fixed packages. You can achieve it by
+   doing :
 
-           pip list --outdated
+      .. code::
 
-To see if everything goes fine, execute tests :
-
-.. code::
-
-   tox
-
-Then don't forgot to remove fake testing app :
-
-.. code::
-
-   rm -Rf <project>/apps/apptest
-
-and remove it from ``INSTALLED_APP``. You will also have some stuff to remove
-or reivew, like :
-
-* dummy global site CSS in <project>/static/<project>/css/styles.css
-* cleanup global templates <project>/templates/base.html
-* cleanup urlconf root at project.urls
-* cleanup dummy locales translations
-* cleanup dummy locale formats
+         pip list --outdated
 
 
 =====================================================================
@@ -162,8 +146,8 @@ To do so, first copy config dist files for *test* environment :
 
 .. code::
 
-   cp mysite/settings/local/test_pre.py.dist mysite/settings/local/pre/test.py
-   cp mysite/settings/local/test.py.dist mysite/settings/local/post/test.py
+   cp mysite/settings/local/test_pre.py.dist mysite/settings/local/test_pre.py
+   cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
 
 Then, just do :
 

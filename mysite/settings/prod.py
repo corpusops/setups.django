@@ -2,12 +2,12 @@
 from .base import *
 
 try:
-    from .local.pre.base import *
+    from .local.base_pre import *
 except ImportError:
     pass
 
 try:
-    from .local.pre.prod import *
+    from .local.prod_pre import *
 except ImportError:
     pass
 
@@ -26,11 +26,11 @@ CSRF_COOKIE_HTTPONLY = True
 
 
 try:
-    from .local.post.prod import *
+    from .local.base_post import *
 except ImportError:
     pass
 
 try:
-    from .local.post.prod import *
+    from .local.prod_post import *
 except ImportError:
     pass
