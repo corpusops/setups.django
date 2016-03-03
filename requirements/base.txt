@@ -1,2 +1,2 @@
 psycopg2==2.6.1  # You MUST use PostgreSQL ;-)
-Django==1.9.2  # Not LTS, use 1.8.X instead
+Django==1.9.3  # Not LTS, use 1.8.X instead
