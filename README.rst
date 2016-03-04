@@ -1,3 +1,13 @@
+.. image:: https://travis-ci.org/makinacorpus/corpus-django.svg
+    :target: https://travis-ci.org/makinacorpus/corpus-django
+
+.. image:: https://coveralls.io/repos/makinacorpus/corpus-django/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/makinacorpus/corpus-django?branch=master
+
+.. image:: https://requires.io/github/makinacorpus/corpus-django/requirements.svg?branch=master
+   :target: https://requires.io/github/makinacorpus/corpus-django/requirements/?branch=master
+   :alt: Requirements Status
+
 ===========
 Get started
 ===========
