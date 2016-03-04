@@ -21,6 +21,7 @@ before_script:
     - cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
     - sed -i 's/<DB_NAME>/makina/g' mysite/settings/local/test_post.py
     - sed -i 's/<DB_USER>/makina/g' mysite/settings/local/test_post.py
+    - python manage.py compilemessages -l en
 script:
     - tox
 after_success:
