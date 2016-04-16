@@ -69,6 +69,10 @@ prepreqs-{{cfg.name}}:
       - libgeos-dev
       - geoip-bin
       - libgeoip-dev
+      # py3
+      # - libpython3-dev
+      # - python3
+      # - python3-dev
 
 {{cfg.name}}-dirs:
   file.directory:
