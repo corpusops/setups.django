@@ -11,7 +11,7 @@ include:
     - watch_in:
       - mc_proxy: nginx-pre-conf-hook
 
-{{ nginx.virtualhost(domain=data.domain, doc_root=data.static,
+{{ nginx.virtualhost(domain=data.domain, doc_root=data.doc_root,
                      server_aliases=data.server_aliases,
                      vhost_basename='corpus-'+cfg.name,
                      loglevel=data.nginx_loglevel,

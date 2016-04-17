@@ -36,7 +36,7 @@ include:
 
 {{cfg.name}}-config:
   file.exists:
-    - name: "{{data.configs['localsettings.py']['target']}}"
+    - name: "{{data.configs['base_pre.py']['target']}}"
     - watch:
       - mc_proxy: "{{cfg.name}}-configs-post"
 

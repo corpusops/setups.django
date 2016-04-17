@@ -30,15 +30,16 @@ makina-projects.projectname:
     do_bower: false
     do_gulp: false
     configs:
-      {% for i in ['local.py', 'local_{default_env}.py'] %}
+      {% for i in ['base_pre.py', 'base_post.py',] %}
       "{{i}}":
         source: "salt://makina-projects/{name}/files/config.py"
-        target: "{app_root}/{PROJECT}/settings/{{i}}"
+        target: "{app_root}/{PROJECT}/settings/local/{{i}}"
         mode: 640
       {%endfor%}
       #foo.py:
       #  target: "{data_root}/test/bar.py"
     htaccess: "/etc/{name}.webaccess"
+    doc_root: "{static}"
     #orig_py: /usr/bin/python3
     py: "{py_root}/bin/python"
     py_root: "{project_root}/venv"
