@@ -11,6 +11,13 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(PROJECT_DIR, 'db.sqlite3'),
+#     }
+# } 
+
 DEFAULT_FROM_EMAIL = 'TRI@makina-corpus.com'
 
 # Used by app debug_toolbar. Sometimes, your network manager due some weird

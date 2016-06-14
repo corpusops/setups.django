@@ -7,9 +7,9 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 ]
 
-if 'mysite.apps.apptest' in settings.INSTALLED_APPS:  # pragma: nobranch
+if 'apptest' in settings.INSTALLED_APPS:  # pragma: nobranch
     urlpatterns += [
-        url(r'^', include('mysite.apps.apptest.urls', namespace='apptest')),
+        url(r'^', include('apptest.urls', namespace='apptest')),
     ]
 
-admin.site.site_header = 'mysite'
+admin.site.site_header = 'project'

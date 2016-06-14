@@ -16,14 +16,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: mysite/apps/apptest/templates/apptest/test.html:6
+#: apptest/templates/apptest/test.html:6
 msgid "AppTest template est utilisé !"
 msgstr "AppTest template is used!"
 
-#: mysite/apps/apptest/templates/apptest/test.html:7
+#: apptest/templates/apptest/test.html:7
 msgid "Tu dois pouvoir voir la barre de debug à droite non ?"
 msgstr "You should be able to see the debug toolbar on the right no?"
 
-#: mysite/apps/apptest/views.py:7
+#: apptest/views.py:7
 msgid "Salut"
 msgstr "Hello"
