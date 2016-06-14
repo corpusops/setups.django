@@ -49,7 +49,7 @@ class AppTestTestCase(TestCase):
         cls.url_tpl = reverse('apptest:template')
 
     @override_settings(LANGUAGE_CODE='fr-fr')
-    def atest_hello_world_translation_default_fr(self):
+    def test_hello_world_translation_default_fr(self):
         """
         Most of the time, we code app in English and then translate it in
         French. But in real life, there is no use at all for English. Worst, we
