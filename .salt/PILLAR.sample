@@ -17,6 +17,7 @@ makina-projects.projectname:
     PROJECT: project
     fixperms_cron_periodicity: "0 */2 * * *"
     app_root: "{project_root}/src"
+    locale_cwd: "{app_root}"
     #app_url: "git@git.foo/goo.git"
     #app_url_rev: "master"
     #app_url_type: git

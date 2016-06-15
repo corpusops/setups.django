@@ -59,7 +59,7 @@ msg-{{cfg.name}}:
   cmd.run:
     - name: {{data.py}} manage.py compilemessages
     {{set_env()}}
-    - cwd: {{data.app_root}}
+    - cwd: {{data.locale_cwd}}
     - user: {{cfg.user}}
     - watch:
       - mc_proxy: {{cfg.name}}-configs-post
