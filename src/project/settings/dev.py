@@ -5,16 +5,6 @@ from django.utils import six
 
 from .base import *
 
-try:
-    from .local.base_pre import *
-except ImportError:
-    pass
-
-try:
-    from .local.dev_pre import *
-except ImportError:
-    pass
-
 
 SECRET_KEY = 'dev-dev-dev-dev-dev-dev-dev'
 
@@ -39,11 +29,6 @@ LOGGING['handlers']['console']['level'] = logging.NOTSET
 
 
 try:
-    from .local.base_post import *
-except ImportError:
-    pass
-
-try:
-    from .local.dev_post import *
+    from .local import *
 except ImportError:
     pass
