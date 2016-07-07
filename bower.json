@@ -1,5 +1,5 @@
 {
-  "name": "<PROJECTNAME>",
+  "name": "projectname",
   "dependencies": {
     "bootstrap": "3.3.6"
   }

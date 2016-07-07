@@ -1,9 +1,9 @@
 {
-  "name": "<PROJECTNAME>",
+  "name": "projectname",
   "devDependencies": {
     "bower": "1.7.9"
   },
   "scripts": {
-    "postinstall": "bower install"
+    "postinstall": "./node_modules/bower/bin/bower install"
   }
 }
