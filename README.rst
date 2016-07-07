@@ -24,43 +24,17 @@ To start a new project from this template,
 
 * create a virtual env and switch to it
 
-* replace all occurence of 'mysite' by our project namespace. First in files :
-
-    .. code::
-
-        grep -R 'mysite' -l * |xargs sed -i 's/mysite/<MY REAL PROJECT NAME>/g'
-
-  Then in directories :
-
-  .. code::
-
-        mv mysite <PROJECT_NAME>
-
 * install requirements for local development :
 
     .. code::
 
         pip install -r requirements/dev.txt
 
-* duplicate dist files to override settings you would like. Any overrides are
-  located in ``<project>/settings/local/`` and are available :
-
-  * per environment : base/dev/prod/test. ``base`` is apply to all env.
-  * per hooks : ``pre`` and ``post``
-
-  Most of the time, you only care about post settings. But sometime, you may
-  also want to set some settings first in order to be used next by *static*
-  settings. In that way, you don't have to override completly settings (think
-  about settings which are a concatenation of further settings).
-
-  In the most simple scenario for development, you only have to do :
+* duplicate dist files to override settings you would like by doing :
 
     .. code::
 
-        cp mysite/settings/local/dev_post.py.dist mysite/settings/local/dev_post.py
-        cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
-
-  and then override settings with your own.
+        cp src/settings/local.py.dist src/settings/local.py
 
 *  don't forgot to remove fake testing app :
 
@@ -68,14 +42,16 @@ To start a new project from this template,
 
       rm -Rf <project>/apps/apptest
 
-   and remove it from ``INSTALLED_APP``. You will also have some stuff to remove
-   or review, like :
+   and remove it from ``INSTALLED_APP`` in ``src/settings/base.py``.
+   You will also have some stuff to remove or review, like :
 
-      * dummy global site CSS in <project>/static/<project>/css/styles.css
-      * cleanup global templates <project>/templates/base.html
-      * cleanup urlconf root at project.urls
-      * cleanup dummy locales translations
-      * cleanup dummy locale formats
+      * src/project/static/project/less/*
+      * src/project/static/project/js/*
+      * for BOTH less or js, don't forgot to rebuild dist files with command ``gulp``
+      * src/project/templates/*
+      * src/project/urls.py
+      * src/project/locales
+      * src/project/formats
 
 *  check requirements versions for every fixed packages. You can achieve it by
    doing :
@@ -152,14 +128,7 @@ Contributing
 Please, runs tests to be sure everything goes fine... And of course,
 write/update new ones! Hey, did you really think we do this for fun?! ;-)
 
-To do so, first copy config dist files for *test* environment :
-
-.. code::
-
-   cp mysite/settings/local/test_pre.py.dist mysite/settings/local/test_pre.py
-   cp mysite/settings/local/test_post.py.dist mysite/settings/local/test_post.py
-
-Then, just do :
+Just do :
 
 .. code::
 
@@ -173,5 +142,5 @@ Then, just do :
 
       tox -r
 
-To improve tests, there are written in the dummy app
-``mysite.apps.apptest.tests``. You can used it or do what you can :-)
+To improve tests, there are written in the dummy app ``apptest``. You can used
+it or do what you can :-)
