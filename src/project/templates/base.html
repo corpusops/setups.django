@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ title | default:"<PROJECTNAME>" }}{% endblock %}</title>
     <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link href="{% static 'project/css/styles.css' %}" rel="stylesheet" />
+    <link href="{% static 'project/dist/css/project.min.css' %}" rel="stylesheet" />
     {% block extrastyle %}{{ form.media.css }}{% endblock %}
     {% block extrahead %}{% endblock %}
     {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
@@ -43,8 +43,7 @@
     </div>
 
     {% block footer %}
-    <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'project/dist/js/project.min.js' %}"></script>
     {{ form.media.js }}
     {% endblock %}
 

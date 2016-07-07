@@ -24,7 +24,7 @@ urlpatterns = [
 
 if 'apptest' in settings.INSTALLED_APPS:  # pragma: nobranch
     urlpatterns += [
-        url(r'^', include('apptest.urls', namespace='apptest')),
+        url(r'^test', include('apptest.urls', namespace='apptest')),
     ]
 
 admin.site.site_header = 'project'

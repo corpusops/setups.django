@@ -45,11 +45,13 @@ To start a new project from this template,
    and remove it from ``INSTALLED_APP`` in ``src/settings/base.py``.
    You will also have some stuff to remove or review, like :
 
-      * dummy global site CSS in src/project/static/project/css/styles.css
-      * cleanup global templates src/project/templates/*.html
-      * cleanup urlconf root at src/project/urls.py
-      * cleanup dummy locales translations at src/project/locales
-      * cleanup dummy locale formats at src/project/formats
+      * src/project/static/project/less/*
+      * src/project/static/project/js/*
+      * for BOTH less or js, don't forgot to rebuild dist files with command ``gulp``
+      * src/project/templates/*
+      * src/project/urls.py
+      * src/project/locales
+      * src/project/formats
 
 *  check requirements versions for every fixed packages. You can achieve it by
    doing :
