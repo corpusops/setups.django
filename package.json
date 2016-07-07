@@ -1,0 +1,9 @@
+{
+  "name": "<PROJECTNAME>",
+  "devDependencies": {
+    "bower": "1.7.9"
+  },
+  "scripts": {
+    "postinstall": "bower install"
+  }
+}
