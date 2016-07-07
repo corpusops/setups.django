@@ -1,3 +1,8 @@
-p {
-    color: red;
+body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+h1.page-header {
+  margin: 0 0 20px 0;
 }
