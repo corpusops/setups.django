@@ -1,10 +1,52 @@
-<!DOCTYPE html>{% load staticfiles %}
-<html>
+{% load staticfiles common_tags %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ title | default:"<PROJECTNAME>" }}{% endblock %}</title>
+    <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet" />
     <link href="{% static 'project/css/styles.css' %}" rel="stylesheet" />
+    {% block extrastyle %}{{ form.media.css }}{% endblock %}
+    {% block extrahead %}{% endblock %}
+    {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 </head>
 {% load i18n %}
 <body>
-{% block content %}{% endblock %}
-</body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            {% block navbar %}
+            {% include 'navbar.html' %}
+            {% endblock %}
+            <div id="navbar" class="navbar-collapse collapse">
+            {% block user_menu %}
+            {% include 'user_menu.html' %}
+            {% endblock %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" role="main">
+        <section>
+            <h1 class="page-header">{% block content_title %}{{ title | default:"" }}{% endblock %}</h1>
+
+            <div class="content-wrapper">
+            {% block messages %}
+            {% display_messages messages %}
+            {% endblock messages %}
+
+            {% block content %}{% endblock %}
+            </div>
+        </section>
+    </div>
+
+    {% block footer %}
+    <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    {{ form.media.js }}
+    {% endblock %}
+
+    </body>
 </html>

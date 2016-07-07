@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %}{% trans "Connexion" %}{% endblock %}
+{% block content_title %}{% trans "Connexion" %}{% endblock %}
+
+{% block content %}
+{% crispy form %}
+{#<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}#}
+{##}
+{#    <div class="form-group">#}
+{#        <label class="control-label sr-only" for="{{ form.username.id_for_label}}">{{ form.username.label }}</label>#}
+{#        <div class="input-group">#}
+{#            {{ form.username }}#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <div class="form-group">#}
+{#        <label class="control-label sr-only" for="{{ form.password.id_for_label}}">{{ form.password.label }}</label>#}
+{#        <div class="input-group">#}
+{#            {{  form.password }}#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <input type="hidden" name="next" value="{{ next }}" />#}
+{#    <input class="btn btn-primary" type="submit" value="{% trans 'Se connecter' %}" />#}
+{#</form>#}
+{% endblock %}
