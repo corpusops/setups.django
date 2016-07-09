@@ -87,7 +87,7 @@ makina-projects.projectname:
     worker_timeout: 9000
     compile_messages: true
     collect_static: true
-    do_syncdb: true
+    do_syncdb: false
     do_migrate: true
     do_syncdb_only_first_time: false
     # http_users:
