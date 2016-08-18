@@ -1,17 +1,19 @@
 sudo: false
 language: python
 python:
-    - "3.4"
+    - "3.5"
 addons:
     postgresql: "9.4"
 env:
-    - TOXENV=py27
-    - TOXENV=py27_reverse
-    - TOXENV=py34
-    - TOXENV=py34_reverse
     - TOXENV=pylama
     - TOXENV=isort
     - TOXENV=docs
+    - TOXENV=py27-coverage
+    - TOXENV=py27-reverse
+    - TOXENV=py34
+    - TOXENV=py34-reverse
+    - TOXENV=py35
+    - TOXENV=py35-reverse
 install:
     - pip install coveralls tox
 before_script:
