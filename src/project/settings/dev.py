@@ -20,6 +20,11 @@ INSTALLED_APPS += (
 
 INTERNAL_IPS = ('127.0.0.1',)  # Used by app debug_toolbar
 
+# Add the Python core NullHandler to be available when needed
+LOGGING['handlers']['null'] = {
+    'level': logging.NOTSET,
+    'class': 'logging.NullHandler',
+}
 # Force every loggers to use console handler only. Note that using 'root'
 # logger is not enough if children don't propage.
 for logger in six.itervalues(LOGGING['loggers']):
