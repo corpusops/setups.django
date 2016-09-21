@@ -10,7 +10,6 @@ __pycache__
 /corpus-django
 makina-states*-deploy.log
 settings_local.py
-src/
 salt*password*py
 kgs.cfg
 makina-states.flask-deploy.log
@@ -28,16 +27,24 @@ salt_config.py
 salt*check.py
 
 # Django settings override
-*/**/settings/local/*.py
-!*/**/settings/local/__init__.py
+**/settings/local*.py
 
 # BDD
 *.sqlite3
 
+# Frontend
+node_modules
+
 # Tests, docs, etc
-.coverage
+src/.coverage
 .tox
 docs/_build/
+
+# Files
+media/*
+!media/.empty
+static/*
+!static/.empty
 
 # IDE settings
 .idea

@@ -15,8 +15,8 @@ import os
 from django.utils.log import DEFAULT_LOGGING
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
-PROJECT_NAME = os.path.basename(PROJECT_DIR)
+SRC_DIR = os.path.dirname(PROJECT_DIR)
+BASE_DIR = os.path.dirname(SRC_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,6 +38,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #
+    'crispy_forms',
+    #
+    'common',
+    #
     'apptest'
 )
 
@@ -52,7 +56,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = PROJECT_NAME + '.urls'
+ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
@@ -71,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = PROJECT_NAME + '.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -85,7 +89,7 @@ USE_L10N = True
 USE_TZ = True
 
 FORMAT_MODULE_PATH = [
-    PROJECT_NAME + '.formats',
+    'project.formats',
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -102,3 +106,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Just to be easily override by children conf files.
 LOGGING = copy.deepcopy(DEFAULT_LOGGING)
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

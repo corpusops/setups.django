@@ -1,26 +1,27 @@
 sudo: false
 language: python
 python:
-    - "3.4"
+    - "3.5"
 addons:
     postgresql: "9.4"
 env:
-    - TOXENV=py27
-    - TOXENV=py27_reverse
-    - TOXENV=py34
-    - TOXENV=py34_reverse
     - TOXENV=pylama
     - TOXENV=isort
     - TOXENV=docs
+    - TOXENV=py27-coverage
+    - TOXENV=py27-reverse
+    - TOXENV=py34
+    - TOXENV=py34-reverse
+    - TOXENV=py35
+    - TOXENV=py35-reverse
 install:
     - pip install coveralls tox
 before_script:
     - createuser -U postgres -d makina
     - createdb -U postgres -O makina makina
-    - cp */*/settings/local/test_pre.py.dist */*/settings/local/test_pre.py
-    - cp */*/settings/local/test_post.py.dist */*/settings/local/test_post.py
-    - sed -i 's/<DB_NAME>/makina/g' */*/settings/local/test_post.py
-    - sed -i 's/<DB_USER>/makina/g' */*/settings/local/test_post.py
+    - cp src/project/settings/local.py.dist src/project/settings/local.py
+    - sed -i 's/<DB_NAME>/makina/g' src/project/settings/local.py
+    - sed -i 's/<DB_USER>/makina/g' src/project/settings/local.py
 script:
     - tox
 after_success:
