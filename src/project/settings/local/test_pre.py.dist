@@ -1,8 +1,0 @@
-from ..test import *
-
-# WARNING - JUST FOR TESTING - REMOVE ME
-# Handlers should be changed to a list with only *console* handler.
-LOGGING['loggers']['apptest'] = {
-    'handlers': ['mail_admins'],
-    'level': 'INFO',
-}

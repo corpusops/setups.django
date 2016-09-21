@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
 from .base import *
 
-try:
-    from .local.base_pre import *
-except ImportError:
-    pass
-
-try:
-    from .local.prod_pre import *
-except ImportError:
-    pass
-
 
 ##### SECURITY #####
 
@@ -26,11 +16,6 @@ CSRF_COOKIE_HTTPONLY = True
 
 
 try:
-    from .local.base_post import *
-except ImportError:
-    pass
-
-try:
-    from .local.prod_post import *
+    from .local import *
 except ImportError:
     pass

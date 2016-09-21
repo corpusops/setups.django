@@ -5,16 +5,6 @@ from django.utils import six
 
 from .base import *
 
-try:
-    from .local.base_pre import *
-except ImportError:
-    pass
-
-try:
-    from .local.dev_pre import *
-except ImportError:
-    pass
-
 
 SECRET_KEY = 'dev-dev-dev-dev-dev-dev-dev'
 
@@ -30,6 +20,11 @@ INSTALLED_APPS += (
 
 INTERNAL_IPS = ('127.0.0.1',)  # Used by app debug_toolbar
 
+# Add the Python core NullHandler to be available when needed
+LOGGING['handlers']['null'] = {
+    'level': logging.NOTSET,
+    'class': 'logging.NullHandler',
+}
 # Force every loggers to use console handler only. Note that using 'root'
 # logger is not enough if children don't propage.
 for logger in six.itervalues(LOGGING['loggers']):
@@ -39,11 +34,6 @@ LOGGING['handlers']['console']['level'] = logging.NOTSET
 
 
 try:
-    from .local.base_post import *
-except ImportError:
-    pass
-
-try:
-    from .local.dev_post import *
+    from .local import *
 except ImportError:
     pass

@@ -15,7 +15,8 @@ import os
 from django.utils.log import DEFAULT_LOGGING
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+SRC_DIR = os.path.dirname(PROJECT_DIR)
+BASE_DIR = os.path.dirname(SRC_DIR)
 PROJECT_NAME = os.path.basename(PROJECT_DIR)
 
 
@@ -37,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #
+    'crispy_forms',
     #
     'common',
     #
@@ -104,3 +107,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Just to be easily override by children conf files.
 LOGGING = copy.deepcopy(DEFAULT_LOGGING)
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
