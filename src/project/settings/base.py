@@ -16,6 +16,7 @@ from django.utils.log import DEFAULT_LOGGING
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+PROJECT_NAME = os.path.basename(PROJECT_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -53,7 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'project.urls'
+ROOT_URLCONF = PROJECT_NAME + '.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+WSGI_APPLICATION = PROJECT_NAME + '.wsgi.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -86,7 +87,7 @@ USE_L10N = True
 USE_TZ = True
 
 FORMAT_MODULE_PATH = [
-    'project.formats',
+    PROJECT_NAME + '.formats',
 ]
 
 # Static files (CSS, JavaScript, Images)
