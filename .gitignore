@@ -36,7 +36,7 @@ salt*check.py
 node_modules
 
 # Tests, docs, etc
-src/.coverage
+.coverage
 .tox
 docs/_build/
 
