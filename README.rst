@@ -8,7 +8,7 @@
    :target: https://requires.io/github/makinacorpus/corpus-django/requirements/?branch=master
    :alt: Requirements Status
    
-.. image::https://readthedocs.org/projects/corpus-django/badge/?version=master
+.. image:: https://readthedocs.org/projects/corpus-django/badge/?version=master
     :target: http://corpus-django.readthedocs.io/
 
 Makina corpus users, you should use:
