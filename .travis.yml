@@ -10,9 +10,9 @@ env:
     - TOXENV=docs
     - TOXENV=py27-coverage
     - TOXENV=py27-reverse
-    - TOXENV=py34
+    - TOXENV=py34-std
     - TOXENV=py34-reverse
-    - TOXENV=py35
+    - TOXENV=py35-std
     - TOXENV=py35-reverse
 install:
     - pip install coveralls tox
