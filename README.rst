@@ -8,7 +8,7 @@
    :target: https://requires.io/github/makinacorpus/corpus-django/requirements/?branch=master
    :alt: Requirements Status
 
-
+http://corpus-django.readthedocs.io/
 
 Makina corpus users, you should use:
 
