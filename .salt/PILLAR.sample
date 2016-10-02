@@ -26,8 +26,9 @@ makina-projects.projectname:
     #app_download_root: "{app_root}"
     #app_url_hash: "md5=123"
     #app_archive_test_exists: 'test ! -e {data_root}/www/index.php'
-    js_dir: "{app_root}/front_end"
+    js_dir: "{app_root}"
     gulp_targets: ["clean-build"]
+    do_node: false
     do_bower: false
     do_gulp: false
     configs:
