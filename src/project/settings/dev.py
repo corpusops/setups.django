@@ -18,6 +18,10 @@ INSTALLED_APPS += (  # noqa
     'django_extensions',
 )
 
+MIDDLEWARE += (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+
 INTERNAL_IPS = ('127.0.0.1',)  # Used by app debug_toolbar
 
 # Add the Python core NullHandler to be available when needed

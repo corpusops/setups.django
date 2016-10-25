@@ -2,7 +2,7 @@
 
 ipython
 
-django-debug-toolbar
+django-debug-toolbar>=1.6
 django-extensions
 
 pylama==7.1.0
