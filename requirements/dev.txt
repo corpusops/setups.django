@@ -6,6 +6,6 @@ django-debug-toolbar>=1.6
 django-extensions
 
 pylama==7.1.0
-Sphinx==1.4.6
+Sphinx==1.4.8
 sphinx-intl==0.9.9  # translation tool
 sphinx_rtd_theme==0.1.9
