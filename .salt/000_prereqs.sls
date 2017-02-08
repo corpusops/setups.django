@@ -1,6 +1,7 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set is_pg = 'postg' in data.django_settings.DATABASES.default.ENGINE %}
+{% set orig_py = data.get('orig_py', None) %}
 {% if is_pg %}
 include:
   - makina-states.services.gis.ubuntugis
@@ -70,9 +71,11 @@ prepreqs-{{cfg.name}}:
       - geoip-bin
       - libgeoip-dev
       # py3
-      # - libpython3-dev
-      # - python3
-      # - python3-dev
+      {% if orig_py and ("3" in data.orig_py) %}
+      - libpython3-dev
+      - python3
+      - python3-dev
+      {% endif %}
 
 {{cfg.name}}-dirs:
   file.directory:
