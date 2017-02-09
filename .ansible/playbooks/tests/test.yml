@@ -1,0 +1,22 @@
+---
+- include: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/lxc/register.yml"
+- include: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/vars.yml"
+  vars: {inc_node: "{{TEST_LXC_NAME}}"}
+- hosts: "{{TEST_LXC_NAME}}"
+  tasks:
+    - name: test if we have pillar file
+      stat: {path: "{{ms_pillar}}"}
+      register: project_test_pillar_test
+      failed_when: false
+      when: "{{TEST_USE_MAKINASTATES}}"
+      tags: project_test,project_test_ms
+    - name: test project under makina-states
+      shell: |
+             /bin/true
+      when: "{{TEST_USE_MAKINASTATES and project_test_pillar_test.stat.exists}}"
+      tags: project_test
+    - name: test project without makina-states
+      shell: |
+             /bin/true
+      when: "{{not (TEST_USE_MAKINASTATES and project_test_pillar_test.stat.exists)}}"
+      tags: project_test
