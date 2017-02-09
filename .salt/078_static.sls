@@ -1,6 +1,7 @@
 {% set cfg = opts['ms_project'] %}
 {% set scfg = salt['mc_utils.json_dump'](cfg)%}
 {% set data = cfg.data %}
+{% set use_vt = data.get('use_vt', True) %}
 
 {% set path = ('{project_root}/node_modules/.bin:'
                '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:'
@@ -53,7 +54,7 @@ include:
     - cwd: "{{data.js_dir}}"
     - user: {{user}}
     - unless: test ! -e "{{data.get('js_dir', '/dev/nonexisting')}}"
-    - use_vt: true
+    - use_vt: {{use_vt}}
     - env:
         PATH: "{{path}}"
 

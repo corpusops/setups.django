@@ -2,6 +2,7 @@
 {% set data = cfg.data %}
 {% set ds = data.django_settings %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
+{% set use_vt = data.get('use_vt', True) %}
 
 {% macro set_env() %}
     - env:
@@ -80,7 +81,7 @@ syncdb-{{cfg.name}}:
     {{set_env()}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
-    - use_vt: true
+    - use_vt: {{use_vt}}
     - output_loglevel: info
     - watch:
       - mc_proxy: {{cfg.name}}-configs-post
@@ -94,7 +95,7 @@ media-{{cfg.name}}:
     - onlyif: test -e {{data.media_source}}
     - cwd: {{data.app_root}}
     - user: {{cfg.user}}
-    - use_vt: true
+    - use_vt: {{use_vt}}
     - output_loglevel: info
     - watch:
       - mc_proxy: {{cfg.name}}-configs-post

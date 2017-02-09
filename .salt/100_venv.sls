@@ -1,6 +1,7 @@
 {% set cfg = opts.ms_project %}
 {% set data = cfg.data %}
 {% set scfg = salt['mc_utils.json_dump'](cfg) %}
+{% set use_vt = data.get('use_vt', True) %}
 
 {{cfg.name}}-venv:
   virtualenv.managed:
@@ -8,7 +9,7 @@
     - pip_download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}
     {% if data.get('orig_py', None) %}- python: {{data.get('orig_py', None)}}{% endif %}
-    - use_vt: true
+    - use_vt: {{use_vt}}
   cmd.run:
     - name: |
             . {{data.py_root}}/bin/activate;
@@ -32,7 +33,7 @@
     - env:
        - CFLAGS: "-I/usr/include/gdal"
     - cwd: {{data.pip_root}}
-    - use_vt: true
+    - use_vt: {{use_vt}}
     - download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}
     - require:
@@ -61,7 +62,7 @@
        - CFLAGS: "-I/usr/include/gdal"
     - cwd: {{data.app_root}}
     - onlyif: test -e setup.py || test -e ../setup.py
-    - use_vt: true
+    - use_vt: {{use_vt}}
     - download_cache: {{cfg.data_root}}/cache
     - user: {{cfg.user}}
     - require:

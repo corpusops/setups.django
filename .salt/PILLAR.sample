@@ -97,6 +97,8 @@ makina-projects.projectname:
     do_migrate: true
     do_reset_site: false
     do_syncdb_only_first_time: false
+    # disable real time command output
+    #use_vt: false
     # http_users:
     #   - root: foo
     # extra django settings to add
