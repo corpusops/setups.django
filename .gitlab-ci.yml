@@ -30,10 +30,10 @@ test:
     - makina-states
     - lxc_python
   script:
-    - sudo -E /srv/projects/gitlabrunner/project/bin/print_env.sh
-    - sudo -E /srv/projects/gitlabrunner/project/bin/lxc_run.sh
+    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/print_env.sh
+    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/lxc_run.sh
   after_script:
-    - sudo -E /srv/projects/gitlabrunner/project/bin/lxc_cleanup.sh
+    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/lxc_cleanup.sh
   except:
     - staging
     - production
