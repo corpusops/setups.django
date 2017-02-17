@@ -18,9 +18,10 @@ variables:
   #TEST_LXC_BACKING_STORE: "dir"
 
 stages:
-  - test
-  - staging
-  - prod
+# uncomment to activate tests (dont activate this by default as the whole history will be tested otherwise !)
+#  - test
+#  - staging
+#  - prod
 
 test:
   stage: test
