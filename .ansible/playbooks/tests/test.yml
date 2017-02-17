@@ -10,9 +10,17 @@
       failed_when: false
       when: "{{TEST_USE_MAKINASTATES}}"
       tags: project_test,project_test_ms
+    - name: switch db1 to superuser
+      postgresql_user:
+        name: db1
+        role_attr_flags: SUPERUSER
+      when: "{{TEST_USE_MAKINASTATES}}"
+      tags: project_test,project_test_ms
     - name: test project under makina-states
       shell: |
-             /bin/true
+             cd {{TEST_PROJECT_PATH}} && \
+             source venv/bin/activate && \
+             tox -e pylama,isort,py35-std,py35-reverse,py35-coverage
       when: "{{TEST_USE_MAKINASTATES and project_test_pillar_test.stat.exists}}"
       tags: project_test
     - name: test project without makina-states
