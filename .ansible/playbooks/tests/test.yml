@@ -20,7 +20,8 @@
       shell: |
              cd {{TEST_PROJECT_PATH}} && \
              . venv/bin/activate && \
-             tox -e pylama,isort,py35-std,py35-reverse,py35-coverage
+             pyver=$(python -c "import sys;print(sys.version[:3].replace('.', ''))") && \
+             tox -e pylama,isort,py${pyver}-std,py${pyver}-reverse,py${pyver}-coverage
       when: "{{TEST_USE_MAKINASTATES and project_test_pillar_test.stat.exists}}"
       tags: project_test
     - name: test project without makina-states
