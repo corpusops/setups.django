@@ -199,7 +199,7 @@ makina-projects.projectname:
     #  BAR: "True"
   env_defaults:
     dev:
-       test: foo
+       testval: fooval
 #      django_settings:
 #        DEBUG: True
 # vim:set ft=sls:
