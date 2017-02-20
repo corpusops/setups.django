@@ -153,8 +153,6 @@ makina-projects.projectname:
       #  default:
       #    BACKEND: 'django.core.cache.backends.memcached.MemcachedCache'
       #    LOCATION: '127.0.0.1:11211'
-      USER_MODULE: django.contrib.auth.models
-      USER_CLASS: User
       SECRET_KEY: "{{salt['mc_utils.generate_stored_password'](
                              'corpus-django_web_secret_key', 64)}}"
       LOGGING:

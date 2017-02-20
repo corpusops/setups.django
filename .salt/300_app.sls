@@ -155,8 +155,8 @@ user-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
-                User.objects.filter(username='{{admin}}').all()[0]
+                from django.contrib.auth import get_user_model
+                get_user_model().objects.filter(username='{{admin}}').all()[0]
                 if os.path.isfile("{{f}}"):
                     os.unlink("{{f}}")
     - mode: 700
@@ -192,8 +192,8 @@ superuser-{{cfg.name}}-{{admin}}:
                     import django;django.setup()
                 except Exception:
                     pass
-                from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
-                user=User.objects.filter(username='{{admin}}').all()[0]
+                from django.contrib.auth import get_user_model
+                user = get_user_model().objects.filter(username='{{admin}}').all()[0]
                 user.set_password('{{udata.password}}')
                 user.email = '{{udata.mail}}'
                 user.save()
