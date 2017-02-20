@@ -7,12 +7,15 @@
 makina-projects.{{project_name}}:
   api_version: '2'
   data:
+
     force_ssl: true
     use_vt: false
     domain: {{domains[0]}}
     server_aliases: {{domains[1:]}}
     admins:
       - admin: {mail: devnull@makina-corpus.com, password: admin}
+    DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.test"
+    requirements: "{project_root}/requirements/test.txt"
     django_settings:
       ALLOWED_HOSTS: {{domains}}
       DATABASES:
