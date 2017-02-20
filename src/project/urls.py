@@ -27,4 +27,11 @@ if 'apptest' in settings.INSTALLED_APPS:  # pragma: nobranch
         url(r'^test', include('apptest.urls', namespace='apptest')),
     ]
 
+if settings.DEBUG and 'debug_toolbar' in settings.INSTALLED_APPS:
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
+
 admin.site.site_header = 'project'
