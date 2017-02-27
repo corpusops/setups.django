@@ -168,12 +168,12 @@ makina-projects.projectname:
             level: 'ERROR'
             class: django.utils.log.AdminEmailHandler
           console:
-            level: 'DEBUG'
+            level: 'INFO'
             class: 'logging.StreamHandler'
         loggers:
           '':
             handlers: ['console']
-            level: 'DEBUG'
+            level: 'INFO'
             propagate: False
           django.request:
              handlers: ['console', 'mail_admins']
