@@ -17,6 +17,19 @@ makina-projects.{{project_name}}:
     DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.test"
     requirements: "{project_root}/requirements/test.txt"
     django_settings:
+      LOGGING:
+        handlers:
+          mail_admins:
+            level: 'ERROR'
+          console:
+            level: 'ERROR'
+        loggers:
+          '':
+            level: 'ERROR'
+          django.request:
+             level: 'ERROR'
+          django:
+             level: 'ERROR'
       ALLOWED_HOSTS: {{domains}}
       DATABASES:
         default:
