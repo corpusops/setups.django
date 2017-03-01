@@ -1,5 +1,7 @@
 -r base.txt
 
+tox
+
 coverage==4.2
 isort==4.2.5
 mock==2.0.0  # For Python 2
