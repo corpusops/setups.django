@@ -84,7 +84,7 @@ if HAS_PIP:
                 if val != sreq:
                     raise ValueError(
                         '{1}: conflict for {0} {2} / {3}'.format(
-                            req, reqs_file, candidates[reqname], sval))
+                            req, reqs_file, candidates[reqname], val))
 for c in [a for a in candidates]:
     val = candidates[c]
     if val not in install_requires:
