@@ -25,6 +25,7 @@ makinastates_pillar: |
           handlers:
             mail_admins:
               level: 'ERROR'
+              class: 'logging.StreamHandler'
             console:
               level: 'ERROR'
           loggers:

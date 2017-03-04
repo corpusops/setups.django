@@ -161,12 +161,22 @@ makina-projects.projectname:
         version: 1
         disable_existing_loggers: False
         filters:
-          require_debug_false:
-            '()': django.utils.log.RequireDebugFalse
+          require_debug_false: {'()': 'django.utils.log.RequireDebugFalse'}
+          require_debug_true: {'()': 'django.utils.log.RequireDebugTrue'}
+        formatters:
+          django.server:
+            '()': "logging.Formatter"
+            # ONLY django >= 1.10
+            #'()': "django.utils.log.ServerFormatter"
+            "format": "[%(server_time)s] %(message)s"
         handlers:
           mail_admins:
             level: 'ERROR'
             class: django.utils.log.AdminEmailHandler
+          django.server:
+            class: "logging.StreamHandler"
+            formatter: "django.server"
+            level: "INFO"
           console:
             level: 'INFO'
             class: 'logging.StreamHandler'
@@ -178,7 +188,11 @@ makina-projects.projectname:
           django.request:
              handlers: ['console', 'mail_admins']
              level: 'ERROR'
-             propagate: True
+             propagate: False
+          django.server:
+            handlers: ["console"]
+            level: "INFO",
+            propagate: False
           django:
              handlers: ['console', 'mail_admins']
              level: 'ERROR'
