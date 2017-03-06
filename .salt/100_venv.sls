@@ -13,7 +13,7 @@
   cmd.run:
     - name: |
             . {{data.py_root}}/bin/activate;
-            if pip --help 2>&1| grep -q -- --download-cache;then
+            if pip install --help 2>&1| grep -q -- --download-cache;then
               cacheopt="--download-cache"
             else
               cacheopt="--cache-dir"
