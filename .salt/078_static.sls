@@ -1,6 +1,7 @@
 {% set cfg = opts['ms_project'] %}
 {% set scfg = salt['mc_utils.json_dump'](cfg)%}
 {% set data = cfg.data %}
+{% set npm_installer = data.get('npm_installer', 'yarn') %}
 {% set use_vt = data.get('use_vt', True) %}
 
 {% set path = ('{project_root}/node_modules/.bin:'
@@ -74,7 +75,7 @@ include:
       - mc_proxy: {{cfg.name}}-pre-manual-npm
     - require_in:
       - mc_proxy: {{cfg.name}}-post-manual-npm
-    - name: npm install {{data.npms}}
+    - name: {{npm_installer}} install {{data.npms}}
 {% endif %}
 {%if data.get('global_npms', None)%}
 {{node_run('{name}-global-npm'.format(**cfg), user='root')}}
@@ -82,7 +83,7 @@ include:
       - mc_proxy: {{cfg.name}}-pre-manual-npm
     - require_in:
       - mc_proxy: {{cfg.name}}-post-manual-npm
-    - name: npm install -g {{data.global_npms}}
+    - name: {{npm_installer}} install -g {{data.global_npms}}
 {% endif %}
 {{node_run('{name}-npm'.format(**cfg))}}
     - require:
@@ -90,8 +91,8 @@ include:
       - mc_proxy: {{cfg.name}}-post-manual-npm
     - require_in:
       - mc_proxy: {{cfg.name}}-post-npm
-    - onlyif: test -e "{{data.js_dir}}/package.json"
-    - name: npm install
+    - onlyif: test -e "{{data.js_dir}}/package.json" || test -e "{{data.js_dir}}/yarn.lock"
+    - name: {{npm_installer}} install
 {% endif %}
 
 {% if data.get('do_bower', False) %}
@@ -99,7 +100,7 @@ include:
     - require:
       - mc_proxy: {{cfg.name}}-pre-bower
     - onlyif: test ! -e node_modules/.bin/bower
-    - name: npm install bower
+    - name: {{npm_installer}} install bower
 
 {{node_run('{name}-bower'.format(**cfg))}}
     - watch:

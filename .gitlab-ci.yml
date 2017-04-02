@@ -1,4 +1,5 @@
 variables:
+  TEST_USE_MAKINASTATES: "true"
   # use this to build from scratch
   TEST_LXC_TEMPLATE: "gitlabrunner-python"
   # use that if you prebacked an image for this project
@@ -8,8 +9,8 @@ variables:
   TEST_ORIGIN_PATH: "$CI_PROJECT_DIR"
   TEST_PROJECT_PATH: "/srv/projects/project/project"
   #TEST_PROJECT_PATH: "/srv/projects/$CI_PROJECT_NAME/project"
-  COMMIT: "$CI_BUILD_REF"
-  TEST_LXC_NAME: "grunner-$CI_PROJECT_ID-$CI_PIPELINE_ID-$CI_BUILD_ID"
+  #COMMIT: "${CI_COMMIT_SHA}"
+  #TEST_LXC_NAME: "grunner-$CI_PROJECT_ID-$CI_PIPELINE_ID-${CI_JOB_ID:-${CI_BUILD_ID-}}"
   # when you want to prepare a prebacked image, you can activate the following
   # think to disable already defined properties
   #TEST_LXC_TEMPLATE: "gitlabrunner-python"
@@ -25,8 +26,6 @@ stages:
 
 test:
   stage: test
-  variables:
-    TEST_USE_MAKINASTATES: "true"
   tags:
     - makina-states
     - lxc_python
@@ -41,31 +40,34 @@ test:
     - production
 
 staging:
+  variables:
+    TEST_PROJECT_PATH: /srv/projects/myproject/project
   stage: staging
   environment:
      name: staging
      url: "https://staging.example.com"
   tags:
-    - makina-states
-    - lxc_python
     - myproject_staging
   script:
-    - echo "no staging procedure defined"
+    # activate this if you want to see environnement variables in the CI log
+    # - sudo -E su -c /srv/projects/gitlabrunner/project/bin/print_env.sh
+    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/deploy.sh
   when: manual
-  only:
-    - staging
+  only: [staging]
 
 prod:
+  variables:
+    TEST_PROJECT_PATH: /srv/projects/myproject/project
   stage: prod
   environment:
      name: production
      url: "https://example.com"
   tags:
-    - makina-states
-    - lxc_python
     - myproject_production
   script:
-    - echo "no prod procedure defined"
+    # activate this if you want to see environnement variables in the CI log
+    # - sudo -E su -c /srv/projects/gitlabrunner/project/bin/print_env.sh
+    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/deploy.sh
   when: manual
   only:
     - production
