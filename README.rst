@@ -31,3 +31,6 @@ To start a new project, refer to:
 
     - `docs/corpusdjango/create_project.rst  <./docs/corpusdjango/create_project.rst>`_
 
+
+The ansible vault password is test for the **test** vault
+
