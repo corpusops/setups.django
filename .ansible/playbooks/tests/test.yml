@@ -4,12 +4,6 @@
   vars: {inc_node: "{{TEST_LXC_NAME}}"}
 - hosts: "{{TEST_LXC_NAME}}"
   tasks:
-    - name: test if we have pillar file
-      stat: {path: "{{ms_pillar}}"}
-      register: project_test_pillar_test
-      failed_when: false
-      when: "{{TEST_USE_MAKINASTATES}}"
-      tags: project_test,project_test_ms
     - name: switch db1 to superuser
       shell: echo "ALTER USER db1 WITH SUPERUSER" | psql -v ON_ERROR_STOP=1
       when: "{{TEST_USE_MAKINASTATES}}"
@@ -22,10 +16,10 @@
              . venv/bin/activate && \
              pyver=$(python -c "import sys;print(sys.version[:3].replace('.', ''))") && \
              tox -e pylama,isort,py${pyver}-std,py${pyver}-reverse,py${pyver}-coverage
-      when: "{{TEST_USE_MAKINASTATES and project_test_pillar_test.stat.exists}}"
+      when: "{{TEST_USE_MAKINASTATES}}"
       tags: project_test
     - name: test project without makina-states
       shell: |
              /bin/true
-      when: "{{not (TEST_USE_MAKINASTATES and project_test_pillar_test.stat.exists)}}"
+      when: "{{not (TEST_USE_MAKINASTATES)}}"
       tags: project_test
