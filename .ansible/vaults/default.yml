@@ -20,7 +20,10 @@ makinastates_pillar: |
         - admin: {mail: devnull@makina-corpus.com, password: admin}
       DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.test"
       requirements: "{project_root}/requirements/test.txt"
+      extra_settings: {}
       django_settings:
+        ALLOWED_HOSTS: {{domains}}
+        # ONLY FOR CI
         LOGGING:
           handlers:
             mail_admins:
@@ -35,12 +38,11 @@ makinastates_pillar: |
                level: 'ERROR'
             django:
                level: 'ERROR'
-        ALLOWED_HOSTS: {{domains}}
         DATABASES:
           default:
             HOST: localhost
             USER: db1
             NAME: db1
             PASSWORD: db1
-      extra_settings: {}
+      
 # vim:set ft=sls:
