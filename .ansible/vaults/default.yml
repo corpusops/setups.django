@@ -23,6 +23,12 @@ makinastates_pillar: |
       extra_settings: {}
       django_settings:
         ALLOWED_HOSTS: {{domains}}
+        DATABASES:
+          default:
+            HOST: localhost
+            USER: db1
+            NAME: db1
+            PASSWORD: db1
         # ONLY FOR CI
         LOGGING:
           handlers:
@@ -38,11 +44,4 @@ makinastates_pillar: |
                level: 'ERROR'
             django:
                level: 'ERROR'
-        DATABASES:
-          default:
-            HOST: localhost
-            USER: db1
-            NAME: db1
-            PASSWORD: db1
-      
 # vim:set ft=sls:
