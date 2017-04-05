@@ -191,7 +191,7 @@ makina-projects.projectname:
              propagate: False
           django.server:
             handlers: ["console"]
-            level: "INFO",
+            level: "INFO"
             propagate: False
           django:
              handlers: ['console', 'mail_admins']
