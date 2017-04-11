@@ -34,7 +34,7 @@ extra_requires = {}
 candidates = {}
 
 # ADAPT the files regex tp adapt to your requirements file(s)
-reqs_files_re = re.compile('.*(base|prod)?(\\.(txt|pip))?',
+reqs_files_re = re.compile('(requirements|(.*(base|prod)))(\\.(txt|pip))?$',
                            re.S | re.I | re.U)
 entry_points = {
     # z3c.autoinclude.plugin": ["target = plone"],
