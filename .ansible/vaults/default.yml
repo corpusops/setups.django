@@ -22,11 +22,6 @@ makinastates_pillar: |
       requirements: "{project_root}/requirements/test.txt"
       extra_settings: {}
       django_settings:
-        ALLOWED_HOSTS: {{domains}}
-        DATABASES:
-          default:
-            HOST: localhost
-            USER: db1
             NAME: db1
             PASSWORD: db1
         # ONLY FOR CI

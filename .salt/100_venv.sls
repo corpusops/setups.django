@@ -13,7 +13,7 @@
   cmd.run:
     - name: |
             . {{data.py_root}}/bin/activate;
-            if pip install --help 2>&1| grep -q -- --download-cache;then
+            if pip --help 2>&1| grep -q -- --download-cache;then
               cacheopt="--download-cache"
             else
               cacheopt="--cache-dir"
@@ -29,7 +29,6 @@
               pip install --upgrade $(egrep -i "^pillow" "{{data.requirements}}") ${cacheopt} "{{cfg.data_root}}/cache"
             fi
             pip install -r "{{data.requirements}}" ${cacheopt} "{{cfg.data_root}}/cache"
-
     - env:
        - CFLAGS: "-I/usr/include/gdal"
     - cwd: {{data.pip_root}}
