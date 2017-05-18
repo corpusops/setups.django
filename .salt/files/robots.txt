@@ -1,0 +1,6 @@
+{%- set cfg = salt['mc_project.get_configuration'](cfg) %}
+{%- set data = cfg.data %}
+
+User-agent: *
+{% if data.get('allow_crawl', False ) %}Allow{% else %}Disallow{% endif %}: /
+

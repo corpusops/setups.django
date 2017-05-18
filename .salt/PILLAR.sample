@@ -40,6 +40,11 @@ makina-projects.projectname:
         target: "{app_root}/{PROJECT}/settings/{{i}}"
         mode: 640
       {%endfor%}
+      # make salt manage robots
+      #"robots":
+      #  source: "salt://makina-projects/{name}/files/robots.txt"
+      #  target: "{doc_root}/robots.txt"
+      #  mode: 640
       #foo.py:
       #  target: "{data_root}/test/bar.py"
     htaccess: "/etc/{name}.webaccess"
@@ -98,7 +103,8 @@ makina-projects.projectname:
     do_reset_site: false
     do_syncdb_only_first_time: false
     # disable real time command output
-    #use_vt: false
+    use_vt: false
+    allow_crawl: false
     # http_users:
     #   - root: foo
     # extra django settings to add
