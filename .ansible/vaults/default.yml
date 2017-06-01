@@ -20,6 +20,7 @@ makinastates_pillar: |
         - admin: {mail: devnull@makina-corpus.com, password: admin}
       DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.test"
       requirements: "{project_root}/requirements/test.txt"
+      npm_install_args: ''
       extra_settings: {}
       django_settings:
             NAME: db1

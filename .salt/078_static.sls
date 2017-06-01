@@ -68,7 +68,7 @@ include:
       - mc_proxy: nodejs-post-install
 {% endmacro %}
 
-{% if data.get('npm', True) %}
+{% if data.get('do_npm', data.get('npm', True)) %}
 {%if data.get('npms', None)%}
 {{node_run('{name}-manual-npm'.format(**cfg))}}
     - require:
@@ -92,7 +92,7 @@ include:
     - require_in:
       - mc_proxy: {{cfg.name}}-post-npm
     - onlyif: test -e "{{data.js_dir}}/package.json" || test -e "{{data.js_dir}}/yarn.lock"
-    - name: {{npm_installer}} install
+    - name: {{npm_installer}} install {{data.npm_install_args}}
 {% endif %}
 
 {% if data.get('do_bower', False) %}
@@ -126,4 +126,4 @@ include:
 {% endif %}
 
 {% endif %}
- 
+

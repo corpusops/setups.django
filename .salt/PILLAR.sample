@@ -33,6 +33,7 @@ makina-projects.projectname:
     do_node: false
     do_bower: false
     do_gulp: false
+    npm_install_args: '--prod'
     configs:
       {% for i in ['local.py',] %}
       "{{i}}":
