@@ -41,6 +41,10 @@ makina-projects.projectname:
         target: "{app_root}/{PROJECT}/settings/{{i}}"
         mode: 640
       {%endfor%}
+      "runserver":
+        source: "salt://makina-projects/{name}/files/runserver.sh"
+        target: "{data_root}/runserver.sh"
+        mode: 755
       # make salt manage robots
       #"robots":
       #  source: "salt://makina-projects/{name}/files/robots.txt"
@@ -48,6 +52,11 @@ makina-projects.projectname:
       #  mode: 640
       #foo.py:
       #  target: "{data_root}/test/bar.py"
+    runserver_args: "--nothreading --noreload {host}:{port}"
+    environment:
+      DJANGO_SETTINGS_MODULE: "{DJANGO_SETTINGS_MODULE}"
+      NOGUNICORN: ""
+      CLEARSESSIONS: ""
     htaccess: "/etc/{name}.webaccess"
     doc_root: "{static}"
     #orig_py: /usr/bin/python3
