@@ -1,0 +1,12 @@
+---
+# FTP
+- hosts: "{{django_servers|default('all')}}"
+  roles: [corpusops.roles/ansible_plugins]
+  tasks:
+  - when: ["cops_django_lifecycle_ftp|default(true)"]
+    tags: ["cops_django_lifecycle_ftp"]
+    include_role: {name: django_ftp_vars,  allow_duplicates: false}
+  - when: ["cops_django_lifecycle_ftp"]
+    tags: ["cops_django_lifecycle_ftp"]
+    block:
+    - include_role: {name: django_ftp,     allow_duplicates: false}

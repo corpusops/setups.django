@@ -1,0 +1,66 @@
+---
+- copy:
+    content: |
+            #!{{cops_django_vars.py}}
+            {% set data = cops_django_vars%}
+            {% set ds=cops_django_vars.django_settings%}
+            {% set admin = adminitem.key %}
+            {% set udata = adminitem.value %}
+            {% set f = cops_django_vars.data_root+'/usercheck_'+adminitem.key %}
+            import os
+            try:
+                import django;django.setup()
+            except Exception:
+                pass
+            from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
+            User.objects.filter(username='{{admin}}').all()[0]
+    mode: "0700"
+    owner: "{{cops_django_vars.user}}"
+    group: "{{cops_django_vars.group}}"
+    dest: "{{cops_django_vars.data_root}}/usercheck_{{adminitem.key}}"
+  changed_when: false
+- shell: |
+    echo dsm: $DJANGO_SETTINGS_MODULE
+    {% set data = cops_django_vars%}
+    if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+    cd "{{data.app_root}}"
+    set -x
+    if ! ( "{{cops_django_vars.data_root}}/usercheck_{{adminitem.key}}" 2>/dev/null );then
+      {{data.py}} manage.py createsuperuser \
+        --username="{{adminitem.key}}" \
+        --email="{{adminitem.value.mail}}" --noinput
+    fi
+  register: _c_cops_django_manage_content_admin
+  changed_when: false
+- copy:
+    content: |
+            #!{{cops_django_vars.py}}
+            {% set data = cops_django_vars%}
+            {% set ds=cops_django_vars.django_settings%}
+            {% set admin = adminitem.key %}
+            {% set udata = adminitem.value %}
+            {% set f = cops_django_vars.data_root+'/userpassword_'+adminitem.key %}
+            #!{{data.py}}
+            import os
+            try:
+                import django;django.setup()
+            except Exception:
+                pass
+            from {{ds.USER_MODULE}} import {{ds.USER_CLASS}} as User
+            user=User.objects.filter(username='{{admin}}').all()[0]
+            user.set_password('{{udata.password}}')
+            user.email = '{{udata.mail}}'
+            user.save()
+    mode: "0700"
+    owner: "{{cops_django_vars.user}}"
+    group: "{{cops_django_vars.group}}"
+    dest: "{{cops_django_vars.data_root}}/userpassword_{{adminitem.key}}"
+  changed_when: false
+- shell: |
+    echo dsm: $DJANGO_SETTINGS_MODULE
+    {% set data = cops_django_vars%}
+    if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+    cd "{{data.app_root}}"
+    "{{cops_django_vars.data_root}}/userpassword_{{adminitem.key}}"
+  register: _c_cops_django_manage_content_admin_password
+  changed_when: false

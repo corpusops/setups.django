@@ -1,0 +1,35 @@
+---
+- name: fixperms files
+  template:
+    dest: "{{item.dest}}"
+    src: "{{item.src|default('../templates{0}'.format(item.dest))}}"
+    force: "{{item.force|default(True)}}"
+    mode: "{{item.mode|default(omit)}}"
+    owner: "{{item.owner|default(omit)}}"
+    group: "{{item.group|default(omit)}}"
+    trim_blocks: "{{item.trim_blocks|default(False)}}"
+  with_list: "{{cops_django_vars.fixperms_configs}}"
+  tags: [cops_django_s_fixperms_configs]
+  when: [cops_django_s_fixperms_configs]
+- name: run fixperms
+  shell: "{{cops_django_vars.fixperms}}"
+  changed_when: false
+  tags: [cops_django_s_fixperms_run]
+  when: [cops_django_s_fixperms_run]
+- name: add fixperms cron
+  copy:
+    dest: "{{cops_django_vars.fixperms_cron}}"
+    force: true
+    mode: "0644"
+    content: |
+      {{cops_django_vars.fixperms_cron_periodicity}} root {{cops_django_vars.fixperms}} >/dev/null 2>&1
+  tags: ["cops_django_s_fixperms_configs"]
+  when: ["cops_django_s_fixperms_configs and
+      (cops_django_vars.fixperms_cron_periodicity | copsf_bool)"]
+- name: remove fixperms cron
+  file:
+    path: "{{cops_django_vars.fixperms_cron}}"
+    state: absent
+  tags: ["cops_django_s_fixperms_configs"]
+  when: ["cops_django_s_fixperms_configs and not (
+      cops_django_vars.fixperms_cron_periodicity | copsf_bool)"]

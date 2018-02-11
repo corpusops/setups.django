@@ -1,0 +1,5 @@
+---
+# install custom config files
+# not really for now due to https://github.com/ansible/ansible/issues/32265
+- include_role: {name: corpusops.roles/configs, private: true}
+  vars: {cops_configs_templates: "{{cops_django_vars.configs}}"}

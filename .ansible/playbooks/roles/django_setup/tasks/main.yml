@@ -1,0 +1,28 @@
+---
+- include_role: {name: django_setup_configs, allow_duplicates: false}
+  tags: [cops_django_s_setup_configs]
+  when: [cops_django_s_setup_configs]
+
+- include_role: {name: django_setup_venv, allow_duplicates: false}
+  tags: [cops_django_s_setup_venv]
+  when: [cops_django_s_setup_venv]
+
+- include_role: {name: django_setup_front, allow_duplicates: false}
+  tags: [cops_django_s_setup_front]
+  when: [cops_django_s_setup_front]
+
+- include_role: {name: django_setup_hosts, allow_duplicates: false}
+  tags: [cops_django_s_setup_hosts]
+  when: [cops_django_s_setup_hosts]
+
+- include_role: {name: django_setup_django, allow_duplicates: false}
+  tags: [cops_django_s_setup_django]
+  when: [cops_django_s_setup_django]
+
+- include_role: {name: django_setup_supervisor, allow_duplicates: false}
+  tags: [cops_django_s_setup_supervisor]
+  when: [cops_django_s_setup_supervisor]
+
+- include_role: {name: django_setup_reverse_proxy, allow_duplicates: false}
+  tags: [cops_django_s_setup_reverse_proxy]
+  when: [cops_django_s_setup_reverse_proxy]

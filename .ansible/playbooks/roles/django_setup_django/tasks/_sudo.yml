@@ -1,0 +1,27 @@
+---
+- tags: ["cops_django_s_setup_django_statics"]
+  when: ["cops_django_s_setup_django_statics"]
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  shell: |-
+      {% set data = cops_django_vars %}
+      set -ex
+      echo dsm: $DJANGO_SETTINGS_MODULE
+      cd "{{data.app_root}}"
+      if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+      {{data.py}} manage.py collectstatic --noinput
+  changed_when: false
+- tags: ["cops_django_s_setup_django_locales"]
+  when: ["cops_django_s_setup_django_locales"]
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  shell: |-
+      {% set data = cops_django_vars %}
+      set -ex
+      echo dsm: $DJANGO_SETTINGS_MODULE
+      if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+      cd "{{data.locale_cwd}}"
+      if [ "x$(find -name locales -or -name locale)" != "x" ];then
+        "{{data.py}}" manage.py compilemessages
+      fi
+  changed_when: false

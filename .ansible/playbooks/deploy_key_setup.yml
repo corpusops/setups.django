@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  gather_facts: false
+  roles: [corpusops.roles/ansible_plugins]
+  tasks:
+  - include_role:
+      name: corpusops.roles/project/_deploy_key_setup

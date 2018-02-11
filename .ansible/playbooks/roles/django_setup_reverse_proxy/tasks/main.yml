@@ -1,0 +1,38 @@
+---
+# generate the app vhost(s) before nginx install itself
+# as if we have syntax errors, we wont have any chance to regenerate the
+# vhost before the general service role will run (syntax check -> deploy KO)
+- name: Generate default virtualhost
+  include_role:
+    name: "corpusops.roles/nginx_default_vhost"
+  vars:
+    _corpusops_nginx_default_vhost:
+      is_default_server: "{{
+          cops_django_vars.default_vhost_is_default_server}}"
+      check_config: false
+  tags: [cops_django_s_setup_reverse_proxy_dvhost]
+  when: [cops_django_s_setup_reverse_proxy_dvhost]
+
+- name: Generate APP virtualhost
+  include_role: {name: "corpusops.roles/nginx_vhost"}
+  vars: {_corpusops_nginx_vhost: "{{cops_django_vars.nginx}}"}
+  tags: [cops_django_s_setup_reverse_proxy_vhost]
+  when: [cops_django_s_setup_reverse_proxy_vhost]
+
+- name: Generate FRONT-APP virtualhost
+  include_role: {name: "corpusops.roles/nginx_vhost"}
+  vars: {_corpusops_nginx_vhost: "{{cops_django_vars.front_nginx}}"}
+  tags: ["cops_django_s_setup_reverse_proxy_front_vhost"]
+  when: ["cops_django_s_setup_reverse_proxy_front_vhost and cops_django_vars.front_domain"]
+
+# Configure http users
+- htpasswd:
+    path: "{{cops_django_vars.htpasswd}}"
+    name: "{{item.user}}"
+    password: "{{item.password}}"
+    state: present
+  with_items: "{{cops_django_vars.http_users}}"
+  when: ["cops_django_s_setup_reverse_proxy_users and (
+            cops_django_vars.http_users is not none and
+            cops_django_vars.http_users|length > 0)"]
+  tags: [cops_django_s_setup_reverse_proxy_users]

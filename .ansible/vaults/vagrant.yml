@@ -1,0 +1,12 @@
+---
+db_servers: all
+db_backup_servers: all
+django_servers: all
+postgresql_servers: all
+mysql_servers: all
+cops_django_domain: "{{cops_app_name}}.vbox.local"
+cops_installer_mode: vagrant
+cops_django_lifecycle_dbbackup: false
+# let outside VM user edit inside VM files
+cops_supereditors: ["{{ansible_user_id}}",
+                    "{{ansible_effective_user_id}}"]

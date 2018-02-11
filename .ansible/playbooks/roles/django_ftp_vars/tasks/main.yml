@@ -1,0 +1,9 @@
+---
+- set_fact:
+    cacheable: false
+    cops_django_lifecycle_ftp: |-
+      {{(
+         ((not vars.get('SKIP_INSTALL_FTP', False))) or
+          cops_django_lifecycle_ftp|default(false) or
+         vars.get('FORCE_INSTALL_FTP', False)
+      )}}

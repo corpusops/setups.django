@@ -1,0 +1,14 @@
+---
+- group:
+    name: "{{cops_django_vars.group}}"
+    state: present
+  tags: [cops_django_s_users_group]
+  when: [cops_django_s_users_group]
+- user:
+    group: "{{cops_django_vars.group}}"
+    name: "{{cops_django_vars.user}}"
+    state: present
+    append: true
+    generate_ssh_key: true
+  tags: [cops_django_s_users_user]
+  when: [cops_django_s_users_user]

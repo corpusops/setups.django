@@ -47,4 +47,7 @@ static/*
 !static/.empty
 
 # IDE settings
-.idea
+/.idea
+# corpusops
+/local
+/.ansible/scripts/ansible_deploy_env

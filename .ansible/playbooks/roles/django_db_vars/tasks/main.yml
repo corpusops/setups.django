@@ -1,0 +1,17 @@
+---
+- block:
+  - include_role:
+      name: "django_{{cops_django_db_role}}_has_db"
+      allow_duplicates: false
+  - set_fact: {cops_test_no_app_db: false, cacheable: false}
+  rescue:
+  - set_fact: {cops_test_no_app_db: true,  cacheable: false}
+- set_fact:
+    cacheable: false
+    cops_django_lifecycle_db: |-
+      {{(
+         ((not vars.get('SKIP_INSTALL_DB', False)) and
+          cops_test_no_app_db) or
+          cops_django_lifecycle_db|default(false) or
+         vars.get('FORCE_INSTALL_DB', False)
+      )}}

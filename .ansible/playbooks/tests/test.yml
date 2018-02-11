@@ -1,25 +1,8 @@
 ---
-- include: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/lxc/register.yml"
-- include: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/vars.yml"
+# !!! This is a relic for makina-states only  !!!
+- import_playbook: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/lxc/register.yml"
+- import_playbook: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/vars.yml"
   vars: {inc_node: "{{TEST_LXC_NAME}}"}
 - hosts: "{{TEST_LXC_NAME}}"
-  tasks:
-    - name: switch db1 to superuser
-      shell: echo "ALTER USER db1 WITH SUPERUSER" | psql -v ON_ERROR_STOP=1
-      when: "{{TEST_USE_MAKINASTATES}}"
-      tags: project_test,project_test_ms
-      become: yes
-      become_user: postgres
-    - name: test project under makina-states
-      shell: |
-             cd {{TEST_PROJECT_PATH}} && \
-             . venv/bin/activate && \
-             pyver=$(python -c "import sys;print(sys.version[:3].replace('.', ''))") && \
-             tox -e pylama,isort,py${pyver}-std,py${pyver}-reverse,py${pyver}-coverage
-      when: "{{TEST_USE_MAKINASTATES}}"
-      tags: project_test
-    - name: test project without makina-states
-      shell: |
-             /bin/true
-      when: "{{not (TEST_USE_MAKINASTATES)}}"
-      tags: project_test
+  tasks: []
+

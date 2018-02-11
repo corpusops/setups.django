@@ -1,0 +1,9 @@
+---
+- uri:
+    url: "http://{{cops_django_vars.query_host}}:{{cops_django_vars.nginx.port}}/"
+    return_content: true
+    headers:
+      Host: "{{cops_django_vars.domain}}"
+  register: cops_django_check1
+  # TODO: @kiorky check we only have an HTTP response (any status)
+  failed_when: "not 'html' in cops_django_check1.content"

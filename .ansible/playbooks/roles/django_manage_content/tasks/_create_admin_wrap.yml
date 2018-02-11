@@ -1,0 +1,3 @@
+- include_tasks: _create_admin.yml
+  with_dict: "{{admins}}"
+  loop_control: {loop_var: adminitem}

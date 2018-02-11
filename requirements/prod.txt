@@ -1,3 +1,0 @@
--r base.txt
-
-gunicorn  # Always use latest version to have latest security fixes

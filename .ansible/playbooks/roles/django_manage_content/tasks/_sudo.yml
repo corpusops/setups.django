@@ -1,0 +1,61 @@
+---
+- shell: |
+    set -eux
+    echo dsm: $DJANGO_SETTINGS_MODULE
+    {% set data = cops_django_vars%}
+    cd "{{data.app_root}}"
+    if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+    python -c "from $DJANGO_SETTINGS_MODULE import *;print(INSTALLED_APPS)"|grep -q "django.contrib.sites"
+  changed_when: false
+  failed_when: false
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  register: _c_cops_django_manage_content_sitetest
+- tags: ["cops_django_s_manage_content_syncdb"]
+  when: ["cops_django_s_manage_content_syncdb"]
+  changed_when: false
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  shell: |-
+      {% set data = cops_django_vars %}
+      f="{{cops_django_vars.data_root}}/skip_syncdb"
+      if [ ! -e "$f" ];then
+      echo dsm: $DJANGO_SETTINGS_MODULE
+      cd "{{data.app_root}}"
+      if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+        {{data.py}} manage.py syncdb --noinput
+        {% if cops_django_s_manage_content_syncdb_only_first_time %}
+        touch "$f"
+        {% endif %}
+      else
+        echo "Skip syndb" >&2
+      fi
+- tags: ["cops_django_s_manage_content_migrate"]
+  when: ["cops_django_s_manage_content_migrate"]
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  shell: |-
+      {% set data = cops_django_vars %}
+      echo dsm: $DJANGO_SETTINGS_MODULE
+      cd "{{data.app_root}}"
+      if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+      # install always site first for interdeps
+      {% if _c_cops_django_manage_content_sitetest.rc == 0 %}
+      {{data.py}} manage.py migrate --noinput sites
+      {% endif %}
+      {{data.py}} manage.py migrate --noinput
+  register: _c_cops_django_manage_content
+  changed_when:  "'No migrations to apply' not in  _c_cops_django_manage_content.stdout"
+- tags: ["cops_django_s_manage_content_create_admins"]
+  when: ["cops_django_s_manage_content_create_admins"]
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  include_tasks: _create_admin_wrap.yml
+  with_items: "{{cops_django_vars.admins}}"
+  loop_control: {loop_var: admins}
+- tags: ["cops_django_s_manage_content_reset_site"]
+  when: ["cops_django_s_manage_content_reset_site",
+         "_c_cops_django_manage_content_sitetest.rc==0"]
+  environment:
+    DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
+  include_tasks: _reset_site.yml

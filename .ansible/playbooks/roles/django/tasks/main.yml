@@ -1,0 +1,38 @@
+---
+- tags: [cops_django_lifecycle_app_setup]
+  when: [cops_django_lifecycle_app_setup]
+  become: "{{cops_django_vars.become}}"
+  block:
+  - include_role: {name: django_users, allow_duplicates: false}
+    tags: [cops_django_s_users]
+    when: [cops_django_s_users]
+  - include_role: {name: django_layout, allow_duplicates: false}
+    tags: [cops_django_s_layout]
+    when: [cops_django_s_layout]
+  - include_role: {name: django_fixperms, allow_duplicates: true}
+    tags: [cops_django_s_first_fixperms]
+    when: [cops_django_s_first_fixperms]
+  - include_role: {name: django_prerequisites, allow_duplicates: false}
+    tags: [cops_django_s_prerequisites]
+    when: [cops_django_s_prerequisites]
+  - include_role: {name: django_setup, allow_duplicates: false}
+    tags: [cops_django_s_setup]
+    when: [cops_django_s_setup]
+  - include_role: {name: django_reverse_proxy, allow_duplicates: false}
+    tags: [cops_django_s_reverse_proxy]
+    when: [cops_django_s_reverse_proxy]
+  - include_role: {name: django_workers, allow_duplicates: false}
+    tags: [cops_django_s_workers]
+    when: [cops_django_s_workers]
+  - include_role: {name: django_entry_point, allow_duplicates: false}
+    tags: [cops_django_s_entry_point]
+    when: [cops_django_s_entry_point]
+  - include_role: {name: django_manage_content, allow_duplicates: false}
+    tags: [cops_django_s_manage_content]
+    when: [cops_django_s_manage_content]
+  - include_role: {name: django_healthchecks, allow_duplicates: false}
+    tags: [cops_django_s_healthchecks]
+    when: [cops_django_s_healthchecks]
+  - include_role: {name: django_fixperms, allow_duplicates: true}
+    tags: [cops_django_s_end_fixperms]
+    when: [cops_django_s_end_fixperms]

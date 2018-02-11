@@ -1,73 +1,206 @@
+---
+image: corpusops/ubuntu:16.04
+
 variables:
-  TEST_USE_MAKINASTATES: "true"
-  # use this to build from scratch
-  TEST_LXC_TEMPLATE: "gitlabrunner-python"
-  # use that if you prebacked an image for this project
-  #TEST_LXC_TEMPLATE: "gitlabrunner-$CI_PROJECT_NAMESPACE-$CI_PROJECT_NAME"
-  GIT_STRATEGY: fetch
+  # https://gitlab.com/gitlab-org/gitlab-runner/issues/2148:
+  # This workaround support both gitlab itself & remote repos ssl certs & tokens
+  CORP_DOMAIN: "foo.net"
+  GIT_SSL_CAPATH: /etc/ssl/certs/
   GIT_SUBMODULE_STRATEGY: recursive
-  TEST_ORIGIN_PATH: "$CI_PROJECT_DIR"
-  TEST_PROJECT_PATH: "/srv/projects/project/project"
-  #TEST_PROJECT_PATH: "/srv/projects/$CI_PROJECT_NAME/project"
-  #COMMIT: "${CI_COMMIT_SHA}"
-  #TEST_LXC_NAME: "grunner-$CI_PROJECT_ID-$CI_PIPELINE_ID-${CI_JOB_ID:-${CI_BUILD_ID-}}"
-  # when you want to prepare a prebacked image, you can activate the following
-  # think to disable already defined properties
-  #TEST_LXC_TEMPLATE: "gitlabrunner-python"
-  #TEST_LXC_NAME: "lxcgitlabrunner-$CI_PROJECT_NAMESPACE-$CI_PROJECT_NAME"
-  #NO_CLEANUP: "1"
-  #TEST_LXC_BACKING_STORE: "dir"
+  # skippable steps: (set to 1 to activate)
+  SKIP_CORPUSOPS_UPDATE: ""
+  SKIP_VAULT_PASSWORD_FILES_SETUP: ""
+  SKIP_CORPUSOPS_SETUP: ""
+  # we redefine each variable before
+  # gitlab variables are totally flawed.
+  # See: https://gitlab.com/gitlab-org/gitlab-runner/issues/2495
+  #
+  # Select the desired vault for the environment
+  # -> password file
+  A_ENV_NAME: "$CI_JOB_STAGE"
+  # -> vaults files
+  A_VAULT_NAME: "$CI_JOB_STAGE"
+  # Select the inventory to act on
+  A_INVENTORY: "-i $CI_PROJECT_DIR/.ansible/inventory_$A_VAULT_NAME/"
+  # non interactive mode
+  NONINTERACTIVE: "1"
+  REUSE_ENV: "1"
+  # Custom ansible playbook global switches
+  ADEBUG: ""
+  # set 1 for intense output
+  NO_SILENT: ""
+  # origin
+  A_GIT_NAMESPACE: "$CI_PROJECT_NAMESPACE"
+  A_GIT_PROJECT: "$CI_PROJECT_NAME"
+  A_GIT_URL: "$CI_PROJECT_URL"
 
-stages:
-# uncomment to activate tests (dont activate this by default as the whole history will be tested otherwise !)
-#  - test
-#  - staging
-#  - prod
+stages: [test, deploy, jobs]
 
-test:
+.cache: &cache
+  cache:
+    paths:
+      - "local/corpusops.bootstrap"
+      - "local/flags*"
+
+.orchestrator: &orchestrator
+  tags: [docker-orchestrator]
+
+.skip: &job_skip
+  <<: *orchestrator
+  when: always
+  script: [echo Bypassing $CI_JOB_STAGE stage on other envs]
+
+.template: &autojob_template
+  <<: [*cache, *orchestrator]
+
+.template: &job_template
+  <<: [*cache, *orchestrator]
+  when: manual
+
+.deploy_branchs: &deploy_branchs
+  only:   [staging]
+
+.not_deploy_branchs: &not_deploy_branchs
+  except: [staging]
+
+.jobs_branchs: &jobs_branchs
+  only:   [jobs]
+
+.not_jobs_branchs: &not_jobs_branchs
+  except: [jobs]
+
+.test_branchs: &test_branchs
+  except: [staging, jobs]
+
+.not_test_branchs: &not_test_branchs
+  only: [staging, jobs]
+
+.test_skip: &test_skip
+  <<: *job_skip
   stage: test
-  tags:
-    - makina-states
-    - lxc_python
-  script:
-    # activate this if you want to see environnement variables in the CI log
-    # - sudo -E su -c /srv/projects/gitlabrunner/project/bin/print_env.sh
-    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/lxc_run.sh
-  after_script:
-    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/lxc_cleanup.sh
-  except:
-    - staging
-    - production
 
-staging:
-  variables:
-    TEST_PROJECT_PATH: /srv/projects/myproject/project
-  stage: staging
+.test_template: &test
+  <<: *autojob_template
+  stage: test
+
+.deploy_skip: &deploy_skip
+  <<: *job_skip
+  stage: deploy
+
+.deploy_template: &deploy
+  <<: *job_template
+  stage: deploy
+
+.deploy_env_template: &deploy_env
   environment:
-     name: staging
-     url: "https://staging.example.com"
-  tags:
-    - myproject_staging
-  script:
-    # activate this if you want to see environnement variables in the CI log
-    # - sudo -E su -c /srv/projects/gitlabrunner/project/bin/print_env.sh
-    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/deploy.sh
-  when: manual
+     name: $CI_COMMIT_REF_NAME
+     url: "https://$CI_COMMIT_REF_NAME-$CI_PROJECT_NAME.$CORP_DOMAIN"
+
+.jobs_skip: &jobs_skip
+  <<: *job_skip
+  stage: jobs
+
+.jobs_template: &jobs
+  <<: *job_template
+  stage: jobs
+
+.setup_templates: &setup
+  before_script:
+  - &setup_before_script_download
+      .ansible/scripts/download_corpusops.sh
+  - &setup_before_script_setup_ansible
+      .ansible/scripts/setup_ansible.sh
+
+.setup_ansible_template: &setup_ansible
+  before_script: &setup_ansible_before_script
+    - *setup_before_script_download
+    - *setup_before_script_setup_ansible
+    - &setup_ansible_before_script1 >
+        PLAYBOOK="" .ansible/scripts/call_ansible.sh
+        -l localhost .ansible/playbooks/deploy_key_setup.yml
+
+.teardown_ansible_template: &teardown_ansible
+  after_script: &teardown_ansible_after_script
+    - >-
+      PLAYBOOK="" .ansible/scripts/call_ansible.sh
+      -l localhost .ansible/playbooks/deploy_key_teardown.yml
+
+.ansible_template: &ansible
+  script: &ansible_script
+  - .ansible/scripts/call_ansible.sh
+
+.env_vault_template: &env_vault
+  variables: &env_vault_variables
+    A_CUSTOM_var: "1"
+
+.staging_vault_template: &staging_vault
+  <<: [ *env_vault  ]
+  variables: &staging_vault_variables
+    <<: [ *env_vault_variables ]
+    A_VAULT_NAME: staging
+
+test_skip_on_not_tests_branchs:
+  <<: [*not_test_branchs, *test_skip]
+
+deploy_skip_on_not_deploy_branchs:
+  <<: [*not_deploy_branchs, *deploy_skip]
+
+jobs_skip_on_not_jobs_branchs:
+  <<: [*not_jobs_branchs, *jobs_skip]
+
+# Test on non deploy branchs
+test:
+  <<: [*setup, *test_branchs, *test]
+  script: [.ansible/scripts/test.sh]
+
+# Deploy envs
+staging_deploy:
+  <<: [ *ansible, *teardown_ansible, *setup_ansible, *deploy_env, *deploy ]
   only: [staging]
-
-prod:
   variables:
-    TEST_PROJECT_PATH: /srv/projects/myproject/project
-  stage: prod
-  environment:
-     name: production
-     url: "https://example.com"
-  tags:
-    - myproject_production
-  script:
-    # activate this if you want to see environnement variables in the CI log
-    # - sudo -E su -c /srv/projects/gitlabrunner/project/bin/print_env.sh
-    - sudo -E su -c /srv/projects/gitlabrunner/project/bin/deploy.sh
-  when: manual
-  only:
-    - production
+    <<: [ *staging_vault_variables ]
+    PLAYBOOK: ".ansible/playbooks/app.yml"
+
+# Manual jobs
+# setup_haproxy:
+#   <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+#   variables:
+#     <<: [ *staging_vault_variables ]
+#     PLAYBOOK: ".ansible/playbooks/haproxy.yml"
+#
+
+setup_staging_db:
+   <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+   variables:
+     <<: [ *staging_vault_variables ]
+     PLAYBOOK: "local/setup.postgresql/.ansible/playbooks/ftp.yml"
+
+setup_staging_db:
+   <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+   variables:
+     <<: [ *staging_vault_variables ]
+     PLAYBOOK: "local/setup.postgresql/.ansible/playbooks/db.yml"
+
+setup_staging_db_backup:
+  <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+  variables:
+    <<: [ *staging_vault_variables ]
+    PLAYBOOK: "local/setups.dbsmartbackup/.ansible/playbooks/db_backup.yml"
+
+setup_production_db:
+   <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+   variables:
+     <<: [ *production_vault_variables ]
+     PLAYBOOK: "local/setup.postgresql/.ansible/playbooks/ftp.yml"
+
+setup_production_db:
+   <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+   variables:
+     <<: [ *production_vault_variables ]
+     PLAYBOOK: "local/setup.postgresql/.ansible/playbooks/db.yml"
+
+setup_production_db_backup:
+  <<: [ *ansible, *teardown_ansible, *setup_ansible, *jobs_branchs, *jobs ]
+  variables:
+    <<: [ *production_vault_variables ]
+    PLAYBOOK: "local/setups.dbsmartbackup/.ansible/playbooks/db_backup.yml"

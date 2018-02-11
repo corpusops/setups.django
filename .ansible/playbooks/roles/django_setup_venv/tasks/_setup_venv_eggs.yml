@@ -1,0 +1,18 @@
+---
+- become: true
+  become_user: "{{cops_django_vars.user}}"
+  block:
+  - pip:
+      name: "{{cops_django_vars.venv_eggs}}"
+      state: present
+      virtualenv: "{{cops_django_vars.py_root}}"
+      virtualenv_python: "{{(
+        (cops_django_vars.build_py and
+        '{0}/bin/python'.format(cops_django_vars.py_inst)) or
+        cops_django_vars.get('orig_py', None) or
+        '/usr/bin/python{0}'.format(cops_django_vars.py_ver))}}"
+      virtualenv_command: "{{(
+        cops_django_vars.build_py and
+        '{0}/bin/virtualenv'.format(cops_django_vars.py_inst) or
+        cops_django_vars.get('venv_bin', 'virtualenv'))}}"
+      virtualenv_site_packages: "{{cops_django_vars.venv_site_packages}}"

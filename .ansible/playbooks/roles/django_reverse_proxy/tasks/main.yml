@@ -1,0 +1,17 @@
+---
+# Configure nginx itself
+- include_role:
+    name: "corpusops.roles/services_http_nginx"
+  tags: [cops_django_s_reverse_proxy_install]
+  when: [cops_django_s_reverse_proxy_install]
+
+# force reload
+- name: Reload nginx
+  include_role:
+    name: "corpusops.roles/nginx_control"
+    allow_duplicates: true
+  vars:
+    _corpusops_nginx_control:
+      state: "{{cops_django_vars.services_nginx_reload_state}}"
+  tags: [cops_django_s_reverse_proxy_reload]
+  when: [cops_django_s_reverse_proxy_reload]

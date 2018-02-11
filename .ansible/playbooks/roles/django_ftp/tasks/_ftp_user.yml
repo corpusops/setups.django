@@ -1,0 +1,20 @@
+---
+- file:
+    state: directory
+    path: "{{home}}"
+    owner: "{{sysuser|default('root')}}"
+    group: "{{sysgroup|default('root')}}"
+    mode: "{{mode|default('2771')}}"
+- shell: mktemp
+  register: mytempfile
+- name: "configure pureftpd virtualuser {{user}} -> {{sysuser}}:{{sysgroup}}"
+  block:
+  - template:
+      src: "../templates/ftpuser.sh"
+      dest: "{{mytempfile.stdout}}"
+      mode: "0644"
+  - shell: bash "{{mytempfile.stdout}}"
+  rescue:
+  - file:
+      state: absent
+      path: "{{mytempfile.stdout}}"

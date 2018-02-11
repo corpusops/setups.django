@@ -1,0 +1,15 @@
+---
+- when: ["(corpusops_vars.has_services_manager and cops_django_vars.activated)"]
+  block:
+  # Check reverse proxy is listening
+  - retries: 10
+    delay: 1
+    include_tasks: _nginx_check.yml
+    until: "('{0}'.format(cops_django_check1.status)[0]
+              in ['1','2','3','4','5','6','7','8','9'])"
+  # Check django stack to be up
+  - retries: "{{cops_django_vars.restart_check_retries}}"
+    delay: 1
+    until: "      'django'     in '{0}'.format(cops_django_check2.get('server', '')).lower()"
+    include_tasks: _app_check.yml
+

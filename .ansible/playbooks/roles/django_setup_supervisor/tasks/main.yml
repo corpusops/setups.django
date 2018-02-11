@@ -1,0 +1,7 @@
+---
+# install custom config files
+- include_role: {name: corpusops.roles/supervisor}
+  vars:
+    _cops_supervisor:
+      name: "{{cops_django_vars.name}}"
+      extra_conf: "{{cops_django_vars.supervisor}}"

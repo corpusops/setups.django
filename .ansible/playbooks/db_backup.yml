@@ -1,0 +1,35 @@
+---
+- hosts: "{{db_backup_servers|default('all')}}"
+  roles: [corpusops.roles/ansible_plugins]
+  tasks:
+    - include_role: {name: django_db_vars}
+      tags: [cops_django_lifecycle_dbbackup]
+      when: "cops_django_lifecycle_dbbackup|default(true)"
+    - tags: [cops_django_lifecycle_dbbackup]
+      when: "cops_django_lifecycle_dbbackup|default(true)"
+      block:
+      - set_fact:
+          cacheable: false
+          cops_django_dbsmartbackup_default_free_form: |
+            export HOST="{{hostvars[groups['db_servers'][0]]['ansible_fqdn']}}"
+            export PORT="{{cops_django_vars.db_port}}"
+            export DBNAMES="{{cops_django_vars.db_name}}"
+            export PASSWORD="{{cops_django_vars.db_password}}"
+            {% if cops_django_dbsmartbackup_type == 'postgresql' %}
+            export DBUSER="{{cops_django_vars.db_user}}"
+            export PGUSER="{{cops_django_vars.db_user}}"
+            export PGPASSWORD="{{cops_django_vars.db_password}}"
+            {% endif %}
+      - set_fact:
+          cacheable: false
+          cops_dbsmartbackup_confs_django: |-
+            {% set res = cops_django_vars.get('dbsmartbackup', {}).copy() %}
+            {% set _ = res.setdefault('name', cops_django_vars.name) %}
+            {% set _ = res.setdefault('type', cops_django_dbsmartbackup_type) %}
+            {% set _ = res.update({'free_form': (
+                cops_django_vars.dbsmartbackup.free_form
+                | default(cops_django_dbsmartbackup_default_free_form))}) %}
+            {{ res | to_json }}
+- import_playbook: "../../local/setups.dbsmartbackup/.ansible/playbooks/site.yml"
+  tags: [cops_django_lifecycle_dbbackup]
+  when: "cops_django_lifecycle_dbbackup|default(true)"

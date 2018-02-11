@@ -1,0 +1,6 @@
+---
+- include_role: {name: corpusops.roles/configs, private: true}
+  vars:
+    cops_configs_templates: "{{cops_django_vars.ep_configs}}"
+  tags: [cops_django_s_entry_point]
+  when: [cops_django_s_entry_point]

@@ -1,0 +1,5 @@
+---
+- import_playbook: db.yml
+  tags: [play_django_db]
+- import_playbook: app.yml
+  tags: [play_django_app]

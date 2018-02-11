@@ -1,0 +1,55 @@
+---
+only_steps: false
+# cops_django_lifecycle_db: true
+# cops_django_lifecycle_app: true
+# cops_django_lifecycle_app_push_code: true
+# cops_django_lifecycle_app_setup: true
+# # django & project deployment steps
+# cops_django_s_vars: true
+# cops_django_s_users: true
+# cops_django_s_users_user: true
+# cops_django_s_users_group: true
+# cops_django_s_layout: true
+# cops_django_s_layout_layout: true
+# cops_django_s_first_fixperms: true
+# cops_django_s_fixperms_configs: true
+# cops_django_s_fixperms_run: true
+# cops_django_s_prerequisites: true
+# cops_django_s_prerequisites_pkgs: true
+# cops_django_s_prerequisites_ui: true
+# cops_django_s_setup: true
+# cops_django_s_setup_front: true
+# cops_django_s_setup_front_build: true
+# cops_django_s_setup_front_build_yarn_install: true
+# cops_django_s_setup_front_build_yarn_extra_steps: true
+# cops_django_s_setup_front_build_yarn_build: true
+# # TODO REACTIVATE !!!
+# cops_django_s_setup_front_sync: true
+# cops_django_s_setup_configs: true
+# cops_django_s_setup_venv: true
+# cops_django_s_setup_venv_buildpy: true
+# cops_django_s_setup_venv_venv: true
+# cops_django_s_setup_hosts: true
+# cops_django_s_setup_app: true
+# cops_django_s_setup_compile_messages: true
+# cops_django_s_setup_collect_static: true
+# cops_django_s_setup_reverse_proxy: true
+# cops_django_s_setup_reverse_proxy_dvhost: true
+# cops_django_s_setup_reverse_proxy_vhost: true
+# cops_django_s_setup_reverse_proxy_front_vhost: true
+# cops_django_s_setup_reverse_proxy_users: true
+# cops_django_s_reverse_proxy: true
+# cops_django_s_reverse_proxy_install: true
+# cops_django_s_reverse_proxy_reload: true
+# cops_django_s_workers: true
+# cops_django_s_workers_service: true
+# cops_django_s_healthchecks: true
+# cops_django_s_entry_point: true
+# cops_django_s_manage_content: true
+# cops_django_s_manage_content_create_admins: true
+# cops_django_s_manage_content_migrate: true
+# cops_django_s_manage_content_reset_site: false
+# cops_django_s_manage_content_syncdb_only_first_time: false
+# cops_django_s_manage_content_syncdb: false
+# cops_django_s_end_fixperms: true
+# # vim:set ft=sls:

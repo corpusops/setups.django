@@ -1,0 +1,21 @@
+# {{ansible_managed}}
+{% set d = cops_django_vars %}
+[Unit]
+Description=cops {{ d.name }} reconfigure on restart
+After={{d.reconfigure_unit_after}}
+
+[Service]
+Type=forking
+ExecStart={{d.reconfigure}} post
+PassEnvironment={{d.reconfigure_passenv}}
+TimeoutSec=0
+RemainAfterExit=yes
+{% if d.reconfigure_service_stderr %}
+StandardError={{d.reconfigure_service_stderr}}
+{% endif %}
+{% if d.reconfigure_service_stdout %}
+StandardOutput={{d.reconfigure_service_stdout}}
+{% endif %}
+
+[Install]
+WantedBy={{d.reconfigure_install_wantedby}}

@@ -1,0 +1,9 @@
+---
+- tags: ["cops_django_s_vars"]
+  when: ["cops_django_s_vars|default(true)"]
+  block:
+  - when: "cops_installer_mode|default(False)"
+    include_role:
+      name: "corpusops.roles/project/{{cops_installer_mode}}_load_vars"
+      allow_duplicates: false
+  - include_tasks: A0000_vars.yml

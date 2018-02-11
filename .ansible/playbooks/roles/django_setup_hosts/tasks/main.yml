@@ -1,0 +1,28 @@
+---
+# Alter /etc/hosts with main domain and alternative domains
+- blockinfile:
+    dest: /etc/hosts
+    marker: "# {mark} {{cops_django_vars.name}} local main name resolution :: DO NOT EDIT --"
+    insertafter: EOF
+    unsafe_writes: "{% if ansible_virtualization_type in ['docker']%}True{%else%}{{omit}}{%endif%}"
+    block: |
+           {% if cops_django_vars.use_etc_hosts %}
+           {% set hostsentries = [] %}
+           {% set h = cops_django_vars.internal_host %}
+           {% for alias in cops_django_vars.nginx.server_aliases -%}
+           {%    set _ = hostsentries.append((h, alias))%}
+           {% endfor %}
+           {% for alias in cops_django_vars.front_nginx.server_aliases -%}
+           {%    set _ = hostsentries.append((h, alias))%}
+           {% endfor %}
+           {% for domain in [
+                cops_django_vars.domain,
+                cops_django_vars.front_nginx_domain
+              ] %}
+           {%   if domain %}
+           {%     set _ = hostsentries.append((h, domain )) %}
+           {%   endif %}
+           {% endfor %}
+           {% for ip, text in hostsentries %}{{-ip}} {{text}}
+           {% endfor %}
+           {% endif %}

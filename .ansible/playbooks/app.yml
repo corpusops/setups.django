@@ -1,0 +1,13 @@
+---
+# APP
+- hosts: "{{django_servers|default('all')}}"
+  roles: [corpusops.roles/ansible_plugins]
+  tasks:
+  - when: ["cops_django_lifecycle_app|default(true)"]
+    tags: ["cops_django_lifecycle_app"]
+    include_role: {name: django_app_vars,  allow_duplicates: false}
+  - when: ["cops_django_lifecycle_app"]
+    tags: ["cops_django_lifecycle_app"]
+    block:
+    - include_role: {name: django_push_code, allow_duplicates: false}
+    - include_role: {name: django,           allow_duplicates: false}

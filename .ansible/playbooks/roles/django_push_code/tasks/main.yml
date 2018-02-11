@@ -1,0 +1,15 @@
+---
+- tags: ["cops_django_lifecycle_app_push_code"]
+  when: ["cops_django_lifecycle_app_push_code"]
+  become: "{{cops_django_vars.become}}"
+  block:
+  - include_role: {name: django_users, allow_duplicates: false}
+  - assert:
+      that: ["vars.get(varitem, none) is not none"]
+      msg: "{{varitem}} must be set"
+    loop_control: {loop_var: varitem}
+    with_items: [cops_cwd]
+  - include_role: {name: corpusops.roles/utils/push_code}
+    loop_control: {loop_var: _cops_provision_push_code}
+    with_items: "{{cops_django_vars.push_codes}}"
+

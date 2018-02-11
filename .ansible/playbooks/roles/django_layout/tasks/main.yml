@@ -1,0 +1,14 @@
+---
+- name: files
+  file:
+    path: "{{item.path}}"
+    state: "{{item.state|default(omit)}}"
+    src: "{{item.src|default(omit)}}"
+    force: "{{item.force|default(omit)}}"
+    mode: "{{item.mode|default(omit)}}"
+    owner: "{{item.owner|default(omit)}}"
+    group: "{{item.group|default(omit)}}"
+    recurse: "{{item.recurse|default(omit)}}"
+  with_items: "{{cops_django_vars.files}}"
+  tags: [cops_django_s_layout_layout]
+  when: [cops_django_s_layout_layout]

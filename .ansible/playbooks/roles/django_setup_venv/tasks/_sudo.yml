@@ -1,0 +1,23 @@
+---
+- tags: ["cops_django_s_setup_venv_buildpy"]
+  when: ["cops_django_s_setup_venv_buildpy and cops_django_vars.build_py"]
+  block:
+  - include_role: {name: corpusops.roles/configs, private: true}
+    vars:
+      cops_configs_templates: "{{cops_django_vars.venv_configs}}"
+      cops_configs_files: "{{cops_django_vars.venv_files}}"
+  - shell: |-
+      export PREFIX="{{cops_django_vars.py_inst}}"
+      {% if "{0}".format(cops_django_vars.py_ver).count('.') > 1 %}
+      export PY_VER="{{cops_django_vars.py_ver}}"
+      {% endif %}
+      {{cops_django_vars.data_root}}/bin/buildpy.sh
+    changed_when: false
+- tags: [cops_django_s_setup_venv_venv]
+  when: [cops_django_s_setup_venv_venv]
+  include_tasks: _setup_venv_eggs.yml
+- tags: [cops_django_s_setup_venv_requirements]
+  when: [cops_django_s_setup_venv_requirements]
+  with_items: "{{cops_django_vars.requirements}}"
+  loop_control: {loop_var: requirements}
+  include_tasks: _setup_venv_reqs.yml

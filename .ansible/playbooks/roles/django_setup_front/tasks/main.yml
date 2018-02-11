@@ -1,0 +1,69 @@
+---
+- become: true
+  become_user: "{{cops_django_vars.user}}"
+  block:
+  - tags: [cops_django_s_setup_front_build]
+    when: [cops_django_s_setup_front_build]
+    block:
+      - stat: {path: "{{cops_django_vars.project_root}}/yarn.lock"}
+        register: cops_c_django_force_build_s1
+      - stat: {path: "{{cops_django_vars.project_root}}/package.json"}
+        register: cops_c_django_force_build_s2
+      - stat: {path: "{{cops_django_vars.front_dist_folder}}/index.html"}
+        register: cops_c_django_force_build_s3
+      - when: "((cops_c_django_force_build_s1.stat.exists and
+                 cops_c_django_force_build_s2.stat.exists and
+                 not (cops_c_django_force_build_s3.stat.exists)) or
+                vars.get('FORCE_FRONT_BUILD', False))"
+        block:
+        - tags: [cops_django_front_build_nodeinstall]
+          block:
+          - shell: yarn --version
+            changed_when: false
+          rescue:
+          - become: true
+            become_user: root
+            include_role: {name: corpusops.roles/localsettings_nodejs}
+        - shell: |
+            set -ex
+            cd "{{cops_django_vars.project_root}}"
+            {{cops_django_vars.yarn_cmd}} install {{cops_django_vars.yarn_install_args}}
+          tags: [cops_django_s_setup_front_build_yarn_install]
+          when: [cops_django_s_setup_front_build_yarn_install]
+        - shell: |
+            set -ex
+            cd "{{cops_django_vars.project_root}}"
+            {{cops_django_vars.yarn_cmd}} {{cops_django_c_yarn_extra_step}}
+          tags: [cops_django_s_setup_front_build_yarn_extra_steps]
+          when: [cops_django_s_setup_front_build_yarn_extra_steps]
+          with_items: "{{cops_django_vars.yarn_extra_steps}}"
+          loop_control: {loop_var: cops_django_c_yarn_extra_step}
+        - shell: |
+            set -ex
+            cd "{{cops_django_vars.project_root}}"
+            {{cops_django_vars.yarn_cmd}} build {{cops_django_vars.yarn_build_args}}
+          tags: [cops_django_s_setup_front_build_yarn_build]
+          when: [cops_django_s_setup_front_build_yarn_build]
+  - tags: [cops_django_s_setup_front_sync]
+    when: [cops_django_s_setup_front_sync]
+    block:
+      - stat: {path: "{{cops_django_vars.front_dist_folder}}"}
+        register: cops_c_django_force_sync_d
+      - name: "{{cops_django_vars.name}}-front-doc-root"
+        when: cops_c_django_force_sync_d.stat.exists
+        synchronize:
+          compress: false
+          rsync_opts:  ["-Aa", "--delete"]
+          src: "{{cops_django_vars.front_dist_folder}}/"
+          dest: "{{cops_django_vars.front_doc_root}}/"
+        delegate_to: "{{inventory_hostname}}"
+      - stat: {path: "{{cops_django_vars.project_root}}/angular/robots.txt"}
+        register: cops_c_django_force_sync_r
+      - name: "{{cops_django_vars.name}}-front-doc-root"
+        when: cops_c_django_force_sync_r.stat.exists
+        synchronize:
+          compress: false
+          rsync_opts:  ["-Aa", "--delete"]
+          src: "{{cops_django_vars.project_root}}/angular/robots.txt"
+          dest: "{{cops_django_vars.front_doc_root}}/robots.txt"
+        delegate_to: "{{inventory_hostname}}"

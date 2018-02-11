@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# {% set d = cops_django_vars %}
+# {% for cron in d.crons %}
+{{cron}} > {{d.data_root}}/cron.log 2>&1
+# {% endfor %}
+# vim:set ft=crontab :

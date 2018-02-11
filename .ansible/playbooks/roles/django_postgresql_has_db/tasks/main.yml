@@ -1,0 +1,9 @@
+---
+- shell: >-
+    psql -t -A -F';;;' -c'\l' | egrep -iq
+    "{{cops_postgresql__roles[0].name}}.*{{cops_postgresql__databases[0].db}}"
+  changed_when: false
+  register: cops_setup_databases_test1
+  no_log: "{{not (cops_vars_debug|default(false))}}"
+  become_user: postgres
+  become: true

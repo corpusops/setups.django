@@ -1,0 +1,10 @@
+---
+- hosts: "{{db_servers|default('all')}}"
+  tasks:
+  - tags: [cops_django_lifecycle_db]
+    when: "cops_django_lifecycle_db|default(true)"
+    block:
+    - include_role: {name: django_db_vars}
+- import_playbook: "../../local/setups.{{cops_django_db_role}}/.ansible/playbooks/site.yml"
+  tags: [cops_django_lifecycle_db]
+  when: "cops_django_lifecycle_db|default(true)"

@@ -1,43 +1,37 @@
 ---
-# Remember to encrypt your vault with ansible-vault for non public env
-makinastates_pillar: |
-  ---
-  {% set project_name = 'project' %}
-  {% if not grains %}{% set grains = {} %}{% endif %}
-  {% set fqdn = grains.get('fqdn', '{0}.local'.format(project_name)) %}
-  {% set domains = [fqdn,
-                    "{1}.{0}".format(fqdn, project_name),
-                    "www.{0}".format(fqdn)] %}
-  makina-projects.{{project_name}}:
-    api_version: '2'
-    data:
-      #orig_py: /usr/bin/python3
-      force_ssl: true
-      use_vt: false
-      domain: {{domains[0]}}
-      server_aliases: {{domains[1:]}}
-      admins:
-        - admin: {mail: devnull@makina-corpus.com, password: admin}
-      DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.test"
-      requirements: "{project_root}/requirements/test.txt"
-      npm_install_args: ''
-      extra_settings: {}
-      django_settings:
-            NAME: db1
-            PASSWORD: db1
-        # ONLY FOR CI
-        LOGGING:
-          handlers:
-            mail_admins:
-              level: 'ERROR'
-              class: 'logging.StreamHandler'
-            console:
-              level: 'ERROR'
-          loggers:
-            '':
-              level: 'ERROR'
-            django.request:
-               level: 'ERROR'
-            django:
-               level: 'ERROR'
+cops_app_name: django
+cops_postgresql__roles:
+- name: "{{cops_django_db_user}}"
+  password: "{{cops_django_db_password}}"
+cops_postgresql__databases:
+- db: "{{cops_app_name}}"
+  owner: "{{cops_app_name}}"
+cops_django_name: "{{cops_app_name}}"
+django_servers: django_servers
+db_backup_servers: db_backup_servers
+dbsmartbackup_servers: db_backup_servers
+postgresql_servers: postgresql_servers
+mysql_servers: mysql_servers
+db_servers: "{{cops_django_db_role_type[cops_django_db_type]}}_servers"
+app_servers: "{{django_servers}}"
+#
+cops_installer_mode: lazy
+cops_django_nginx_port: 80
+cops_django_nginx_ssl_port: 443
+corpusops_nginx_default_vhost_port: "{{cops_django_nginx_port}}"
+corpusops_nginx_default_vhost_ssl_port: "{{cops_django_nginx_ssl_port}}"
+cops_postgresql_s_setup_server_postgis: "{{'postgis' in cops_django_db_type}}"
+cops_django_db_type: django.db.backends.postgresql_psycopg2
+cops_django_dbsmartbackup_types:
+  django.db.backends.postgresql_psycopg2: "postgresql"
+  django.contrib.gis.db.backends.postgis: "postgresql"
+  django.db.backends.mysql: "mysql"
+  django.db.backends.sqlite3: null
+cops_django_dbsmartbackup_type: "{{cops_django_dbsmartbackup_types[cops_django_db_type]}}"
+cops_django_db_role_type:
+  django.db.backends.postgresql_psycopg2: "postgresql"
+  django.contrib.gis.db.backends.postgis: "postgresql"
+  django.db.backends.mysql: null
+  django.db.backends.sqlite3: null
+cops_django_db_role: "{{cops_django_db_role_type[cops_django_db_type]}}"
 # vim:set ft=sls:

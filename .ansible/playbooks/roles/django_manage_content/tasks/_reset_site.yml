@@ -1,0 +1,30 @@
+---
+- copy:
+    content: |
+            #!{{cops_django_vars.py}}
+            {% set ds=cops_django_vars.django_settings%}
+            {% set data = cops_django_vars%}
+            #!{{data.py}}
+            import os
+            try:
+                import django;django.setup()
+            except Exception:
+                pass
+            from django.contrib.sites.models import Site
+            import settings
+            site = Site.objects.get(id=settings.SITE_ID)
+            site.domain = settings.DOMAIN
+            site.name = settings.DOMAIN
+            site.save()
+    mode: 700
+    owner: "{{cops_django_vars.user}}"
+    group: "{{cops_django_vars.group}}"
+    dest: "{{cops_django_vars.data_root}}/resetsite"
+- shell: |
+    echo dsm: $DJANGO_SETTINGS_MODULE
+    set -eux
+    {% set data = cops_django_vars%}
+    cd "{{data.app_root}}"
+    if [ -e "{{data.py_root}}/bin/activate" ];then . "{{data.py_root}}/bin/activate";fi
+    "{{cops_django_vars.data_root}}/resetsite"
+  changed_when: false

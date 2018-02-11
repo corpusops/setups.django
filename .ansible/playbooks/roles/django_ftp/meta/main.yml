@@ -1,0 +1,4 @@
+---
+dependencies:
+- role: django_vars
+- role: corpusops.roles/services_ftp_pureftpd_vars

@@ -1,0 +1,4 @@
+---
+- become: true
+  become_user: "{{cops_django_vars.user}}"
+  include_tasks: _sudo.yml

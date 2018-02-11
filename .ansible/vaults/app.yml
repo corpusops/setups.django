@@ -1,0 +1,6 @@
+---
+# copy this file instead of symlinking
+cops_app_name: mydjango
+cops_django_db_password: secret
+cops_django_secret_key: verysupersecretlen64
+cops_django_admin_password: secret

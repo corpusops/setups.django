@@ -1,0 +1,20 @@
+---
+- block:
+  - register: cops_django_check2
+    no_log: "{{not (cops_vars_debug|default(false))}}"
+    uri:
+      url: "http://{{cops_django_vars.host}}:{{cops_django_vars.port}}"
+      headers: {Host: "{{cops_django_vars.domain}}"}
+      return_content: true
+    failed_when: "'{{cops_django_vars.ht_string}}' not in '{0}'.format(cops_django_check2.get('server', '')).lower()"
+  rescue:
+  - shell: "service {{cops_django_vars.service}} restart && sleep {{cops_django_vars.ht_restarttime}}"
+    when: "not _c_cops_django_ht_restarted|default(false)"
+  - set_fact: {cacheable: false, _c_cops_django_ht_restarted: true}
+  - register: cops_django_check2
+    no_log: "{{not (cops_vars_debug|default(false))}}"
+    uri:
+      url: "http://{{cops_django_vars.host}}:{{cops_django_vars.port}}"
+      headers: {Host: "{{cops_django_vars.domain}}"}
+      return_content: true
+    failed_when: "'{{cops_django_vars.ht_string}}' not in '{0}'.format(cops_django_check2.get('server', '')).lower()"
