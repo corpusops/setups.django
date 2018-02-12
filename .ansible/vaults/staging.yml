@@ -1,0 +1,23 @@
+---
+# THIS SHOULD RESIDE IN AN ENCRYPTED VAULT
+cops_django_db_password: secret
+cops_django_secret_key: verysupersecret
+cops_django_admin_password: secret
+# cops_django_ftp_users:
+# - myvirtualuser:
+#     password: "secret"
+#     home: "{ftp_root}"
+#     # sys user under the hood (must exist before)
+#     user: "{user}"
+#     group: "{group}"
+#     mode: "0771"
+#     # delete: false
+cops_deploy_ssh_key_paths:
+  staging:
+    path: "{{'local/.ssh/deploy_staging'|copsf_abspath}}"
+    pub: |-
+      ssh-rsa AAAAxxx== myapp@staging
+    private: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      yyy==
+      -----END RSA PRIVATE KEY-----

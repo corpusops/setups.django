@@ -1,0 +1,9 @@
+[submodule "local/setups.django"]
+	path = local/setups.django
+	url = https://github.com/corpusops/setups.django.git
+[submodule "local/setups.postgresql"]
+	path = local/setups.postgresql
+	url = https://github.com/corpusops/setups.postgresql.git
+[submodule "local/setups.dbsmartbackup"]
+	path = local/setups.dbsmartbackup
+	url = https://github.com/corpusops/setups.dbsmartbackup.git

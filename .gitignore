@@ -48,3 +48,12 @@ static/*
 
 # IDE settings
 .idea
+
+# deploy
+/cache
+/venv
+/src/*.egg-info/
+#
+/.vagrant
+/local
+/.ansible/scripts/ansible_deploy_env

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# export A_GIT_SERVER=${A_GIT_SERVER:-https://gitlab.foo.net}
+# export A_GIT_NAMESPACE=${A_GIT_NAMESPACE:-group}
+# export A_GIT_PROJECT=${A_GIT_PROJECT:-project}
+# export A_GIT_URL=${A_GIT_SERVER}/$A_GIT_NAMESPACE/$A_GIT_PROJECT
