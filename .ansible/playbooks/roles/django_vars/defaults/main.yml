@@ -651,8 +651,7 @@ cops_django_supervisor:
         if loop.index<cops_django_environment|length-%},{%-
           endif%}
       {%- endfor %}
-    uid: "{user}"
-    gid: "{group}"
+    user: "{user}"
     directory: "{app_root}"
     startsecs: "10"
     killasgroup: true
