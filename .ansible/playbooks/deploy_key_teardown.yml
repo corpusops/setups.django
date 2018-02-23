@@ -4,4 +4,4 @@
   roles: [corpusops.roles/ansible_plugins]
   tasks:
   - include_role:
-    name: corpusops.roles/project/_deploy_key_teardown
+      name: corpusops.roles/project/_deploy_key_teardown
