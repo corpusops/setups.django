@@ -8,13 +8,10 @@
 - shell: mktemp
   register: mytempfile
 - name: "configure pureftpd virtualuser {{user}} -> {{sysuser}}:{{sysgroup}}"
-  block:
-  - template:
-      src: "../templates/ftpuser.sh"
-      dest: "{{mytempfile.stdout}}"
-      mode: "0644"
-  - shell: bash "{{mytempfile.stdout}}"
-  rescue:
-  - file:
-      state: absent
-      path: "{{mytempfile.stdout}}"
+  template:
+    src: "../templates/ftpuser.sh"
+    dest: "{{corpusops_services_ftp_pureftpd_vars.prefix}}/user_{{user}}"
+    mode: "0700"
+- name: "configure pureftpd virtualuser {{user}} -> {{sysuser}}:{{sysgroup}}"
+  shell: "{{corpusops_services_ftp_pureftpd_vars.prefix}}/user_{{user}}"
+

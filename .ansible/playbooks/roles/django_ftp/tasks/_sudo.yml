@@ -9,4 +9,3 @@
   loop_control: {loop_var: ftp_user_wrap}
 - include_tasks: _service.yml
   tags: [django_pureftpd_service]
-
