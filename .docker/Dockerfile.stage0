@@ -14,7 +14,8 @@ ARG APP_ENV_NAME=$docker
 ENV A_ENV_NAME=$APP_ENV_NAME
 ARG TMPPLAYBOOK=.ansible/playbooks/bootstrap.yml
 ENV TMPPLAYBOOK=$TMPPLAYBOOK
-# IN DEV: rm local/corpusops.bootstrap;sudo mount -o bind ~/corpusops/corpusops.bootstrap local/corpusops.bootstrap
-ADD local/corpusops.bootstrap/hacking $COPS_ROOT/hacking/
-ADD local/corpusops.bootstrap/bin     $COPS_ROOT/bin/
-ADD local/corpusops.bootstrap/roles   $COPS_ROOT/roles/
+# UNCOMMENT IN DEV:
+### rm local/corpusops.bootstrap;sudo mount -o bind ~/corpusops/corpusops.bootstrap local/corpusops.bootstrap
+# ADD local/corpusops.bootstrap/hacking $COPS_ROOT/hacking/
+# ADD local/corpusops.bootstrap/bin     $COPS_ROOT/bin/
+# ADD local/corpusops.bootstrap/roles   $COPS_ROOT/roles/

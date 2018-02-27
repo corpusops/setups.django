@@ -1,4 +1,4 @@
-# build layout, install base pkgs and virtualenv with bare minimum working copy
+# setup app (without services and content managment
 ADD . /provision_dir
 RUN $_call_ansible ".ansible/playbooks/app.yml"  \
  -e "{only_steps: true, \
