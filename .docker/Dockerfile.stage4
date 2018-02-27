@@ -1,0 +1,5 @@
+# pack, cleanup, snapshot any found git repo
+RUN bash -c 'step_rev=3;set -e;cd $COPS_ROOT;\
+    GIT_SHALLOW_DEPTH=1 \
+    GIT_SHALLOW=y \
+    NO_IMAGE_STRIP= /sbin/cops_container_strip.sh;'
