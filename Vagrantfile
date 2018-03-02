@@ -18,7 +18,6 @@ cfg = cops_inject_playbooks \
         # install a postgresql server, db & user
         # install django (fpm-pool && django setup)
         # install pureftpd
-        {"local/setup.postgresql/.ansible/playbooks/site_vagrant.yml" => ansible_vars},
         {".ansible/playbooks/site_vagrant.yml" => ansible_vars},
         {".ansible/playbooks/ftp.yml" => ansible_vars},
     ]
