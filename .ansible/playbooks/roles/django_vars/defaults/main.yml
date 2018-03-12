@@ -19,7 +19,7 @@ cops_django_venv_deb_packages: [virtualenv, python-virtualenv]
 cops_django_venv_rh_packages: [virtualenv]
 # cops_django_deb_packages is initialised on behalf of cops_registry voodoo
 # and let users override the list easily
-# cops_django_packages: "{{cops_django_deb_packages___default+['vim']}}"
+# cops_django_packages: "{{vars['cops_django_deb_packages___default']+['vim']}}"
 cops_django_deb_gis_packages:
   - gdal-bin
   - "{%- if (
