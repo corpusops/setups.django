@@ -6,7 +6,7 @@ cops_postgresql___roles:
 - name: "{{cops_django_db_user}}"
   password: "{{cops_django_db_password}}"
   # for mysql
-  # privs: "{{cops_django_db_name}}.*"
+  # privs: "{{cops_django_db_name}}.*:ALL"
 cops_postgresql__databases:
 - db: "{{cops_django_db_name}}"
   # for pgsql
