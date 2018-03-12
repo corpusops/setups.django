@@ -1,5 +1,4 @@
 ---
-cops_app_name: django
 cops_django_db_user: "{{cops_db_user}}"
 cops_django_db_name: "{{cops_db_name}}"
 cops_django_db_password: "{{cops_db_password}}"
