@@ -1,6 +1,8 @@
 ---
 # THIS SHOULD RESIDE IN AN ENCRYPTED VAULT
-cops_django_db_password: secret
+cops_db_name: db
+cops_db_user: user
+cops_db_password: secret
 cops_django_secret_key: verysupersecret
 cops_django_admin_password: secret
 # cops_django_ftp_users:

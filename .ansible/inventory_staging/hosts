@@ -18,5 +18,8 @@ mydbserver.foo.net
 [db_servers:children]
 postgresql_servers
 
+[postgresql_servers]
+mydbserver.foo.net
+
 [controller]
 localhost
