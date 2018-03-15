@@ -14,46 +14,59 @@ die_() {
 die() { die_ 256 $@; }
 export COPS_CWD="${COPS_CWD:-$(pwd)}"
 export LOCAL_COPS_ROOT="${LOCAL_COPS_ROOT:-$COPS_CWD/local/corpusops.bootstrap}"
-export COPS_ROOT="${COPS_ROOT:-$HOME/corpusops/corpusops.bootstrap}"
 export SYS_COPS_ROOT=${SYS_COPS_ROOT:-/srv/corpusops/corpusops.bootstrap}
+export USER_COPS_ROOT="${USER_COPS_ROOT:-$HOME/corpusops/corpusops.bootstrap}"
+if [ "x$(whoami)" = "xroot" ];then
+    export DEFAULT_COPS_ROOT=$SYS_COPS_ROOT
+else
+    export DEFAULT_COPS_ROOT=$USER_COPS_ROOT
+fi
+export COPS_ROOT="${COPS_ROOT:-$DEFAULT_COPS_ROOT}"
 export COPS_URL="${COPS_URL:-https://github.com/corpusops/corpusops.bootstrap.git}"
-export NO_SHARED_COPS="${NO_SHARED_COPS-}"
+export NO_SHARED_COPS="${NO_SHARED_COPS-${SKIP_COPS_FROM_SYSTEM-}}"
 if [[ -n ${SKIP_COPS_SETUP-} ]];then
     die_ 0 "-> Skip corpusops setup"
 fi
+test_corpusops_present() {
+    # in docker images, corpusops has been stripped from some folders
+    # testing git isnt enougth
+    if [ -e "$LOCAL_COPS_ROOT" ] && \
+        [ -e "$LOCAL_COPS_ROOT/roles" ] && \
+        [ -e "$LOCAL_COPS_ROOT/bin" ] && \
+        [ -e "$LOCAL_COPS_ROOT/hacking" ];then
+        return 0
+    else
+        return 1
+    fi
+}
 # Maintain corpusops fresh and operational
 # Using system one
-if [[ -z ${SKIP_COPS_FROM_SYSTEM-} ]] && [ ! -e "$LOCAL_COPS_ROOT/.git" ];then
-    if [ ! -e local ];then mkdir local;fi
-    if [ -e "$COPS_ROOT" ] || ( [ ! -e "$COPS_ROOT" ] && [[ -z "$NO_SHARED_COPS" ]] );then
-        if [ ! -e "$COPS_ROOT" ];then
-            mkdir -p "$COPS_ROOT"
-        fi
-        log "Reuse corpusops from user system: $COPS_ROOT"
-        if [ -e local/corpusops.bootstrap ] \
-           && [ ! -h local/corpusops.bootstrap ];then
-                rm -rvf local/corpusops.bootstrap
-        fi
-        if [ ! -e local/corpusops.bootstrap ];then
-            ln -sf "$COPS_ROOT" "$LOCAL_COPS_ROOT"
-        fi
-    elif [ "x$(whoami)" = "xroot" ];then
-        if [ -e "$SYS_COPS_ROOT" ];then
-            log "Reuse corpusops from system: $SYS_COPS_ROOT"
-                if [ -e local/corpusops.bootstrap ] && [ ! -h local/corpusops.bootstrap ];then
-                rm -rvf local/corpusops.bootstrap
-            fi
-            if [ ! -e local/corpusops.bootstrap ];then
-                ln -sf "$SYS_COPS_ROOT" "$LOCAL_COPS_ROOT"
-            fi
-        fi
+if [[ -z $NO_SHARED_COPS ]] && ! ( test_corpusops_present );then
+    if [ ! -e local/corpusops.bootstrap ];then
+        log "Reuse corpusops from: $COPS_ROOT"
+        ln -sf "$COPS_ROOT" "$LOCAL_COPS_ROOT"
+    elif [ -h local/corpusops.bootstrap ];then
+        log "Reuse corpusops from: $(readlink -f "$LOCAL_COPS_ROOT")"
+    elif [ -d local/corpusops.bootstrap ];then
+        log "Local corpusops copy in: local/corpusops.bootstrap"
     fi
 fi
 # Using local copy in fallback
-if [[ -z ${SKIP_COPS_CHECKOUT-} ]] && [ ! -e "$LOCAL_COPS_ROOT/.git" ];then
-    if ! git clone "$COPS_URL" "$LOCAL_COPS_ROOT";then
-        die_ 21 "Error while cloning $COPS_URL -> $LOCAL_COPS_ROOT"
-    fi
+if [[ -z ${SKIP_COPS_CHECKOUT-} ]];then
+        log "Skip corpusops.bootstrap checkout"
 else
-    log "corpusops.bootstrap already there in $LOCAL_COPS_ROOT"
+    if ! ( test_corpusops_present; );then
+        if [ ! -e "$COPS_ROOT" ];then
+            mkdir -p "$COPS_ROOT" || die "$COPS_ROOT can't be created"
+        fi
+        if ! git clone "$COPS_URL" "$LOCAL_COPS_ROOT";then
+            die_ 21 "Error while cloning $COPS_URL -> $LOCAL_COPS_ROOT"
+        fi
+    else
+        addmsg=
+        if [ -h $LOCAL_COPS_ROOT ];then
+            addmsg="${add} -> $(readlink -f $LOCAL_COPS_ROOT)"
+        fi
+        log "corpusops.bootstrap already there in $LOCAL_COPS_ROOT${addmsg}"
+    fi
 fi
