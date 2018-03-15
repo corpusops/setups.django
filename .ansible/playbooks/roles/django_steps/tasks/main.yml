@@ -50,8 +50,12 @@
     cops_django_s_users_group:    "{{cops_django_s_users_group  |default(cops_django_s_users|default(cops_django_lifecycle_app_setup|default(not only_steps)))}}"
     cops_django_s_workers_service: "{{cops_django_s_workers_service |default(cops_django_s_workers|default(cops_django_lifecycle_app_setup|default(not only_steps)))}}"
     cops_django_s_healthchecks:  "{{cops_django_s_healthchecks  |default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
+    cops_django_s_fixperms_configs:   "{{cops_django_s_fixperms_configs|default((cops_django_s_first_fixperms|default(not only_steps)) or (cops_django_s_end_fixperms|default(not only_steps)))}}"
+    cops_django_s_fixperms_run:       "{{cops_django_s_fixperms_run    |default((cops_django_s_first_fixperms|default(not only_steps)) or (cops_django_s_end_fixperms|default(not only_steps)))}}"
 - set_fact:
     cacheable: false
+    cops_django_s_first_fixperms: "{{cops_django_s_first_fixperms        |default(cops_django_s_fixperms_configs or cops_django_s_fixperms_run)}}"
+    cops_django_s_end_fixperms:   "{{cops_django_s_end_fixperms          |default(cops_django_s_fixperms_configs or cops_django_s_fixperms_run)}}"
     cops_django_s_setup_django:       "{{(
         cops_django_s_setup_django_statics or
         cops_django_s_setup_django_locales)}}"
@@ -63,16 +67,13 @@
       cops_django_s_manage_content_reset_site)}}"
     cops_django_s_users:          "{{cops_django_s_users_user or cops_django_s_users_group}}"
     cops_django_s_layout:         "{{cops_django_s_layout_layout}}"
-    cops_django_s_first_fixperms: "{{cops_django_s_first_fixperms|default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
+
     cops_django_s_prerequisites:  "{{(
       cops_django_s_prerequisites_supervisor or
       cops_django_s_prerequisites_build_pkgs or
       cops_django_s_prerequisites_pkgs)}}"
     cops_django_s_workers:        "{{cops_django_s_workers       |default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
     cops_django_s_entry_point:    "{{cops_django_s_entry_point   |default(ansible_virtualization_type in ['docker'] and not only_steps)}}"
-    cops_django_s_fixperms_configs:   "{{cops_django_s_fixperms_configs  |default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
-    cops_django_s_fixperms_run:   "{{cops_django_s_fixperms_run  |default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
-    cops_django_s_end_fixperms:   "{{cops_django_s_end_fixperms  |default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
     cops_django_s_setup_front:  "{{(
       cops_django_s_setup_front_build or
       cops_django_s_setup_front_sync)}}"
