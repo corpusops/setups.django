@@ -57,3 +57,4 @@ static/*
 /.vagrant
 /local
 /.ansible/scripts/ansible_deploy_env
+*.retry
