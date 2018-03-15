@@ -52,7 +52,7 @@ if [[ -z $NO_SHARED_COPS ]] && ! ( test_corpusops_present );then
     fi
 fi
 # Using local copy in fallback
-if [[ -z ${SKIP_COPS_CHECKOUT-} ]];then
+if [[ -n ${SKIP_COPS_CHECKOUT-} ]];then
         log "Skip corpusops.bootstrap checkout"
 else
     if ! ( test_corpusops_present; );then
