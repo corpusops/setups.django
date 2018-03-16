@@ -14,6 +14,7 @@ die_() {
 die() { die_ 256 $@; }
 export COPS_CWD="${COPS_CWD:-$(pwd)}"
 export LOCAL_COPS_ROOT="${LOCAL_COPS_ROOT:-$COPS_CWD/local/corpusops.bootstrap}"
+export LOCAL_DCOPS_ROOT="$(dirname  $LOCAL_COPS_ROOT)"
 export SYS_COPS_ROOT=${SYS_COPS_ROOT:-/srv/corpusops/corpusops.bootstrap}
 export USER_COPS_ROOT="${USER_COPS_ROOT:-$HOME/corpusops/corpusops.bootstrap}"
 if [ "x$(whoami)" = "xroot" ];then
@@ -44,6 +45,9 @@ test_corpusops_present() {
 if [[ -z $NO_SHARED_COPS ]] && ! ( test_corpusops_present );then
     if [ ! -e local/corpusops.bootstrap ];then
         log "Reuse corpusops from: $COPS_ROOT"
+        if [ ! -e "$LOCAL_DCOPS_ROOT" ];then
+            mkdir -pv "$LOCAL_DCOPS_ROOT"
+        fi
         ln -sf "$COPS_ROOT" "$LOCAL_COPS_ROOT"
     elif [ -h local/corpusops.bootstrap ];then
         log "Reuse corpusops from: $(readlink -f "$LOCAL_COPS_ROOT")"
