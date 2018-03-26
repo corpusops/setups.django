@@ -655,22 +655,34 @@ cops_django_supervisor:
     directory: "{app_root}"
     startsecs: "10"
     killasgroup: true
+#
 cops_django_ftp_root: "{data_root}/ftp"
-cops_django_ftp_ip: null
-cops_django_ftp_domain: null
-cops_django_ftp_port_range: null
-#cops_django_ftp_ip: "x.x.x.x"
-#cops_django_ftp_domain: "{domain}"
-#cops_django_ftp_port_range: "22300 22400"
-cops_django_ftp_users:
-- myvirtualuser:
-    password: "secret"
-    home: "{ftp_root}"
-    # sys user under the hood (must exist before)
-    user: "{user}"
-    group: "{group}"
-    mode: "0771"
-    # delete: false
+#corpusops_services_ftp_pureftpd_conf_ForcePassiveIP: "x.x.x.x"
+#corpusops_services_ftp_pureftpd_conf_PassivePortRange: "22300 22400"
+#cops_pureftpd_ftp_additional_users:
+#- user: "{{vars['cops_django_user']}}-ro"
+#  group: "{{vars['cops_django_group']}}-ro"
+cops_pureftpd_ftp_users: []
+#- myvirtualuser:
+#    password: "secret"
+#    home: "{{cops_django_vars.ftp_root}}"
+#    user: "{{cops_django_vars.user    }}"
+#    group: "{{cops_django_vars.group   }}"
+#    # sys user under the hood (must exist before)
+#    mode: "0771"
+#    # delete: false
+# - myvirtualuser-ro:
+#     password: "secret"
+#     home: "{{cops_django_vars.ftp_root}}"
+#     user: "{{cops_django_vars.user    }}-ro"
+#     group: "{{cops_django_vars.group   }}-ro"
+#     owner: "{{cops_django_vars.user}}"
+#     owner_group: "{{cops_django_vars.group}}"
+#     # sys user under the hood (must exist before)
+#     mode: "2771"
+#     perms: r--
+#     mode: "0771"
+#     # delete: false
 # settings for db backup
 cops_django_dbsmartbackup: {}
 # vim:set ft=sls:

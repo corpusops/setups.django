@@ -6,6 +6,7 @@
     cops_django_lifecycle_db:       "{{cops_django_lifecycle_db      |default(not only_steps)}}"
     cops_django_lifecycle_ftp:      "{{cops_django_lifecycle_ftp     |default(False)}}"
     cops_django_lifecycle_dbbackup: "{{cops_django_lifecycle_dbbackup|default(not only_steps)}}"
+    cops_django_lifecycle_app_push_code:  "{{cops_django_lifecycle_app_push_code               |default(not only_steps)}}" 
     cacheable: false
 - set_fact:
     cacheable: false
@@ -114,12 +115,9 @@
     cops_django_lifecycle_app_setup: "{{cops_django_lifecycle_app_setup|default(
                                           (cops_django_lifecycle_app|default(False)) or (
                                             cops_django_lifecycle_app_level_1_steps))}}"
-    cops_django_lifecycle_app_push_code: "{{cops_django_lifecycle_app_push_code|default(cops_django_lifecycle_app|default(not only_steps))}}"
 - set_fact:
     cacheable: false
-    cops_django_lifecycle_app: "{{cops_django_lifecycle_app|default(
-        cops_django_lifecycle_app_push_code or
-        cops_django_lifecycle_app_setup)}}"
+    cops_django_lifecycle_app: "{{cops_django_lifecycle_app|default(cops_django_lifecycle_app_push_code or cops_django_lifecycle_app_setup)}}"
 - set_fact:
     cacheable: false
     cops_django_lifecycle_lc_1_steps: "{{(
