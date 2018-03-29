@@ -6,13 +6,14 @@
     cops_django_lifecycle_db:       "{{cops_django_lifecycle_db      |default(not only_steps)}}"
     cops_django_lifecycle_ftp:      "{{cops_django_lifecycle_ftp     |default(False)}}"
     cops_django_lifecycle_dbbackup: "{{cops_django_lifecycle_dbbackup|default(not only_steps)}}"
-    cops_django_lifecycle_app_push_code:  "{{cops_django_lifecycle_app_push_code               |default(not only_steps)}}" 
+    cops_django_lifecycle_app_push_code:  "{{cops_django_lifecycle_app_push_code               |default(not only_steps)}}"
     cacheable: false
 - set_fact:
     cacheable: false
     cops_django_s_setup_venv_venv:         "{{cops_django_s_setup_venv_venv        |default(cops_django_s_setup_venv|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
     cops_django_s_setup_venv_buildpy:      "{{cops_django_s_setup_venv_buildpy     |default(cops_django_s_setup_venv|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
     cops_django_s_setup_venv_requirements: "{{cops_django_s_setup_venv_requirements|default(cops_django_s_setup_venv|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
+    cops_django_s_setup_front_sync:                   "{{cops_django_s_setup_front_sync |default(cops_django_s_setup_front|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
     cops_django_s_setup_front_build_yarn_install:     "{{cops_django_s_setup_front_build_yarn_install    |default(cops_django_s_setup_front_build|default(cops_django_s_setup_front|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps)))))}}"
     cops_django_s_setup_front_build_yarn_extra_steps: "{{cops_django_s_setup_front_build_yarn_extra_steps|default(cops_django_s_setup_front_build|default(cops_django_s_setup_front|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps)))))}}"
     cops_django_s_setup_front_build_yarn_build:       "{{cops_django_s_setup_front_build_yarn_build      |default(cops_django_s_setup_front_build|default(cops_django_s_setup_front|default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps)))))}}"
@@ -24,7 +25,6 @@
     cops_django_s_prerequisites_pkgs: "{{cops_django_s_prerequisites_pkgs            |default(cops_django_s_prerequisites|default(cops_django_lifecycle_app_prerequisites|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
     cops_django_s_prerequisites_supervisor: "{{cops_django_s_prerequisites_supervisor|default(cops_django_s_prerequisites|default(cops_django_lifecycle_app_prerequisites|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
     cops_django_s_prerequisites_build_pkgs: "{{cops_django_s_prerequisites_build_pkgs|default(cops_django_s_prerequisites|default(cops_django_lifecycle_app_prerequisites|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
-    cops_django_s_setup_front_sync: "{{cops_django_s_setup_front_sync|default(cops_django_s_setup_front                                      |default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps))))}}"
     cops_django_s_setup_configs:    "{{cops_django_s_setup_configs                                                                           |default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps)))}}"
     cops_django_s_setup_hosts:      "{{cops_django_s_setup_hosts                                                                             |default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps)))}}"
     cops_django_s_setup_app:        "{{cops_django_s_setup_app                                                                               |default(cops_django_s_setup|default(cops_django_lifecycle_app_setup|default(not only_steps)))}}"
