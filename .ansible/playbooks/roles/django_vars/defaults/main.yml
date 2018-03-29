@@ -504,7 +504,7 @@ cops_django_push_codes_sync_mode: "{{ (
   ) and 'rsync' or 'git' }}"
 cops_django_push_codes_file_tests:
   git: []
-  rsync: ["composer.json", "composer.lock", ".git"]
+  rsync: [".git"]
 cops_django_push_codes_rsync_opts:
   git:   ["-azv",                           "--exclude", "local/*", "--exclude", ".vagrant", "--exclude", "*.retry"]
   rsync: ["-azv", "--include", ".git/**/*", "--exclude", "local/*", "--exclude", ".vagrant", "--exclude", "*.retry"]

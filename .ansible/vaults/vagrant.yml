@@ -4,7 +4,7 @@ db_backup_servers: all
 django_servers: all
 postgresql_servers: all
 mysql_servers: all
-cops_django_domain: "{{cops_drupal_name}}.vbox.local"
+cops_django_domain: "{{cops_django_name}}.vbox.local"
 cops_installer_mode: vagrant
 cops_django_lifecycle_dbbackup: false
 # let outside VM user edit inside VM files
