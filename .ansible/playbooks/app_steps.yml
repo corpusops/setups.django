@@ -1,8 +1,0 @@
----
-# Preconfigured playbook to slectivily call subparts of the main app role & playbooks
-# eg:
-#  ansible-playbook .ansible/playbooks/app_steps.yml -e "cops_django_s_setup_maintenance_on=false cops_django_s_setup=True"
-- hosts: "{{django_servers|default('all')}}"
-  tasks:
-  - include_role: {name: django_app_vars,  allow_duplicates: false}
-  - include_role: {name: django_steps,     allow_duplicates: false}
