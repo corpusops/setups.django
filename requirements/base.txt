@@ -1,3 +1,4 @@
-psycopg2==2.6.2  # You MUST use PostgreSQL ;-)
-Django==1.10.1  # Not LTS, use 1.8.X instead
-django-crispy-forms==1.6.0
+# Not LTS, use 1.8.X instead
+Django==2.0.4
+psycopg2>=2.7,<2.8 --no-binary psycopg2
+django-crispy-forms==1.7.2

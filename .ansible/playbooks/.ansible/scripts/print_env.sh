@@ -1,1 +1,0 @@
-call_ansible.sh

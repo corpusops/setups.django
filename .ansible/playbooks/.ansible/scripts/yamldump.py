@@ -1,1 +1,0 @@
-cops_wrapper.sh
