@@ -3,3 +3,5 @@
   tags: [play_django_db]
 - import_playbook: app.yml
   tags: [play_django_app]
+- import_playbook: ftp.yml
+  tags: [play_django_ftp]

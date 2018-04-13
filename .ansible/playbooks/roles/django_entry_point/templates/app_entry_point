@@ -2,22 +2,33 @@
 # {{ansible_managed}}
 # {% set d = cops_django_vars %}
 set -ex
-export USE_INIT="${USE_INIT-}"
 export ENTRY_POINT="${IMAGE_ENTRY_POINT-{{d.ep_main_ep}}}"
-export RESTARTED_SERVICES="${RESTARTED_SERVICES-{{d.services|join(' ')}}}"
-
-# Reconfigure (extra-light reprovision) app from user volumes/env
-# The script will be certainly reexecuted a second time from
-# systemd (with different SKIPTAGS
-"{{d.reconfigure}}"
-# Launch app (via systemd)
+if [ ! -e /setup ];then mkdir -p "/setup";fi
+if [ -d /setup/rootfs ];then
+    rsync -azv /setup/rootfs/ /
+fi
+if [[ -n "$A_RECONFIGURE" ]];then
+    echo "$A_RECONFIGURE" > /setup/env.reconfigure.yml
+    chmod 600 /setup/env.reconfigure.yml
+elif [ ! -e /setup/env.reconfigure.yml ];then
+    rm -f /setup/env.reconfigure.yml
+fi
+if [[ -n "$A_POSTCONFIGURE" ]];then
+    echo "$A_POSTCONFIGURE" > /setup/env.postconfigure.yml
+    chmod 600 /setup/env.postconfigure.yml
+elif [ ! -e /setup/env.postconfigure.yml ];then
+    rm -f /setup/env.postconfigure.yml
+fi
+if [[ -n "${TEST_LOOP-}" ]];then
+    while true;do sleep 60;done
+fi
+# Launch dance (generally systemd which in turn launch app)
 cd /
-if [[ -n ${USE_INIT-} ]];then
-    exec $ENTRY_POINT
-else
-    if [[ -z ${NO_RESTART-} ]];then
-        for i in $RESTARTED_SERVICES;do
-            systemctl restart $i
-        done
-    fi
+if [[ -z ${SKIP_PRECONFIGURE-} ]];then
+    # The script will be certainly reexecuted a second time from
+    # systemd (with different arguments
+    "{{d.reconfigure}}" reconfigure.yml env.reconfigure.yml
+fi
+if [[ -z ${SKIP_START-} ]];then
+    exec "$ENTRY_POINT" $@
 fi

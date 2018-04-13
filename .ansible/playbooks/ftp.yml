@@ -1,6 +1,6 @@
 ---
 # FTP
-- hosts: "{{django_servers|default('all')}}"
+- hosts: "{{pureftpd_servers|default('all')}}"
   roles: [corpusops.roles/ansible_plugins]
   tasks:
   - when: ["cops_django_lifecycle_ftp|default(true)"]

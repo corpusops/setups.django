@@ -9,14 +9,6 @@
       daemon_reload: yes
       name: "{{item}}"
     with_items: "{{cops_django_vars.services}}"
-  # this will fail on non systemd hosts on purpose !
-  # if we have activated the reconfigure units (docker mode essentially)
-  - cops_service:
-      enabled: "{{cops_django_vars.activated | ternary(True, False)}}"
-      daemon_reload: yes
-      name: "{{item}}"
-    with_items: "{{cops_django_vars.reconfigure_services}}"
-    when: corpusops_vars.has_services_manager
   # force a reload/restart here
   - shell: echo "force service reload/restart"
     notify: "{{cops_django_vars.rhandlers}}"

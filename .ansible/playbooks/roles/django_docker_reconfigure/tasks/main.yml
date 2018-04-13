@@ -1,0 +1,95 @@
+---
+# Configure things before systemd launches
+- name: maybe disable some services
+  changed_when: false
+  when: "cops_django_do_reconfigure_services|default(true)"
+  file:
+    state: absent
+    path: "{{item}}"
+  with_items: |-
+    {% set res = [] %}
+    {% set s = [] %}
+    {% if  not cops_django_docker_has_ftp %}
+    {%  set _ = s.append('pureftpd') %}
+    {% endif %}
+    {% if  not cops_django_docker_has_nginx %}
+    {%  set _ = s.append('nginx') %}
+    {% endif %}
+    {% if  not cops_django_docker_has_django %}
+    {%  set _ = s.append(cops_django_vars.service) %}
+    {%  set _ = s.extend(cops_django_vars.reconfigure_services[:]) %}
+    {% endif %}
+    {% for i in s %}
+    {%  set _ = res.extend([
+      '/etc/systemd/system/multi-user.target.wants/{0}.service'.format(i),
+      '/lib/systemd/system/multi-user.target.wants/{0}.service'.format(i),
+      ])%}
+    {% endfor %}
+    {{ res|to_json }}
+- when: "cops_django_do_reconfigure_pureftpd|default(true)"
+  changed_when: false
+  name: "reconfigure pureftpd"
+  shell: |-
+    set -ex
+    cd "{{cops_django_vars.provision_dir}}"
+    export NONINTERACTIVE=1
+    {% if cops_django_vars.docker_has_ftp %}
+    .ansible/scripts/call_ansible.sh .ansible/playbooks/ftp.yml \
+      -e "{only_steps: true,
+           cops_pureftpd_s_managecontent: true,
+           cops_pureftpd_s_end_fixperms: true,
+           cops_pureftpd_s_setup: true}"
+    {% else %}
+    rm -fv /etc/rc*/*pureftpd*
+    {% endif %}
+- when: "cops_django_do_reconfigure_dbsmartbackup|default(true)"
+  changed_when: false
+  name: "reconfigure DB backup"
+  shell: |-
+    set -ex
+    cd "{{cops_django_vars.provision_dir}}"
+    export NONINTERACTIVE=1
+    {% if cops_django_vars.docker_has_dbsmartbackup %}
+    .ansible/scripts/call_ansible.sh .ansible/playbooks/db_backup.yml \
+      -e "{only_steps: true,
+           cops_dbsmartbackup_s_managecontent: true,
+           cops_dbsmartbackup_s_end_fixperms: true,
+           cops_dbsmartbackup_s_setup: true}"
+    {% else %}
+    rm -fv /etc/cron.d/dbsmartbackup*
+    {% endif %}
+- when: "cops_django_do_reconfigure_postgresql|default(true)"
+  changed_when: false
+  name: "reconfigure DB"
+  shell: |-
+    set -ex
+    cd "{{cops_django_vars.provision_dir}}"
+    export NONINTERACTIVE=1
+    {% if cops_django_db_role == 'postgresql' %}
+    v=$(psql --version |awk '{print $3}'|sed -re "s/\..*//g")
+    export PATH=/usr/lib/postgresql/$v/bin:$PATH
+    {% endif %}
+    {% if cops_django_docker_has_db %}
+    {% if cops_django_db_role == 'postgresql' %}
+    cn="/etc/postgresql/$v/main"
+    c="/var/lib/postgresql/$v/main"
+    if [ ! -e "$c" ];then
+      mkdir -p "$c"
+      chown postgres:postgres "$c"
+      su postgres -c \
+       "export PATH=$PATH; \
+        initdb -D $c --locale='{{corpusops_services_db_postgresql_pg_conf_locale}}'"
+      if [ ! -e "$cn" ];then
+        mkdir -p "$cn"
+        cp -fv "$c"/*conf "$cn"
+      fi
+    fi
+    chown -Rf postgres:postgres "$c" /var/log/postgresql
+    {% endif %}
+    .ansible/scripts/call_ansible.sh .ansible/playbooks/db.yml \
+      -e "{only_steps: true,
+           cops_{{cops_django_db_role}}_s_setup: true,
+           cops_{{cops_django_db_role}}_s_end_fixperms: true}"
+    {% else %}
+    rm -fv /{etc,lib}/systemd/*/*.wants/{{cops_django_db_role}}*
+    {% endif %}

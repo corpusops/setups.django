@@ -12,10 +12,10 @@ cops_postgresql__databases:
   # for pgsql
   owner: "{{cops_django_db_user}}"
 cops_django_name: "{{cops_app_name}}"
-pureftpd_servers: django_servers
+pureftpd_servers: "{{django_servers}}"
 django_servers: django_servers
 db_backup_servers: db_backup_servers
-dbsmartbackup_servers: db_backup_servers
+dbsmartbackup_servers: "{{db_backup_servers}}"
 postgresql_servers: postgresql_servers
 mysql_servers: mysql_servers
 db_servers: "{{cops_django_db_role_type[cops_django_db_type]}}_servers"

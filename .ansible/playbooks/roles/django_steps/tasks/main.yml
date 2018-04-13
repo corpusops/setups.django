@@ -2,6 +2,7 @@
 - set_fact:
     cacheable: false
     only_steps: "{{only_steps|default(False)}}"
+    cops_django_s_docker_reconfigure: "{{cops_django_s_docker_reconfigure|default(False)}}"
 - set_fact:
     cops_django_lifecycle_db:       "{{cops_django_lifecycle_db      |default(not only_steps)}}"
     cops_django_lifecycle_ftp:      "{{cops_django_lifecycle_ftp     |default(False)}}"
@@ -53,6 +54,8 @@
     cops_django_s_fixperms_run:       "{{cops_django_s_fixperms_run    |default((cops_django_s_first_fixperms|default(not only_steps)) or (cops_django_s_end_fixperms|default(not only_steps)))}}"
     cops_django_s_first_fixperms: "{{cops_django_s_first_fixperms        |default(not only_steps)}}"
     cops_django_s_end_fixperms:   "{{cops_django_s_end_fixperms          |default(not only_steps)}}"
+    cops_django_s_entry_point_configs:  "{{cops_django_s_entry_point_configs    |default(cops_django_s_entry_point|default(cops_django_lifecycle_app_setup|default(not only_steps))) and ansible_virtualization_type in ['docker']}}"
+    cops_django_s_entry_point_services:  "{{cops_django_s_entry_point_services  |default(cops_django_s_entry_point|default(cops_django_lifecycle_app_setup|default(not only_steps))) and ansible_virtualization_type in ['docker']}}"
 - set_fact:
     cacheable: false
     cops_django_s_users_user:     "{{cops_django_s_users_user |default(cops_django_s_first_fixperms or cops_django_s_end_fixperms or cops_django_lifecycle_app_push_code or cops_django_s_users|default(cops_django_lifecycle_app_setup|default(not only_steps)))}}"
@@ -76,7 +79,7 @@
       cops_django_s_prerequisites_build_pkgs or
       cops_django_s_prerequisites_pkgs)}}"
     cops_django_s_workers:        "{{cops_django_s_workers       |default(cops_django_lifecycle_app_setup|default(not only_steps))}}"
-    cops_django_s_entry_point:    "{{cops_django_s_entry_point   |default(ansible_virtualization_type in ['docker'] and not only_steps)}}"
+    cops_django_s_entry_point:    "{{(cops_django_s_entry_point_configs or cops_django_s_entry_point_services)}}"
     cops_django_s_setup_front:  "{{(
       cops_django_s_setup_front_build or
       cops_django_s_setup_front_sync)}}"

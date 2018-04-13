@@ -30,6 +30,6 @@ exec gunicorn \
     -k {{data.gunicorn_worker_class}} \
     -t {{data.gunicorn_worker_timeout}} \
     -w {{data.gunicorn_workers}} \
-    -b {{data.host}}:{{data.port}} \
+    -b {{data.django_bind_host}}:{{data.port}} \
     {{data.WSGI}}
 # vim:set et sts=4 ts=4 tw=80:

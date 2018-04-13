@@ -1,5 +1,0 @@
-# build layout, install base pkgs
-ADD . /provision_dir
-RUN .ansible/scripts/setup_core_variables.sh
-RUN ROLES="django_push_code django_users django_layout django_fixperms" $_call_roles
-RUN ROLES="django_prerequisites" $_call_roles

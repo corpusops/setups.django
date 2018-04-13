@@ -1,4 +1,21 @@
 ---
+- shell: |-
+    cd "{{cops_django_vars.provision_dir}}"
+    export NONINTERACTIVE=1
+    .ansible/scripts/call_ansible.sh .ansible/playbooks/db.yml \
+      -e "{only_steps: true,
+           cops_postgresql_s_end_fixperms: true,
+           cops_postgresql_s_managecontent: true}"
+  when: "cops_django_vars.docker_has_db"
 - become: true
   become_user: "{{cops_django_vars.user}}"
   include_tasks: _sudo.yml
+- shell: |-
+    cd "{{cops_django_vars.provision_dir}}"
+    if ! ( LANG=C LC_ALL=C cops_supervisor.{{cops_django_vars.name}}_ctl status django-{{cops_django_vars.name}} 2>&1 | egrep -iq running; ) ;then
+      cops_supervisor.{{cops_django_vars.name}}_ctl restart django-{{cops_django_vars.name}} restart
+      echo schanged >&2
+    fi
+  register: _cops_django_managecontent_s
+  changed_when: "'schanged' in _cops_django_managecontent_s.stderr"
+  when: "cops_django_vars.docker_has_django"

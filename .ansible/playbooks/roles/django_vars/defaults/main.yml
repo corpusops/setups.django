@@ -4,16 +4,38 @@ corpusops_core_projects_path: /srv/projects
 # When this is enabled, the project user/group is also granted full perms
 # (attention, uids!)
 cops_django__supereditors_paths:
-  - "{project_root}"
-  - "{data_root}"
+- "{{vars['cops_django_project_root']}}/Dockerfile"
+- "{{vars['cops_django_project_root']}}/Dockerfile.dev"
+- "{{vars['cops_django_project_root']}}/README.rst"
+- "{{vars['cops_django_project_root']}}/Vagrantfile"
+- "{{vars['cops_django_project_root']}}/bower.json"
+- "{{vars['cops_django_project_root']}}/docker-compose-dev.yml"
+- "{{vars['cops_django_project_root']}}/docker-compose.yml"
+- "{{vars['cops_django_project_root']}}/docs"
+- "{{vars['cops_django_project_root']}}/gulpfile.js"
+- "{{vars['cops_django_project_root']}}/local"
+- "{{vars['cops_django_project_root']}}/media"
+- "{{vars['cops_django_project_root']}}/package.json"
+- "{{vars['cops_django_project_root']}}/reconfigure.sh"
+- "{{vars['cops_django_project_root']}}/requirements"
+- "{{vars['cops_django_project_root']}}/setup.cfg"
+- "{{vars['cops_django_project_root']}}/setup.py"
+- "{{vars['cops_django_project_root']}}/src"
+- "{{vars['cops_django_project_root']}}/static"
+- "{{vars['cops_django_project_root']}}/tox.ini"
+- "{{vars['cops_django_project_root']}}/vagrant_config.yml"
+#- "{{vars['cops_django_project_root']}}/venv"
+- "{{vars['cops_django_project_root']}}/venv/src"
+- "{{vars['cops_django_project_root']}}/vm_manage"
+- "{{vars['cops_django_data_root']}}"
 # space separated string of uids to allow to write inside
 # projetct directories (used in development through posix ACLS setter)
 cops_django__supereditors: >-
   {{ ansible_env.get(
       'SUPEREDITORS', cops_supereditors|default('')
      ) | copsf_splitstrip | to_json }}
-cops_django_supereditors_paths: "{_supereditors_paths}"
-cops_django_supereditors: "{_supereditors}"
+cops_django_supereditors_paths: "{{vars['cops_django__supereditors_paths']}}"
+cops_django_supereditors: "{{vars['cops_django__supereditors']}}"
 # on old ubuntu "virtualenv" does not exists, we isolate venv install
 cops_django_venv_deb_packages: [virtualenv, python-virtualenv]
 cops_django_venv_rh_packages: [virtualenv]
@@ -170,13 +192,15 @@ cops_django_deb_build_packages___default:
   - tcl8.4-dev
   - tk8.5-dev
 cops_django_rh_build_packages: []
-cops_django_DJANGO_SETTINGS_MODULE: "{PROJECT}.settings.prod"
-cops_django_WSGI: "{PROJECT}.wsgi:application"
-cops_django_adminmail: "root@{domain}"
+cops_django_DJANGO_SETTINGS_MODULE: "{{vars['cops_django_PROJECT']}}.settings.prod"
+cops_django_WSGI: "{{vars['cops_django_PROJECT']}}.wsgi:application"
+cops_django_adminmail: "root@{{vars['cops_django_domain']}}"
 cops_django_admins___default:
 - sysadmin:
-    mail: "sysadmin+{name}@{ansible_fqdn}"
-    password: "{admin_password}"
+    mail: "sysadmin+{{vars['cops_django_name']}}@{{(
+        '.' in ansible_fqdn ) and
+        ansible_fqdn or '{0}.local'.format(ansible_fqdn)}}"
+    password: "{{vars['cops_django_admin_password']}}"
 cops_django_admins: "{{vars['cops_django_admins___default']}}"
 cops_django_host: localhost
 cops_django_port: 8180
@@ -192,9 +216,9 @@ cops_django_allow_crawl: false
 cops_django_db_type: null
 cops_django_db_role_type: {}
 cops_django_db_role: null
-# for sqlite: "{data_root}/{PROJECT}.sqlite"
-cops_django_db_name: "{name}"
-cops_django_db_user: "{name}"
+# for sqlite: "{{vars['cops_django_data_root']}}/{{vars['cops_django_PROJECT']}}.sqlite"
+cops_django_db_name: "{{vars['cops_django_name']}}"
+cops_django_db_user: "{{vars['cops_django_name']}}"
 cops_django_db_password: null
 cops_django_db_host: "127.0.0.1"
 # 3306 for mysql
@@ -202,11 +226,11 @@ cops_django_db_port: 5432
 cops_django_databases:
   default:
     # SQLITE
-    ENGINE: '{db_type}'
-    USER: '{db_user}'
-    PORT: '{db_port}'
-    HOST: '{db_host}'
-    NAME: '{db_name}'
+    ENGINE: "{{vars['cops_django_db_type']}}"
+    USER: "{{vars['cops_django_db_user']}}"
+    PORT: "{{vars['cops_django_db_port']}}"
+    HOST: "{{vars['cops_django_db_host']}}"
+    NAME: "{{vars['cops_django_db_name']}}"
     PASSWORD: '{db_password}'
     # OPTIONS:
     #   init_command: 'SET storage_engine=INNODB'
@@ -221,22 +245,26 @@ cops_django_tz: "Europe/Paris"
 cops_django_allowed_hosts:
 - localhost
 - 127.0.0.1
-- "{domain}"
-- "{ansible_fqdn}"
+- "{{vars['cops_django_domain']}}"
+- "{{ansible_fqdn}}"
 - "10.5.0.1"
 cops_django_caches: {}
 #  default:
 #    BACKEND: 'django.core.cache.backends.memcached.MemcachedCache'
 #    LOCATION: '127.0.0.1:11211'
-cops_django_django_settings:
-  DOMAIN: "{domain}"
+cops_django_django_settings: "{{cops_django_django_settings___default}}"
+cops_django_django_settings___dev:
+  DEBUG: True
+  TEMPLATE_DEBUG: True
+cops_django_django_settings___default:
+  DOMAIN: "{{vars['cops_django_domain']}}"
   ADMINS: "placeholder (totally computed)"
   SITE_ID: 1
   DATABASES: "{{vars['cops_django_databases']}}"
-  DEFAULT_FROM_EMAIL: '{adminmail}'
-  SERVER_EMAIL: 'root@{ansible_fqdn}'
-  MEDIA_ROOT: '{media}'
-  STATIC_ROOT: '{static}'
+  DEFAULT_FROM_EMAIL: "{{vars['cops_django_adminmail']}}"
+  SERVER_EMAIL: "root@{{ansible_fqdn}}"
+  MEDIA_ROOT: "{{vars['cops_django_media']}}"
+  STATIC_ROOT: "{{vars['cops_django_static']}}"
   LANGUAGE_CODE: fr-fr
   DATE_FORMAT: 'iso-8601'
   ALLOWED_HOSTS: "{{vars['cops_django_allowed_hosts']}}"
@@ -249,7 +277,7 @@ cops_django_django_settings:
   USE_X_FORWARDED_HOST: True
   USER_MODULE: "{{vars['cops_django_user_module']}}"
   USER_CLASS: "{{vars['cops_django_user_class']}}"
-  SECRET_KEY: "{secret_key}"
+  SECRET_KEY: "{{vars['cops_django_secret_key']}}"
   LOGGING:
     version: 1
     disable_existing_loggers: False
@@ -299,22 +327,22 @@ cops_django_extra_setting: {}
 cops_django_raw_setting: ''
 #
 cops_django_sysctls: []
-cops_django_domain: "{{ansible_fqdn}}"
+cops_django_domain: "{{cops_app_name}}.corpusops.local"
 # for internal monitoring
 cops_django_query_host: "127.0.0.1"
 # for internal service access
 cops_django_restart_check_retries: 60
 cops_django_internal_host: "127.0.0.1"
 cops_django_name: 'django'
-cops_django_user: "{name}-user"
-cops_django_group: "{name}-group"
-cops_django_projects_dir: '{{corpusops_vars.projects_path}}'
-cops_django_project_dir: '{projects_dir}/{name}'
-cops_django_project_root: "{project_dir}/project"
-cops_django_data_root: "{project_dir}/data"
-cops_django_cfg: "{data_root}/config"
-cops_django_fixperms: "{project_dir}/fixperms.sh"
-cops_django_fixperms_cron: "/etc/cron.d/{name}-fixperms"
+cops_django_user: "{{vars['cops_django_name']}}-user"
+cops_django_group: "{{vars['cops_django_name']}}-group"
+cops_django_projects_dir: "{{corpusops_vars.projects_path}}"
+cops_django_project_dir: "{{vars['cops_django_projects_dir']}}/{{vars['cops_django_name']}}"
+cops_django_project_root: "{{vars['cops_django_project_dir']}}/project"
+cops_django_data_root: "{{vars['cops_django_project_dir']}}/data"
+cops_django_cfg: "{{vars['cops_django_data_root']}}/config"
+cops_django_fixperms: "{{vars['cops_django_project_dir']}}/fixperms.sh"
+cops_django_fixperms_cron: "/etc/cron.d/{{vars['cops_django_name']}}-fixperms"
 cops_django_fixperms_cron_periodicity: "0 */2 * * *"
 cops_django_secret_variables:
   - secret_key
@@ -333,61 +361,32 @@ cops_django_cops_sub_namespaces:
   program: {}
   dbsmartbackup: {}
 cops_django_use_etc_hosts: false
-cops_django_django_uri: "http://{domain}"
+cops_django_django_uri: "http://{{vars['cops_django_domain']}}"
 cops_django_env_overrides: {}
 cops_django_env: {}
-cops_django_django_bind_host: '127.0.0.1'
+cops_django_django_bind_host: "{% if ansible_virtualization_type in ['docker'] %}0.0.0.0{% else %}localhost{%endif%}"
 # templates
 ## entry point
 cops_django_provision_dir: /provision_dir
-cops_django_ep_ansible_args: >-
- -e "cops_cwd={provision_dir}"
- -e "cops_playbooks=${COPS_ROOT}/playbooks/corpusops"
- -e "cops_path=${COPS_ROOT}"
-cops_django_ep_vaults:
-  - "{provision_dir}/.ansible/vaults/default.yml"
-  - "{provision_dir}/.ansible/vaults/app.yml"
-  - "{provision_dir}/.ansible/vaults/docker.yml"
-  - /setup/reconfigure.yml
 cops_django_ep_template: "../templates/app_entry_point"
-# Docker entrypoint settings, tags for cli and vars for playbook reuse via
-# conditionals
-cops_django_ep_folder: ".ansible/playbooks"
-cops_django_ep_playbook: "app.yml"
-cops_django_ep_skip_tags: "{{(
-  'cops_django_lifecycle_app_push_code,'
-  'cops_django_s_users,'
-  'cops_django_s_first_fixperms,'
-  'cops_django_s_prerequisites,'
-  'cops_django_s_setup_venv,'
-  'cops_django_s_setup_front,'
-  'cops_django_s_workers,'
-  'cops_django_s_entry_point,'
-  'cops_django_s_manage_content,'
-  'cops_django_s_end_fixperms,'
-  )}}"
-cops_django_ep_post_start_skip_tags: "{{(
-  'cops_django_s_users,'
-  'cops_django_s_layout,'
-  'cops_django_s_first_fixperms,'
-  'cops_django_s_prerequisites,'
-  'cops_django_s_setup,'
-  'cops_django_s_reverse_proxy,'
-  'cops_django_s_workers,'
-  'cops_django_s_entry_point,'
-  )}}"
+cops_django_ep_playbook: ".ansible/playbooks/site.yml"
+cops_django_ep_main_ep: "/entry_point"
+# activated in docker compose
+cops_django_docker_has_db: false
+cops_django_docker_has_ftp: false
+cops_django_docker_has_dbsmartbackup: false
+cops_django_docker_has_django: false
+cops_django_docker_has_nginx: false
 # global orchestration steps (db, code sync, web & workers prereqs, django config)
 cops_django_become: true
 cops_django_yarn_cmd: "yarn"
 cops_django_yarn_install_args: ""
 cops_django_yarn_build_args: ""
 cops_django_yarn_extra_steps: []
-jango_yarn_extra_steps: []
-#  - "add --force file:{project_root}/develop/plone.restapi-angular"
-cops_django_ep_main_ep: "/entry_point"
+#  - "add --force file:{{vars['cops_django_project_root']}}/develop/plone.restapi-angular"
 # service
-cops_django_service: "cops_supervisor.{name}"
-cops_django_services: ["{service}", "nginx"]
+cops_django_service: "cops_supervisor.{{vars['cops_django_name']}}"
+cops_django_services: ["{{vars['cops_django_service']}}", "nginx"]
 cops_django_services_nginx_reload_state: "reloaded"
 # cops_django_rhandlers: [restart_cops_django]
 cops_django_rhandlers: [restart_cops_django_systemd, restart_cops_django]
@@ -395,109 +394,113 @@ cops_django_rhandlers: [restart_cops_django_systemd, restart_cops_django]
 cops_django_reconfigure_services: |-
   {% set ret = [] %}
   {% if ansible_virtualization_type in ['docker'] %}
-  {% set _ = ret.append("post-start-{service}") %}
+  {% set _ = ret.append("post-start-{{vars['cops_django_service']}}") %}
   {% endif %}
   {{ ret | to_json }}
 cops_django_activated: true
 # Layout, files & configs
 cops_django_stickymode: "2"
-cops_django_static: "{data_root}/static"
-cops_django_media: "{data_root}/media"
+cops_django_static: "{{vars['cops_django_data_root']}}/static"
+cops_django_media: "{{vars['cops_django_data_root']}}/media"
 cops_django_files___default:
-  - {path: "{projects_dir}",
+  - {path: "{{vars['cops_django_projects_dir']}}",
      owner: root, group: root, state: directory}
-  - {path: "{project_dir}",
+  - {path: "{{vars['cops_django_project_dir']}}",
      owner: root, group: root, state: directory}
-  - {path: "{project_root}",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}750"}
-  - {path: "{data_root}",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}751"}
-  - {path: "{media}",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}750"}
-  - {path: "{static}",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}750"}
-  - {path: "{front_doc_root}",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}750"}
-  - {path: "{doc_root}",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}750"}
+  - {path: "{{vars['cops_django_project_root']}}",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}750"}
+  - {path: "{{vars['cops_django_data_root']}}",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}751"}
+  - {path: "{{vars['cops_django_media']}}",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}750"}
+  - {path: "{{vars['cops_django_static']}}",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}750"}
+  - {path: "{{vars['cops_django_front_doc_root']}}",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}750"}
+  - {path: "{{vars['cops_django_doc_root']}}",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}750"}
 cops_django_files: "{{vars['cops_django_files___default']}}"
 # Config files
 cops_django_configs___default:
   - {src: "../templates/crons",
-     dest: "/etc/cron.d/django-{name}",
+     dest: "/etc/cron.d/django-{{vars['cops_django_name']}}",
      mode: "0644",
      owner: "root",
      group: "root"}
   - {src: "../templates/restart.sh",
-     dest: "{data_root}/restart.sh",
+     dest: "{{vars['cops_django_data_root']}}/restart.sh",
      mode: "0755",
-     owner: "{user}",
-     group: "{group}"}
+     owner: "{{vars['cops_django_user']}}",
+     group: "{{vars['cops_django_group']}}"}
   - {src: "../templates/logrotate.conf",
-     dest: "{logrotate_conf}",
+     dest: "{{vars['cops_django_logrotate_conf']}}",
      mode: "0640",
      owner: "root",
      group: "root"}
   - {src: "../templates/config.py",
-     dest: "{app_root}/{PROJECT}/settings/local.py",
+     dest: "{{vars['cops_django_app_root']}}/{{vars['cops_django_PROJECT']}}/settings/local.py",
      mode: "0640",
-     owner: "{user}",
-     group: "{group}"}
+     owner: "{{vars['cops_django_user']}}",
+     group: "{{vars['cops_django_group']}}"}
   - {src: "../templates/runserver.sh",
-     dest: "{data_root}/runserver.sh",
+     dest: "{{vars['cops_django_data_root']}}/runserver.sh",
      mode: "0755",
-     owner: "{user}",
-     group: "{group}"}
+     owner: "{{vars['cops_django_user']}}",
+     group: "{{vars['cops_django_group']}}"}
 cops_django_venv_files: "{{vars['cops_django_venv_files___default']}}"
 cops_django_venv_files___default:
-  - {path: "{data_root}/bin",
-     owner: "{user}", group: "{group}",
-     state: directory, mode: "{stickymode}750"}
+  - {path: "{{vars['cops_django_data_root']}}/bin",
+     owner: "{{vars['cops_django_user']}}", group: "{{vars['cops_django_group']}}",
+     state: directory, mode: "{{vars['cops_django_stickymode']}}750"}
 cops_django_venv_configs: "{{vars['cops_django_venv_configs___default']}}"
 cops_django_venv_configs___default:
   - {src: "../templates/buildpy.sh",
-     dest: "{data_root}/bin/buildpy.sh",
+     dest: "{{vars['cops_django_data_root']}}/bin/buildpy.sh",
      mode: "0755",
-     owner: "{user}",
-     group: "{group}"}
+     owner: "{{vars['cops_django_user']}}",
+     group: "{{vars['cops_django_group']}}"}
 cops_django_configs: "{{vars['cops_django_configs___default']}}"
 cops_django_fixperms_configs___default:
   - {src: "../templates/fixperms.sh",
-     dest: "{fixperms}", mode: "0755",
+     dest: "{{vars['cops_django_fixperms']}}", mode: "0755",
      owner: root, group: root}
 cops_django_fixperms_configs: "{{vars['cops_django_fixperms_configs___default']}}"
 cops_django_ep_configs___default:
   # script to reconfigure image before and after systemd is launched
   - {src: "../templates/reconfigure.sh",
-     dest: "{reconfigure}",
+     dest: "{{vars['cops_django_reconfigure']}}",
      mode: "0755",
      owner: "root",
      group: "root"}
   - {src: "../templates/post-start-reconfigure.service",
-     dest: "/etc/systemd/system/post-start-{service}.service",
+     dest: "/etc/systemd/system/post-start-{{vars['cops_django_service']}}.service",
      mode: "0644",
      owner: "root",
      group: "root"}
-  - {src: "{ep_template}",
+  - {src: "{{vars['cops_django_ep_template']}}",
      dest: "/app_entry_point", mode: "0755",
      owner: root, group: root}
 cops_django_ep_configs: "{{vars['cops_django_ep_configs___default']}}"
 # SystemD based reconfigure unit settings
 cops_django_reconfigure_service_stderr: ""
 cops_django_reconfigure_service_stdout: ""
-cops_django_reconfigure_unit_after: "network.target {service}.service"
+cops_django_reconfigure_unit_after: "network.target {{vars['cops_django_service']}}.service"
 cops_django_reconfigure_install_wantedby: "multi-user.target"
-cops_django_reconfigure: "{project_dir}/reconfigure.sh"
-cops_django_reconfigure_passenv: "ANSIBLE_PLAY ANSIBLE_FOLDER COPS_ROOT"
+cops_django_reconfigure: "{{vars['cops_django_provision_dir']}}/reconfigure.sh"
+cops_django_reconfigure_passenv: >
+  COPS_ROOT NO_SILENT NO_OUTPUT NONINTERACTIVE
+  ANSIBLE_CWD ANSIBLE_PLAY ANSIBLE_VARARGS ANSIBLE_ARGS
+  A_VAULTS_FOLDERS A_VAULTS A_EXTRA_VAULTS
+  A_INVENTORY A_ENV_NAME NO_DEFAULT_VAULTS
 cops_django_reconfigure_verbosity: "-v"
 # Code synchronnisation settings (FORCE_COPS_PROVISION_PUSH_CODE to force)
-cops_django_push_codes_cwd: "{cops_cwd}"
+cops_django_push_codes_cwd: "{{vars['cops_cwd']}}"
 cops_django_push_codes_sync_mode: "{{ (
   cops_installer_mode in ['vagrant'] or
   ansible_virtualization_type in ['docker']
@@ -512,13 +515,13 @@ cops_django_push_codes_rsync_submodule_opts:
   git:   ["-azv", "--exclude", "*.retry"]
   rsync: ["-azv", "--exclude", "*.retry"]
 cops_django_push_codes:
-- path: "{project_root}"
-  origin_path: "{push_codes_cwd}"
+- path: "{{vars['cops_django_project_root']}}"
+  origin_path: "{{vars['cops_django_push_codes_cwd']}}"
   sync_mode: "{{cops_django_push_codes_sync_mode}}"
   rsync_opts: "{{cops_django_push_codes_rsync_opts[cops_django_push_codes_sync_mode]}}"
   file_tests: "{{cops_django_push_codes_file_tests[cops_django_push_codes_sync_mode]}}"
-  owner: "{user}"
-  group: "{group}"
+  owner: "{{vars['cops_django_user']}}"
+  group: "{{vars['cops_django_group']}}"
   sub_paths:
   - path: local/setups.django
     rsync_opts: "{{cops_django_push_codes_rsync_submodule_opts[cops_django_push_codes_sync_mode]}}"
@@ -535,63 +538,62 @@ cops_deploy_ssh_key_paths:
     # -----END RSA PRIVATE KEY-----
 # Reverse proxy Nginx
 cops_django_default_vhost_is_default_server: false
-cops_django_logrotate_conf: "/etc/logrotate.d/cops_{name}.conf"
+cops_django_logrotate_conf: "/etc/logrotate.d/cops_{{vars['cops_django_name']}}.conf"
 cops_django_logrotate_rotate: 365
 cops_django_logrotate_size: 10M
-cops_django_htpasswd: "/etc/nginx/{name}-htpasswd"
+cops_django_htpasswd: "/etc/nginx/{{vars['cops_django_name']}}-htpasswd"
 cops_django_http_auth_restricted: false
 cops_django_http_users:
-- {user: "{admin_user}", password: "{admin_password}"}
+- {user: "{{vars['cops_django_admin_user']}}", password: "{{vars['cops_django_admin_password']}}"}
 #- {user: "myadmin", password: "mypassword"}
 cops_django_http_port: "80"
 cops_django_https_port: "443"
 cops_django_nginx: {}
-cops_django_nginx_domain: "{domain}"
-cops_django_nginx_server_aliases: ["www.{domain}"]
+cops_django_nginx_domain: "{{vars['cops_django_domain']}}"
+cops_django_nginx_server_aliases: ["www.{{vars['cops_django_domain']}}"]
 cops_django_nginx_redirect_aliases: true
-cops_django_nginx_port: "{http_port}"
-cops_django_nginx_ssl_port: "{https_port}"
+cops_django_nginx_port: "{{vars['cops_django_http_port']}}"
+cops_django_nginx_ssl_port: "{{vars['cops_django_https_port']}}"
 cops_django_nginx_content_headless_template: "../templates/nginx.headless.conf"
 cops_django_nginx_content_template: "../templates/django.nginx.conf"
 cops_django_nginx_top_template: "../templates/django.nginx.top.conf"
-cops_django_nginx_basename: "corpus-{name}"
+cops_django_nginx_basename: "corpus-{{vars['cops_django_name']}}"
 cops_django_nginx_is_default_server: true
-cops_django_nginx_htpasswd: "{htpasswd}"
+cops_django_nginx_htpasswd: "{{vars['cops_django_htpasswd']}}"
 cops_django_nginx_ssl_protected: false
 cops_django_nginx_ssl_cert: ""
 cops_django_nginx_ssl_key: ""
 cops_django_nginx_loglevel: crit
-cops_django_nginx_upstream_name: "{name}"
-cops_django_nginx_doc_root: "{doc_root}"
-cops_django_front_dist_folder: "{project_root}/dist"
+cops_django_nginx_upstream_name: "{{vars['cops_django_name']}}"
+cops_django_nginx_doc_root: "{{vars['cops_django_doc_root']}}"
+cops_django_front_dist_folder: "{{vars['cops_django_project_root']}}/dist"
 cops_django_front_nginx: {}
 cops_django_front_nginx_domain: null
-# cops_django_front_nginx_domain: "front.{domain}"
+# cops_django_front_nginx_domain: "front.{{vars['cops_django_domain']}}"
 cops_django_front_nginx_server_aliases: []
 # if front domain isnt activated, the vhost wont be installed (or link removed)
 cops_django_front_nginx_install: "{{cops_django_front_nginx_domain|copsf_asbool}}"
 cops_django_front_nginx_redirect_aliases: true
-cops_django_front_nginx_port: "{http_port}"
-cops_django_front_nginx_ssl_port: "{https_port}"
+cops_django_front_nginx_port: "{{vars['cops_django_http_port']}}"
+cops_django_front_nginx_ssl_port: "{{vars['cops_django_https_port']}}"
 cops_django_front_nginx_content_template: "../templates/front.nginx.conf"
 cops_django_front_nginx_top_template: "../templates/front.nginx.top.conf"
-cops_django_front_nginx_basename: "corpus-front-{name}"
+cops_django_front_nginx_basename: "corpus-front-{{vars['cops_django_name']}}"
 cops_django_front_nginx_is_default_server: false
 cops_django_front_nginx_ssl_protected: false
-cops_django_front_nginx_htpasswd: "{nginx_htpasswd}"
-cops_django_front_nginx_ssl_cert: "{nginx_ssl_cert}"
-cops_django_front_nginx_ssl_key: "{nginx_ssl_key}"
-cops_django_front_nginx_loglevel: "{nginx_loglevel}"
-cops_django_front_nginx_upstream_name: "{nginx_upstream_name}"
-cops_django_front_nginx_doc_root: "{front_doc_root}"
-cops_django_orig_py: null
+cops_django_front_nginx_htpasswd: "{{vars['cops_django_nginx_htpasswd']}}"
+cops_django_front_nginx_ssl_cert: "{{vars['cops_django_nginx_ssl_cert']}}"
+cops_django_front_nginx_ssl_key: "{{vars['cops_django_nginx_ssl_key']}}"
+cops_django_front_nginx_loglevel: "{{vars['cops_django_nginx_loglevel']}}"
+cops_django_front_nginx_upstream_name: "{{vars['cops_django_nginx_upstream_name']}}"
+cops_django_front_nginx_doc_root: "{{vars['cops_django_front_doc_root']}}"
+cops_django_orig_py: "/usr/bin/python{{vars['cops_django_pkg_python_slug']}}"
 cops_django_venv_bin: virtualenv
 cops_django_force_ssl: false
-cops_django_doc_root: "{static}"
-cops_django_front_doc_root: "{doc_root}"
+cops_django_doc_root: "{{vars['cops_django_static']}}"
+cops_django_front_doc_root: "{{vars['cops_django_doc_root']}}"
 cops_django_cron_hour: 1
 cops_django_cron_minute: 5
-cops_django_cron_periodicity_pack: "{{ cops_django_cron_minute + 0  }} {cron_hour} * * 6"
 cops_django_crons___default:
   - "# MAILTO=foobar"
 cops_django_crons: "{{vars['cops_django_crons___default']}}"
@@ -599,10 +601,10 @@ cops_django_crons: "{{vars['cops_django_crons___default']}}"
 cops_django_supervision_unit_restart: "always"
 cops_django_supervision_unit_restartsec: "50s"
 cops_django_supervision_unit_stopsec: "50s"
-cops_django_py_root: "{project_root}/venv"
+cops_django_py_root: "{{vars['cops_django_project_root']}}/venv"
 cops_django_py: "{py_root}/bin/python"
 cops_django_requirements:
-- "{project_root}/requirements/prod.txt"
+- "{{vars['cops_django_project_root']}}/requirements/prod.txt"
 cops_django_skip_eggs_cache: false
 # head |tail (default head)
 cops_django_link_selector_mode: head
@@ -615,17 +617,16 @@ cops_django_overrides_buildout_secret: {}
 cops_django_overrides_buildout: {}
 cops_django_buildout_settings___default:
 cops_django_PROJECT: project
-cops_django_app_root: "{project_root}/src"
-cops_django_locale_cwd: "{app_root}"
-cops_django_runserver_args: "--nothreading --noreload {host}:{port}"
+cops_django_app_root: "{{vars['cops_django_project_root']}}/src"
+cops_django_locale_cwd: "{{vars['cops_django_app_root']}}"
+cops_django_runserver_args: "--nothreading --noreload {{vars['cops_django_host']}}:{{vars['cops_django_port']}}"
 cops_django_environment___default:
-  DJANGO_SETTINGS_MODULE: "{DJANGO_SETTINGS_MODULE}"
+  DJANGO_SETTINGS_MODULE: "{{vars['cops_django_DJANGO_SETTINGS_MODULE']}}"
   NOGUNICORN: ""
   CLEARSESSIONS: ""
 cops_django_environment: "{{vars['cops_django_environment___default']}}"
-#cops_django_orig_py: /usr/bin/python3
-cops_django_pip_root: "{project_root}"
-cops_django_media_source: "{project_root}/media"
+cops_django_pip_root: "{{vars['cops_django_project_root']}}"
+cops_django_media_source: "{{vars['cops_django_project_root']}}/media"
 cops_django_disabled_urls: []
 cops_django_ldap_url: ""
 #cops_django_ldap_url: "ldap://ldap.net/dc=m,dc=com?uid?sub?(objectClass=person)"
@@ -634,31 +635,31 @@ cops_django_ldap_binddn: ""
 cops_django_ldap_binddn_passwd: "foo"
 # only needed when wanting to build Python from source
 cops_django_build_py: false
-cops_django_py_full_ver: "{py_ver}.13"
+cops_django_py_full_ver: "{{vars['cops_django_py_ver']}}.13"
 cops_django_py_ver: "2.7"
-cops_django_py_inst: '{data_root}/python'
-cops_django_supervisorctl: "cops_supervisor.{name}_ctl"
+cops_django_py_inst: "{{vars['cops_django_data_root']}}/python"
+cops_django_supervisorctl: "cops_supervisor.{{vars['cops_django_name']}}_ctl"
 cops_django_ht_restarttime: "3"
 cops_django_ht_string: "gunicorn"
 cops_django_supervisor:
 - kind: program
-  name: "django-{name}"
+  name: "django-{{vars['cops_django_name']}}"
   data:
-    command: "{data_root}/runserver.sh"
+    command: "{{vars['cops_django_data_root']}}/runserver.sh"
     environment: >
       {%-for i,val in cops_django_environment.items() -%}
       {{i}}="{{val}}"{%-
         if loop.index<cops_django_environment|length-%},{%-
           endif%}
       {%- endfor %}
-    user: "{user}"
-    directory: "{app_root}"
+    user: "{{vars['cops_django_user']}}"
+    directory: "{{vars['cops_django_app_root']}}"
     startsecs: "10"
     killasgroup: true
 #
-cops_django_ftp_root: "{data_root}/ftp"
 #corpusops_services_ftp_pureftpd_conf_ForcePassiveIP: "x.x.x.x"
 #corpusops_services_ftp_pureftpd_conf_PassivePortRange: "22300 22400"
+cops_django_ftp_root: "{{vars['cops_django_data_root']}}/ftp"
 #cops_pureftpd_ftp_additional_users:
 #- user: "{{vars['cops_django_user']}}-ro"
 #  group: "{{vars['cops_django_group']}}-ro"

@@ -3,6 +3,9 @@
   when: [cops_django_lifecycle_app_setup]
   become: "{{cops_django_vars.become}}"
   block:
+  - include_role: {name: django_docker_reconfigure, allow_duplicates: false}
+    tags: [cops_django_s_docker_reconfigure]
+    when: [cops_django_s_docker_reconfigure]
   - include_role: {name: django_users, allow_duplicates: false}
     tags: [cops_django_s_users]
     when: [cops_django_s_users]
@@ -21,12 +24,12 @@
   - include_role: {name: django_reverse_proxy, allow_duplicates: false}
     tags: [cops_django_s_reverse_proxy]
     when: [cops_django_s_reverse_proxy]
-  - include_role: {name: django_workers, allow_duplicates: false}
-    tags: [cops_django_s_workers]
-    when: [cops_django_s_workers]
   - include_role: {name: django_entry_point, allow_duplicates: false}
     tags: [cops_django_s_entry_point]
     when: [cops_django_s_entry_point]
+  - include_role: {name: django_workers, allow_duplicates: false}
+    tags: [cops_django_s_workers]
+    when: [cops_django_s_workers]
   - include_role: {name: django_manage_content, allow_duplicates: false}
     tags: [cops_django_s_manage_content]
     when: [cops_django_s_manage_content]

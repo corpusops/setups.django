@@ -13,47 +13,36 @@ export HOME=${HOME:-${DEFAULT_HOME}}
 #   services are up
 # - We call every time the same ansible playbook, with different skip tags
 # The trick reside to use env vars to control what the script will do
-DEFAULT_ANSIBLE_VERB="{{d.reconfigure_verbosity}}"
-DEFAULT_ANSIBLE_CWD="{{d.provision_dir}}"
-DEFAULT_ANSIBLE_VAULTS="{{d.ep_vaults|join(' ')}}"
-DEFAULT_POST_ANSIBLE_SKIP_TAGS="{{d.ep_post_start_skip_tags}}"
-DEFAULT_ANSIBLE_SKIP_TAGS="{{d.ep_skip_tags}}"
 export COPS_ROOT="${COPS_ROOT:-/srv/corpusops/corpusops.bootstrap}"
-export ANSIBLE_VERB="${ANSIBLE_VERB-${DEFAULT_ANSIBLE_VERB}}"
+DEFAULT_ANSIBLE_CWD="$(dirname "$(readlink -f "${0}")")"
 export ANSIBLE_CWD="${ANSIBLE_CWD-${DEFAULT_ANSIBLE_CWD}}"
-export ANSIBLE_VAULTS="${ANSIBLE_VAULTS-${DEFAULT_ANSIBLE_VAULTS}}"
-export ANSIBLE_DEFAULT_VARARGS="{{d.ep_ansible_args}}"
-export ANSIBLE_ARGS="${ANSIBLE_ARGS-}"
-export ANSIBLE_VARARGS="${ANSIBLE_VARARGS-${ANSIBLE_DEFAULT_VARARGS}}"
-export ANSIBLE_FOLDER="${ANSIBLE_FOLDER-{{d.ep_folder}}}"
-export SKIP_TAGS_MODE="${SKIP_TAGS_MODE-${1:-}}"
+DEFAULT_A_VAULTS_FOLDERS="$ANSIBLE_CWD/.ansible/vaults $ANSIBLE_CWD/local /setup"
+export ANSIBLE_ARGS="${ANSIBLE_ARGS-"-v"}"
+export ANSIBLE_VARARGS="${ANSIBLE_VARARGS-}"
+export A_VAULTS_FOLDERS="${A_VAULTS_FOLDERS-$DEFAULT_A_VAULTS_FOLDERS}"
+if [[ -n "${A_VAULTS-}" ]];then
+    export A_VAULTS="${A_VAULTS-}"
+fi
+export A_EXTRA_VAULTS=${A_EXTRA_VAULTS:-$@}
 export ANSIBLE_PLAY="${ANSIBLE_PLAY-{{d.ep_playbook}}}"
-export POST_ANSIBLE_SKIP_TAGS="${POST_ANSIBLE_SKIP_TAGS-${DEFAULT_POST_ANSIBLE_SKIP_TAGS}}"
-export ANSIBLE_SKIP_TAGS="${ANSIBLE_SKIP_TAGS-${DEFAULT_ANSIBLE_SKIP_TAGS}}"
-case $SKIP_TAGS_MODE in
-    post)
-        export ANSIBLE_SKIP_TAGS="${POST_ANSIBLE_SKIP_TAGS}";;
-    *)
-        export ANSIBLE_SKIP_TAGS="${ANSIBLE_SKIP_TAGS}";;
-esac
-for i in $ANSIBLE_VAULTS;do
-    if [ -e $i ];then
-        ANSIBLE_VARARGS="${ANSIBLE_VARARGS} -e @$i"
+for lca in \
+    "$ANSIBLE_CWD/.ansible/scripts/call_ansible.sh"  \
+    "$COPS_ROOT/bin/cops_apply_role"
+do
+    if [ -e "$lca" ];then
+        DEFAULT_COPS_ANSIBLE_CALLER="$lca"
+        break
     fi
 done
-export ANSIBLE_VARARGS
+if [[ -z "${DEFAULT_COPS_ANSIBLE_CALLER-}" ]];then
+    echo "ansbile wrapper not found"
+    exit 1
+fi
+COPS_ANSIBLE_CALLER="${COPS_ANSIBLE_CALLER:-$DEFAULT_COPS_ANSIBLE_CALLER}"
+if [[ -n $ANSIBLE_CWD ]];then cd "$ANSIBLE_CWD";fi
+if [[ -n "${A_ENV_NAME}" ]] && [ -e .ansible/scripts/setup_vaults.sh ];then
+    .ansible/scripts/setup_vaults.sh
+fi
 if [[ -z ${NO_CONFIG-} ]];then
-    if [[ -n $ANSIBLE_CWD ]];then
-        cd "$ANSIBLE_CWD"
-    fi
-    play="$ANSIBLE_PLAY"
-    if [[ -n "$ANSIBLE_FOLDER" ]] && [ -d "$ANSIBLE_FOLDER" ];then
-        play="$ANSIBLE_FOLDER/$ANSIBLE_PLAY"
-    fi
-    $COPS_ROOT/bin/cops_apply_role \
-        $ANSIBLE_ARGS \
-        $ANSIBLE_VARARGS \
-        $ANSIBLE_VERB \
-        "$play" \
-        --skip-tags=$ANSIBLE_SKIP_TAGS
+    $COPS_ANSIBLE_CALLER $ANSIBLE_ARGS $ANSIBLE_VARARGS $ANSIBLE_PLAY
 fi

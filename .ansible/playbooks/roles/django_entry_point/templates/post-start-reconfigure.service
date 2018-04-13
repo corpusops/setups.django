@@ -6,8 +6,9 @@ After={{d.reconfigure_unit_after}}
 
 [Service]
 Type=forking
-ExecStart={{d.reconfigure}} post
-PassEnvironment={{d.reconfigure_passenv}}
+Environment=NONINTERACTIVE=1
+ExecStart={{d.reconfigure}} postconfigure.yml env.postconfigure.yml
+PassEnvironment={{d.reconfigure_passenv.strip()}}
 TimeoutSec=0
 RemainAfterExit=yes
 {% if d.reconfigure_service_stderr %}

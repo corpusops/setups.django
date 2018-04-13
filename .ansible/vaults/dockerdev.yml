@@ -1,0 +1,27 @@
+---
+db_servers: all
+db_backup_servers: all
+django_servers: all
+postgresql_servers: all
+mysql_servers: all
+cops_django_force_push_code: true
+cops_django_servers_ips: [127.0.0.1]
+#
+cops_django_s_reverse_proxy: false
+cops_django_s_prerequisites_supervisor: false
+cops_django_s_workers: false
+cops_django_s_manage_content: false
+#
+cops_django_secret_key: secret
+cops_django_admin_password: secret
+cops_django_db_password: secret
+cops_django_lifecycle_ftp: true
+#
+cops_django_DJANGO_SETTINGS_MODULE: "{{vars['cops_django_PROJECT']}}.settings.dev"
+cops_django_requirements:
+- "{{vars['cops_django_project_root']}}/requirements/dev.txt"
+cops_django_django_settings: |
+  {% set res = {} %}
+  {% set _ = res.update(cops_django_django_settings___default) %}
+  {% set _ = res.update(cops_django_django_settings___dev) %}
+  {{ res|to_json }}

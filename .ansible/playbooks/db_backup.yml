@@ -11,7 +11,11 @@
       - set_fact:
           cacheable: false
           cops_django_dbsmartbackup_default_free_form: |
+            {% if 'db_servers' in groups %}
             export HOST="{{hostvars[groups['db_servers'][0]]['ansible_fqdn']}}"
+            {% else %}
+            export HOST="localhost"
+            {% endif %}
             export PORT="{{cops_django_vars.db_port}}"
             export DBNAMES="{{cops_django_vars.db_name}}"
             export PASSWORD="{{cops_django_vars.db_password}}"

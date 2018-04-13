@@ -1,4 +1,0 @@
-# build layout, install virtualenv
-ADD . /provision_dir
-RUN ROLES="django_push_code django_users django_layout django_fixperms" $_call_roles
-RUN ROLES="django_setup_venv" $_call_roles

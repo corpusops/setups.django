@@ -1,0 +1,59 @@
+---
+version: '3.5'
+# Build with:
+#  docker build --squash -t corpusops/django -f Dockerfile [--build-arg=SKIP_COPS_UPDATE=y]
+# Start with:
+#  docker-compose -f d*-compose.yml  up -t 0 -d --force-recreate django
+networks: {corpusopsdev_net: {ipam: {config: [{subnet: "172.19.102.2/24"}], driver: default}, driver: bridge}}
+x-image: &image_template
+  image: &image "corpusops/django"
+  environment:
+  - "DOCKER_SKIP_START=${DOCKER_SKIP_START-}"
+  - |
+    A_RECONFIGURE=---
+    ---
+    cops_django_docker_has_db : true
+    cops_django_docker_has_ftp : true
+    cops_django_docker_has_dbsmartbackup : true
+    cops_django_docker_has_nginx : true
+    cops_django_docker_has_django : true
+    only_steps: true
+    cops_django_lifecycle_app_push_code: false
+    cops_django_s_docker_reconfigure: true
+    cops_django_s_setup_reverse_proxy: true
+    cops_django_s_setup_reverse_proxy_dvhost: false
+    cops_django_s_setup_hosts: true
+    cops_django_s_setup_configs: true
+    cops_django_s_manage_content: false
+  - |
+    A_POSTCONFIGURE=---
+    ---
+    cops_django_docker_has_db : true
+    cops_django_docker_has_ftp : true
+    cops_django_docker_has_dbsmartbackup : true
+    cops_django_docker_has_django : true
+    cops_django_docker_has_nginx : true
+    only_steps: true
+    cops_django_lifecycle_app_push_code: false
+    cops_django_s_manage_content: true
+  command: /app_entry_point
+  # for now this is a bloat image-as-a-vm to make a dev env ligther than a vagrant VM
+  volumes: &image_volumes
+  # systemd
+  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  # data
+  - "./local/setup:/setup"
+  - "./local/data/postgresql:/var/lib/postgresql"
+  - "./local/data/mysql:/var/lib/mysql"
+  - "./local/data/media:/srv/projects/djangoproject/data/media"
+  - "./local/data/backups:/srv/backups"
+  # logs
+  - "./local/data/log/app:/var/log/supervisord-djangoproject/"
+  - "./local/data/log/postgresql:/var/log/postgresql"
+  - "./local/data/log/mysql:/var/log/mysql"
+  - "./local/data/log/nginx:/var/log/nginx"
+  # Remember: /setup/rootfs/ is synced inside the container /
+services:
+  django:
+    <<: *image_template
+    networks: {corpusopsdev_net: {ipv4_address: "172.19.103.2"}}

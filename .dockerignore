@@ -1,7 +1,6 @@
-*.box
-/.vagrant
-/.ansible/scripts/ansible_deploy_env
 /local
+/.vagrant
 !/local/setups.*
-!local/corpusops.bootstrap
+!/local/corpusops.bootstrap
 /local/corpusops.bootstrap/venv
+!/local/corpusops.bootstrap/venv/srv/ansible 

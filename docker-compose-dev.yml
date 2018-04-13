@@ -1,0 +1,101 @@
+---
+version: '3.5'
+# Build with (build stock first !):
+#  docker build --squash  -t corpusops/django:dev -f Dockerfile.dev [--build-arg=SKIP_COPS_UPDATE=y]
+# Start with:
+#  SUPEREDITORS=$(id -u) docker-compose -f d*-compose-dev.yml up -t 0 -d --force-recreate django
+networks: {corpusopsdev_net: {ipam: {config: [{subnet: "172.19.103.0/24"}], driver: default}, driver: bridge}}
+x-image: &image_template
+  image: &image "corpusops/django:dev"
+  environment:
+  - SUPEREDITORS=$SUPEREDITORS
+  - "DOCKER_SKIP_START=${DOCKER_SKIP_START-}"
+  - |
+    A_RECONFIGURE=---
+    cops_django_docker_has_db: true
+    cops_django_docker_has_ftp: false
+    cops_django_docker_has_dbsmartbackup: false
+    cops_django_docker_has_nginx: true
+    cops_django_docker_has_django: true
+    only_steps: true
+    cops_django_lifecycle_app_push_code: false
+    cops_django_s_docker_reconfigure: true
+    cops_django_s_first_fixperms: true
+    cops_django_s_setup_reverse_proxy: true
+    cops_django_s_setup_reverse_proxy_dvhost: false
+    cops_django_s_setup_hosts: true
+    cops_django_s_setup_configs: true
+    cops_django_s_manage_content: false
+    # dev
+    cops_django_s_setup_venv: true
+    cops_django_s_setup_front: true
+    cops_django_crons: []
+  - |
+    A_POSTCONFIGURE=---
+    cops_django_docker_has_db: true
+    cops_django_docker_has_dbsmartbackup: false
+    cops_django_docker_has_ftp: false
+    cops_django_docker_has_nginx: true
+    cops_django_docker_has_django: true
+    only_steps: true
+    cops_django_lifecycle_app_push_code: false
+    cops_django_s_manage_content: true
+  command: >
+    sh -c 'if [ "x$DOCKER_SKIP_START" != x ];
+    then while true;do echo sleeping;sleep 65535;done
+    else /app_entry_point;
+    fi'
+  # for now this is a bloat image-as-a-vm to make a dev env ligther than a vagrant VM
+  volumes: &image_volumes
+  # systemd
+  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  # data
+  - "./local/setup:/setup"
+  - "./local/data/postgresql:/var/lib/postgresql"
+  - "./local/data/mysql:/var/lib/mysql"
+  - "./local/data/media:/srv/projects/djangoproject/data/media"
+  - "./local/data/backups:/srv//backups"
+  # logs
+  - "./local/data/log/app:/var/log/supervisord-djangoproject/"
+  - "./local/data/log/postgresql:/var/log/postgresql"
+  - "./local/data/log/mysql:/var/log/mysql"
+  - "./local/data/log/nginx:/var/log/nginx"
+  # sources
+  - "./src:/srv/projects/djangoproject/project/src"
+  - "./media:/srv/projects/djangoproject/project/media"
+  - "./static:/srv/projects/djangoproject/project/static"
+  - "./requirements:/srv/projects/djangoproject/project/requirements"
+  - "./setup.py:/srv/projects/djangoproject/project/setup.py"
+  - "./setup.cfg:/srv/projects/djangoproject/project/setup.cfg"
+  - "./docs:/srv/projects/djangoproject/project/docs"
+  - "./.git:/srv/projects/djangoproject/project/.git"
+  - "./.gitignore:/srv/projects/djangoproject/project/.gitignore"
+  - "./.gitmodules:/srv/projects/djangoproject/project/.gitmodules"
+  - "./.bowerrc:/srv/projects/djangoproject/project/.bowerrc"
+  - "./README.rst:/srv/projects/djangoproject/project/README.rst"
+  - "./bower.json:/srv/projects/djangoproject/project/bower.json"
+  - "./gulpfile.js:/srv/projects/djangoproject/project/gulpfile.js"
+  - "./package.json:/srv/projects/djangoproject/project/package.json"
+  - "./tox.ini:/srv/projects/djangoproject/project/tox.ini"
+  # provision
+  - "./.ansible/vaults:/provision_dir/.ansible/vaults"
+  - "./.ansible/scripts:/provision_dir/.ansible/scripts"
+  - "./.ansible/playbooks:/provision_dir/.ansible/playbooks"
+  - "./local/setups.django:/provision_dir/local/setups.django"
+  - "./local/setups.postgresql:/provision_dir/local/setups.postgresql"
+  - "./local/setups.mysql:/provision_dir/local/setups.mysql"
+  - "./local/setups.pureftpd:/provision_dir/local/setups.pureftpd"
+  - "./local/setups.dbsmartbackup:/provision_dir/local/setups.dbsmartbackup"
+  # Need a bind mount in local/corpusops.bootstrap instead of the symlink
+  - "./local/corpusops.bootstrap/bin:/srv/corpusops/corpusops.bootstrap/bin"
+  - "./local/corpusops.bootstrap/hacking:/srv/corpusops/corpusops.bootstrap/hacking"
+  - "./local/corpusops.bootstrap/roles:/srv/corpusops/corpusops.bootstrap/roles"
+  - "./local/corpusops.bootstrap/requirements:/srv/corpusops/corpusops.bootstrap/requirements"
+  - "./local/corpusops.bootstrap/docs:/srv/corpusops/corpusops.bootstrap/docs"
+  # Remember: /setup/rootfs/ is synced inside the container /
+  # - "./app_entry_point:/app_entry_point"
+  # - "./reconfigure.sh:/provision_dir/reconfigure.sh"
+services:
+  django:
+    <<: *image_template
+    networks: {corpusopsdev_net: {ipv4_address: "172.19.103.3"}}
