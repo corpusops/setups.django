@@ -5,14 +5,27 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login
-from django.views.i18n import javascript_catalog
+try:
+    from django.urls import path
+except ImportError:
+    pass
+
+try:
+    from django.views.i18n import javascript_catalog
+    jstrans = url(r'^jsi18n/$', javascript_catalog,
+                  name='javascript-catalog')
+except ImportError:
+    from django.views.i18n import JavaScriptCatalog
+    jstrans = path("jsi18n/",
+                   JavaScriptCatalog.as_view(packages=['socialhome']),
+                   name="javascript-catalog")
 
 from common.forms import CommonAuthenticationForm
 from common.views import HomeView
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^jsi18n/$', javascript_catalog, name='javascript-catalog'),
+    url(r'^admin/', admin.site.urls),
+    jstrans,
 
     url(r'^login/$', login, name='login', kwargs={
         'authentication_form': CommonAuthenticationForm,
@@ -24,7 +37,7 @@ urlpatterns = [
 
 if 'apptest' in settings.INSTALLED_APPS:  # pragma: nobranch
     urlpatterns += [
-        url(r'^test', include('apptest.urls', namespace='apptest')),
+        url(r'^test', include('apptest.urls')),
     ]
 
 if settings.DEBUG and 'debug_toolbar' in settings.INSTALLED_APPS:
