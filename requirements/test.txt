@@ -2,14 +2,14 @@
 
 tox
 
-coverage==4.3.4
-isort==4.2.5
-pylama==7.1.0
+coverage==4.5.1
+isort==4.3.4
+pylama==7.4.3
 mock==2.0.0  # For Python 2
 
-tblib==1.3.0  # For Django 1.9.X and --parallel flag for manage.py test command
+tblib==1.3.2  # For Django 1.9.X and --parallel flag for manage.py test command
 
-factory-boy==2.8.1
+factory-boy==2.10.0
 
 Sphinx==1.5.3
 sphinx-intl==0.9.9  # translation tool
