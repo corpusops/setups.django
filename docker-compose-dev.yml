@@ -87,11 +87,11 @@ x-image: &image_template
   - "./local/setups.pureftpd:/provision_dir/local/setups.pureftpd"
   - "./local/setups.dbsmartbackup:/provision_dir/local/setups.dbsmartbackup"
   # Need a bind mount in local/corpusops.bootstrap instead of the symlink
-  - "./local/corpusops.bootstrap/bin:/srv/corpusops/corpusops.bootstrap/bin"
-  - "./local/corpusops.bootstrap/hacking:/srv/corpusops/corpusops.bootstrap/hacking"
-  - "./local/corpusops.bootstrap/roles:/srv/corpusops/corpusops.bootstrap/roles"
-  - "./local/corpusops.bootstrap/requirements:/srv/corpusops/corpusops.bootstrap/requirements"
-  - "./local/corpusops.bootstrap/docs:/srv/corpusops/corpusops.bootstrap/docs"
+  #- "./local/corpusops.bootstrap/bin:/srv/corpusops/corpusops.bootstrap/bin"
+  #- "./local/corpusops.bootstrap/hacking:/srv/corpusops/corpusops.bootstrap/hacking"
+  #- "./local/corpusops.bootstrap/roles:/srv/corpusops/corpusops.bootstrap/roles"
+  #- "./local/corpusops.bootstrap/requirements:/srv/corpusops/corpusops.bootstrap/requirements"
+  #- "./local/corpusops.bootstrap/docs:/srv/corpusops/corpusops.bootstrap/docs"
   # Remember: /setup/rootfs/ is synced inside the container /
   # - "./app_entry_point:/app_entry_point"
   # - "./reconfigure.sh:/provision_dir/reconfigure.sh"
