@@ -1,7 +1,0 @@
----
-- import_playbook: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/lxc/register.yml"
-- import_playbook: "{{GRUNNER_TOP_DIR}}/ansible/playbooks/vars.yml"
-  vars: {inc_node: "{{TEST_LXC_NAME}}"}
-- hosts: "{{TEST_LXC_NAME}}"
-  tasks: []
-
