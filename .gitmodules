@@ -1,15 +1,9 @@
 [submodule "local/setups.django"]
 	path = local/setups.django
 	url = https://github.com/corpusops/setups.django.git
-[submodule "local/setups.dbsmartbackup"]
-	path = local/setups.dbsmartbackup
-	url = https://github.com/corpusops/setups.dbsmartbackup.git
-[submodule "local/setups.mysql"]
-	path = local/setups.mysql
-	url = https://github.com/corpusops/setups.mysql.git
-[submodule "local/setups.pureftpd"]
-	path = local/setups.pureftpd
-	url = https://github.com/corpusops/setups.pureftpd.git
 [submodule "local/setups.postgresql"]
 	path = local/setups.postgresql
 	url = https://github.com/corpusops/setups.postgresql.git
+[submodule "local/setups.dbsmartbackup"]
+	path = local/setups.dbsmartbackup
+	url = https://github.com/corpusops/setups.dbsmartbackup.git

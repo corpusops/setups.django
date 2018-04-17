@@ -1,0 +1,17 @@
+localhost ansible_connection=local
+staging-myapp.foo.net  sudo_flags=-HE ansible_port=22 ansible_user=root ansible_ssh_common_args="-i {{cops_deploy_ssh_key_paths['staging'].path}}"
+# if interactive sudo pw
+# staging-myapp.foo.net sudo_flags=-SHE ansible_port=22 ansible_user=root ansible_ssh_common_args="-i {{cops_deploy_ssh_key_paths['staging'].path}}"
+
+[zope_servers]
+staging-dinamis.makina-corpus.net
+
+[app_servers]
+[app_servers:children]
+zope_servers
+
+[haproxy_servers]
+staging-dinamis.makina-corpus.net
+
+[controller]
+localhost
