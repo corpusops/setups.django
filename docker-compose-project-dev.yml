@@ -1,0 +1,8 @@
+---
+# copy/edit this file up to your project root instead of symlinking
+version: '3.5'
+x-image: &image_template
+  image: "corpusops/setups.django:dev"
+services:
+  django:
+    <<:  [ *image_template ]
