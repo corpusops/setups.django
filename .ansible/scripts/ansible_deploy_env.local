@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# edit and adapt to your project needs
 export A_GIT_SERVER=${A_GIT_SERVER:-https://github.com}
 export A_GIT_NAMESPACE=${A_GIT_NAMESPACE:-corpusops}
 export A_GIT_PROJECT=${A_GIT_PROJECT:-setups.djangoproject}
