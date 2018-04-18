@@ -5,11 +5,6 @@ version: '3.5'
 # Start with:
 #  SUPEREDITORS=$(id -u) docker-compose -f d*-compose-dev.yml -f d*-compose-project.yml -f d*-compose-project-dev.yml up -t 0 -d --force-recreate django
 #
-### Defined in docker-compose-project.yml
-x-net: &project_net {}
-x-dev-image-overrides: &project_image_overrides {}
-x-image-overrides:  &project_dev_image_overrides {}
-###
 x-image: &image_template
   environment:
   - SUPEREDITORS=$SUPEREDITORS
