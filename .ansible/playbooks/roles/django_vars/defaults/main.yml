@@ -84,8 +84,49 @@ cops_django_deb_gis_packages:
     {%- else -%}
     libgeos-3.6.2
     {%- endif -%}"
-  - libgeoip1
+  - libgeoip
 cops_django_deb_runtime_packages:
+  - apache2-utils
+  - bzip2
+  - gettext
+  - git
+  - groff
+  - libcurl3
+  - libfreetype6
+  - liblcms2-2
+  - libsqlite0
+  - libsqlite3-0
+  - libtiff5
+  - libtool
+  - python-setuptools
+  - python-numpy
+  - cython
+  - m4
+  - man-db
+  - pkg-config
+  - poppler-utils
+  - "{% if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >= '18.04'|copsf_looseversion )
+    %}tcl8.6{%else%}tcl8.5{%endif %}"
+  - tcl8.5
+  - wv
+  - zlib1g
+  - wget
+  - rsync
+  - libcairo2
+  - libcairo-gobject2
+  - libcairo-script-interpreter2
+  - libxml2
+  - libxslt1.1
+  - python-passlib
+  - python3-passlib
+  - "{{cops_django_pkg_ssl}}"
+  - "{{cops_django_pkg_db}}"
+  - "python{{cops_django_pkg_python_slug}}"
+  # db
+  - libpq5
+  - "{{cops_django_pkg_mysql}}"
   - "{%- if (
         ansible_distribution.lower() in ['ubuntu'] and
         ansible_distribution_version|copsf_looseversion <=
@@ -102,51 +143,34 @@ cops_django_deb_runtime_packages:
     {%- else -%}
     libsigc++-2.0-0v5
     {%- endif -%}"
-  - apache2-utils
-  - bzip2
-  - gettext
-  - git
-  - groff
-  - libcurl3
-  - libfreetype6
-  - liblcms2-2
-  - libsqlite0
-  - libsqlite3-0
-  - libtiff5
-  - libtool
-  - libwebp5
-  - libxml2
-  - libxslt1.1
-  - "python{{cops_django_pkg_python_slug}}"
-  - python-passlib
-  - python3-passlib
-  - python-imaging
-  - python-setuptools
-  - python-numpy
-  - cython
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >=
+          '18.04'|copsf_looseversion)
+     %}libwebp6{%else
+     %}libwebp5{%endif%}"
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >=
+          '18.04'|copsf_looseversion)
+    %}python-pil{% else
+    %}python-imaging{%endif%}"
   - "{% if ansible_distribution_version|copsf_looseversion <= '14.04'|copsf_looseversion
-    %}libopenjpeg2{% else
-    %}libopenjpeg5{% endif %}"
-  - m4
-  - man-db
-  - pkg-config
-  - poppler-utils
-  - tcl8.4
-  - tcl8.5
-  - wv
-  - zlib1g
-  - wget
-  - rsync
-  - libgdbm3
-  - "{{cops_django_pkg_ssl}}"
-  - libcairo2
-  - libcairo-gobject2
-  - libcairo-script-interpreter2
-  - "{{cops_django_pkg_db}}"
-  - libreadline6
-  # db
-  - libpq5
-  - "{{cops_django_pkg_mysql}}"
+
+    %}libopenjpeg2{% elif
+        ansible_distribution_version|copsf_looseversion < '18.04'|copsf_looseversion
+    %}libopenjpeg5{% else
+    %}libopenjp2-7{% endif %}"
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >=
+          '18.04'|copsf_looseversion)
+    %}libgdbm5{%else%}libgdbm3{%endif%}"
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >=
+          '18.04'|copsf_looseversion)
+    %}libreadline7{%else%}libreadline6{%endif%}"
 cops_django_deb_packages___default: "{{
   (cops_django_deb_runtime_packages + cops_django_deb_gis_packages)
   | to_json
@@ -185,12 +209,21 @@ cops_django_deb_build_packages___default:
   - build-essential
   - liblcms2-dev
   - libtiff5-dev
-  - libopenjpeg-dev
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >=
+          '18.04'|copsf_looseversion)
+     %}libopenjp2-7-dev{%else%}libopenjpeg-dev{%endif%}"
   - zlib1g-dev
   - libwebp-dev
-  - tcl8.5-dev
-  - tcl8.4-dev
-  - tk8.5-dev
+  - "{% if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >= '18.04'|copsf_looseversion )
+    %}tcl8.6-dev{%else%}tcl8.5-dev{%endif %}"
+  - "{% if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion >= '18.04'|copsf_looseversion )
+    %}tk8.6-dev{%else%}tk8.5-dev{%endif %}"
 cops_django_rh_build_packages: []
 cops_django_DJANGO_SETTINGS_MODULE: "{{vars['cops_django_PROJECT']}}.settings.prod"
 cops_django_WSGI: "{{vars['cops_django_PROJECT']}}.wsgi:application"
