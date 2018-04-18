@@ -70,7 +70,7 @@ cops_django_deb_gis_packages:
     libgeos-c1v5
     {%- else -%}
     libgeos-c1v5
-    {%- endif -%}"
+    {%- endif -%}" 
   - "{%- if (
         ansible_distribution.lower() in ['ubuntu'] and
         ansible_distribution_version|copsf_looseversion <=
@@ -84,7 +84,14 @@ cops_django_deb_gis_packages:
     {%- else -%}
     libgeos-3.6.2
     {%- endif -%}"
-  - libgeoip
+  - "{%- if (
+        ansible_distribution.lower() in ['ubuntu'] and
+        ansible_distribution_version|copsf_looseversion <=
+          '16.04'|copsf_looseversion) -%}
+    libgeoip
+    {%- else -%}
+    libgeoip1
+    {%- endif -%}"
 cops_django_deb_runtime_packages:
   - apache2-utils
   - bzip2
