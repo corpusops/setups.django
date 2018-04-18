@@ -40,6 +40,7 @@ x-image: &image_template
     else exec /app_entry_point;
     fi'
   # for now this is a bloat image-as-a-vm to make a dev env ligther than a vagrant VM
+  tmpfs: [/run, /run/lock]
   volumes: &image_volumes
   # systemd
   - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
