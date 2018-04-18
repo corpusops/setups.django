@@ -34,7 +34,11 @@ x-image: &image_template
     only_steps: true
     cops_django_lifecycle_app_push_code: false
     cops_django_s_manage_content: true
-  command: /app_entry_point
+  command: >
+    sh -c 'if [ "x$DOCKER_SKIP_START" != x ];
+    then while true;do echo sleeping;sleep 65535;done
+    else exec /app_entry_point;
+    fi'
   # for now this is a bloat image-as-a-vm to make a dev env ligther than a vagrant VM
   volumes: &image_volumes
   # systemd
