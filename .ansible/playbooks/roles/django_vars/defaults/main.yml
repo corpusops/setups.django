@@ -70,7 +70,7 @@ cops_django_deb_gis_packages:
     libgeos-c1v5
     {%- else -%}
     libgeos-c1v5
-    {%- endif -%}" 
+    {%- endif -%}"
   - "{%- if (
         ansible_distribution.lower() in ['ubuntu'] and
         ansible_distribution_version|copsf_looseversion <=
@@ -252,8 +252,12 @@ cops_django_allow_crawl: false
 # sqlite: django.db.backends.sqlite3
 # geodjango: django.contrib.gis.db.backends.postgis
 # pgsql: django.db.backends.postgresql_psycopg2
-# mysql: django.db.backends.mysqlu
+# mysql: django.db.backends.mysql
 cops_django_db_type: null
+cops_django_db_has_postgresql: "{{(
+	'postgresql' in '{0}'.format(vars['cops_django_db_type']))}}"
+cops_django_db_has_postgis: "{{(
+	'postgis' in '{0}'.format(vars['cops_django_db_type']))}}"
 cops_django_db_role_type: {}
 cops_django_db_role: null
 # for sqlite: "{{vars['cops_django_data_root']}}/{{vars['cops_django_PROJECT']}}.sqlite"
