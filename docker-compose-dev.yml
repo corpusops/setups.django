@@ -4,9 +4,8 @@ version: '3.5'
 #  docker build --squash  -t corpusops/django:dev -f Dockerfile.dev [--build-arg=SKIP_COPS_UPDATE=y]
 # Start with:
 #  SUPEREDITORS=$(id -u) docker-compose -f d*-compose-dev.yml up -t 0 -d --force-recreate django
-networks: {corpusopsdev_net: {ipam: {config: [{subnet: "172.19.103.0/24"}], driver: default}, driver: bridge}}
 x-image: &image_template
-  image: &image "corpusops/django:dev"
+  image: &image "corpusops/setups.django:dev"
   environment:
   - SUPEREDITORS=$SUPEREDITORS
   - "DOCKER_SKIP_START=${DOCKER_SKIP_START-}"
@@ -98,4 +97,3 @@ x-image: &image_template
 services:
   django:
     <<: *image_template
-    networks: {corpusopsdev_net: {ipv4_address: "172.19.103.3"}}

@@ -1,0 +1,7 @@
+---
+# copy/edit this file up to your project root instead of symlinking
+version: '3.5'
+networks: {django_net: {ipam: {config: [{subnet: "172.19.103.0/24"}], driver: default}, driver: bridge}}
+services:
+  django:
+    networks: {django_net: {ipv4_address: "172.19.103.3"}}
