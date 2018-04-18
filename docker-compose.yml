@@ -3,9 +3,8 @@ version: '3.5'
 # Build with:
 #  docker build --squash -t corpusops/django -f Dockerfile [--build-arg=SKIP_COPS_UPDATE=y]
 # Start with:
-#  docker-compose -f d*-compose.yml  up -t 0 -d --force-recreate django
+#  docker-compose -f d*-compose.yml -f d*-compose-project.yml up -t 0 -d --force-recreate django
 x-image: &image_template
-  image: &image "corpusops/setups.django"
   environment:
   - "DOCKER_SKIP_START=${DOCKER_SKIP_START-}"
   - |
@@ -54,4 +53,4 @@ x-image: &image_template
   # Remember: /setup/rootfs/ is synced inside the container /
 services:
   django:
-    <<: *image_template
+    <<:  [ *image_template ]

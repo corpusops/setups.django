@@ -3,9 +3,14 @@ version: '3.5'
 # Build with (build stock first !):
 #  docker build --squash  -t corpusops/django:dev -f Dockerfile.dev [--build-arg=SKIP_COPS_UPDATE=y]
 # Start with:
-#  SUPEREDITORS=$(id -u) docker-compose -f d*-compose-dev.yml up -t 0 -d --force-recreate django
+#  SUPEREDITORS=$(id -u) docker-compose -f d*-compose-dev.yml -f d*-compose-project.yml -f d*-compose-project-dev.yml up -t 0 -d --force-recreate django
+#
+### Defined in docker-compose-project.yml
+x-net: &project_net {}
+x-dev-image-overrides: &project_image_overrides {}
+x-image-overrides:  &project_dev_image_overrides {}
+###
 x-image: &image_template
-  image: &image "corpusops/setups.django:dev"
   environment:
   - SUPEREDITORS=$SUPEREDITORS
   - "DOCKER_SKIP_START=${DOCKER_SKIP_START-}"
@@ -96,4 +101,4 @@ x-image: &image_template
   # - "./reconfigure.sh:/provision_dir/reconfigure.sh"
 services:
   django:
-    <<: *image_template
+    <<:  [ *image_template ]
