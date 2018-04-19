@@ -393,7 +393,7 @@ cops_django_secret_variables:
   - admin_password
   - db_password
 cops_django_cops_format_resolve_topdb: false
-cops_django_cops_do_format_resolve: true
+cops_django_cops_do_format_resolve: false
 cops_django_cops_sub_namespaces:
   nginx: {}
   front_nginx: {}
