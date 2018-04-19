@@ -13,3 +13,4 @@ cops_django_secret_key: secret
 cops_django_admin_password: secret
 cops_django_db_password: secret
 cops_django_lifecycle_ftp: true
+cops_django_project_sdir: "djangoproject"
