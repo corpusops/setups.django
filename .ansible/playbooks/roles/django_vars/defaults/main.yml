@@ -533,8 +533,8 @@ cops_django_ep_configs___default:
      owner: root, group: root}
 cops_django_ep_configs: "{{vars['cops_django_ep_configs___default']}}"
 # SystemD based reconfigure unit settings
-cops_django_reconfigure_service_stderr: ""
-cops_django_reconfigure_service_stdout: ""
+cops_django_reconfigure_service_stderr: "journal{% if ansible_virtualization_type in ['docker']%}+console{%endif%}"
+cops_django_reconfigure_service_stdout: "journal{% if ansible_virtualization_type in ['docker']%}+console{%endif%}"
 cops_django_reconfigure_unit_after: "network.target {{vars['cops_django_service']}}.service"
 cops_django_reconfigure_install_wantedby: "multi-user.target"
 cops_django_reconfigure: "{{vars['cops_django_provision_dir']}}/reconfigure.sh"
