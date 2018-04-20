@@ -9,8 +9,8 @@ cops_django_servers_ips: [127.0.0.1]
 #
 cops_django_s_manage_content: false
 #
-cops_django_secret_key: secret
-cops_django_admin_password: secret
-cops_db_password: secret
+cops_django_secret_key: secretCHANGEMEdroA0j5G120knHZ
+cops_django_admin_password: secretCHANGEME4XxlF344P5AN0zA
+cops_db_password: secretCHANGEME504pMymRpf30S8b
 cops_django_lifecycle_ftp: true
 cops_django_project_sdir: "djangoproject"

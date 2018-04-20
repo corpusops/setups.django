@@ -58,7 +58,7 @@
     {% else %}
     rm -fv /etc/cron.d/dbsmartbackup*
     {% endif %}
-- when: "cops_django_do_reconfigure_postgresql|default(true)"
+- when: "cops_django_do_reconfigure_db|default(true)"
   changed_when: false
   name: "reconfigure DB"
   shell: |-
