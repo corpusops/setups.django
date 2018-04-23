@@ -86,8 +86,8 @@ cops_django_deb_gis_packages:
     {%- endif -%}"
   - "{%- if (
         ansible_distribution.lower() in ['ubuntu'] and
-        ansible_distribution_version|copsf_looseversion <=
-          '16.04'|copsf_looseversion) -%}
+        ansible_distribution_version|copsf_looseversion <
+          '14.04'|copsf_looseversion) -%}
     libgeoip
     {%- else -%}
     libgeoip1
