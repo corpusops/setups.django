@@ -3,31 +3,36 @@ corpusops_core_projects_path: /srv/projects
 # users than have full right to edit file in the container
 # When this is enabled, the project user/group is also granted full perms
 # (attention, uids!)
-cops_django__supereditors_paths:
-- "{{vars['cops_django_project_root']}}/Dockerfile"
-- "{{vars['cops_django_project_root']}}/Dockerfile.dev"
-- "{{vars['cops_django_project_root']}}/README.rst"
-- "{{vars['cops_django_project_root']}}/Vagrantfile"
-- "{{vars['cops_django_project_root']}}/bower.json"
-- "{{vars['cops_django_project_root']}}/docker-compose-dev.yml"
-- "{{vars['cops_django_project_root']}}/docker-compose.yml"
-- "{{vars['cops_django_project_root']}}/docs"
-- "{{vars['cops_django_project_root']}}/gulpfile.js"
-- "{{vars['cops_django_project_root']}}/local"
-- "{{vars['cops_django_project_root']}}/media"
-- "{{vars['cops_django_project_root']}}/package.json"
-- "{{vars['cops_django_project_root']}}/reconfigure.sh"
-- "{{vars['cops_django_project_root']}}/requirements"
-- "{{vars['cops_django_project_root']}}/setup.cfg"
-- "{{vars['cops_django_project_root']}}/setup.py"
-- "{{vars['cops_django_project_root']}}/src"
-- "{{vars['cops_django_project_root']}}/static"
-- "{{vars['cops_django_project_root']}}/tox.ini"
-- "{{vars['cops_django_project_root']}}/vagrant_config.yml"
-#- "{{vars['cops_django_project_root']}}/venv"
-- "{{vars['cops_django_project_root']}}/venv/src"
-- "{{vars['cops_django_project_root']}}/vm_manage"
-- "{{vars['cops_django_data_root']}}"
+cops_django__supereditors_paths: |-
+  {# ignore: vars['cops_django_project_root']}}/venv" #}
+  {% set res = [
+    vars['cops_django_project_root'] + "/Dockerfile",
+    vars['cops_django_project_root'] + "/Dockerfile.dev",
+    vars['cops_django_project_root'] + "/README.rst",
+    vars['cops_django_project_root'] + "/Vagrantfile",
+    vars['cops_django_project_root'] + "/bower.json",
+    vars['cops_django_project_root'] + "/docker-compose-dev.yml",
+    vars['cops_django_project_root'] + "/docker-compose.yml",
+    vars['cops_django_project_root'] + "/docs",
+    vars['cops_django_project_root'] + "/gulpfile.js",
+    vars['cops_django_project_root'] + "/local",
+    vars['cops_django_project_root'] + "/media",
+    vars['cops_django_project_root'] + "/package.json",
+    vars['cops_django_project_root'] + "/reconfigure.sh",
+    vars['cops_django_project_root'] + "/requirements",
+    vars['cops_django_project_root'] + "/setup.cfg",
+    vars['cops_django_project_root'] + "/setup.py",
+    vars['cops_django_project_root'] + "/src",
+    vars['cops_django_project_root'] + "/static",
+    vars['cops_django_project_root'] + "/tox.ini",
+    vars['cops_django_project_root'] + "/vagrant_config.yml",
+    vars['cops_django_project_root'] + "/venv/src",
+    vars['cops_django_project_root'] + "/vm_manage",
+    vars['cops_django_data_root']] %}
+  {% if ansible_virtualization_type in ['docker'] %}
+  {%  set _ = res.extend(['/srv/backups', '/setup']) %}
+  {% endif %}
+  {{ res | to_json }}
 # space separated string of uids to allow to write inside
 # projetct directories (used in development through posix ACLS setter)
 cops_django__supereditors: >-
