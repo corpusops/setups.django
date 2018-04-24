@@ -1,11 +1,23 @@
 ---
-- shell: |-
+- name: db & db user setup
+  shell: |-
     cd "{{cops_django_vars.provision_dir}}"
-    if ! ( su postgres -c "echo 'SELECT PostGIS_full_version();'|psql -v ON_ERROR_STOP=1  postgis" );then
+    dodb="";
+    {%- if cops_django_vars.db_has_postgis %}
+    if ! ( su postgres -c "echo 'SELECT PostGIS_full_version();'|psql -v ON_ERROR_STOP=1  postgis" 2>&1 >/dev/null; );then
+      dodb=1
+    fi
+    {% endif %}
+    {%- if cops_django_vars.db_has_postgresql %}
+    if ! ( su postgres -c "echo 'SELECT 1;'|psql -v ON_ERROR_STOP=1 {{cops_django_vars.db_name}}"  2>&1 >/dev/null; );then
+      dodb=1
+    fi
+    {% endif %}
+    if [ x"${dodb}" != "x" ];then
       export NONINTERACTIVE=1
       .ansible/scripts/call_ansible.sh .ansible/playbooks/db.yml \
         -e "{only_steps: true,
-             cops_postgresql_s_managecontent: true}"
+             cops_{{cops_django_vars.db_role_type}}_s_managecontent: true}"
     fi
   when: "cops_django_vars.docker_has_db"
 - become: true
