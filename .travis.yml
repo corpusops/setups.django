@@ -1,28 +1,70 @@
-sudo: false
-language: python
-python:
-    - "3.5"
-addons:
-    postgresql: "9.4"
+---
+# sudo: false
+# language: python
+# python:
+#     - "3.5"
+# addons:
+#     postgresql: "9.4"
+# env:
+#     - TOXENV=pylama
+#     - TOXENV=isort
+#     - TOXENV=docs
+#     - TOXENV=py27-coverage
+#     - TOXENV=py27-reverse
+#     - TOXENV=py34-std
+#     - TOXENV=py34-reverse
+#     - TOXENV=py35-std
+#     - TOXENV=py35-reverse
+# install:
+#     - pip install coveralls tox
+# before_script:
+#     - createuser -U postgres -d makina
+#     - createdb -U postgres -O makina makina
+#     - cp src/*/settings/local.py.dist   $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
+#     - sed -i -re 's/<DB_NAME>/makina/g' $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
+#     - sed -i -re 's/<DB_USER>/makina/g' $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
+# script:
+#     - tox
+# after_success:
+#     - coveralls
+sudo: required
+dist: trusty
 env:
-    - TOXENV=pylama
-    - TOXENV=isort
-    - TOXENV=docs
-    - TOXENV=py27-coverage
-    - TOXENV=py27-reverse
-    - TOXENV=py34-std
-    - TOXENV=py34-reverse
-    - TOXENV=py35-std
-    - TOXENV=py35-reverse
+  matrix:
+    - IMAGES="corpusops/setups.django|Dockerfile corpusops/setups.django:dev|Dockerfile.dev"
+      RELEASABLE_BRANCHES=project
+      PROJECT_SUBFOLDER=local/setups.django
+language: python
+python: "2.7"
+before_install:
+  - sudo apt-get update -qq
 install:
-    - pip install coveralls tox
-before_script:
-    - createuser -U postgres -d makina
-    - createdb -U postgres -O makina makina
-    - cp src/*/settings/local.py.dist   $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
-    - sed -i -re 's/<DB_NAME>/makina/g' $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
-    - sed -i -re 's/<DB_USER>/makina/g' $(ls src/*/settings/local.py.dist|sed "s/\.dist//g")
+  - deactivate
+  - |
+    echo "TRAVIS_ENV_VARS:" >&2
+    env | grep TRAVIS | sort -u | sed -re "s/^/  /g" >&2
+  - .ansible/scripts/download_corpusops.sh && .ansible/scripts/setup_corpusops.sh
+  - sudo service docker stop
+  - >
+    cd local/corpusops.bootstrap
+    && bin/silent_run bin/cops_apply_role -vvvv --sudo roles/corpusops.roles/services_virt_docker/role.yml
+    && cd -
 script:
-    - tox
+  # only build project branches
+  - >
+    if [ "x${PROJECT_SUBFOLDER-}" != "x" ] && [ ! -e $PROJECT_SUBFOLDER ];then exit 0;
+    else for i in $IMAGES;do
+    ( TAG=${i//|*} DOCKERFILE=${i//*|}
+       local/corpusops.bootstrap/bin/silent_run local/corpusops.bootstrap/hacking/docker_test.sh; );
+    done;fi
 after_success:
-    - coveralls
+  # only build project branches
+  - >
+    if [ "x${PROJECT_SUBFOLDER-}" != "x" ] && [ ! -e $PROJECT_SUBFOLDER ];then exit 0;
+    else for i in $IMAGES;do
+    ( IMAGES=${i//|*} local/corpusops.bootstrap/hacking/docker_release; );
+    done;fi
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/corpusops
