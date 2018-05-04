@@ -669,7 +669,7 @@ cops_django_buildout_settings___default:
 cops_django_PROJECT: project
 cops_django_app_root: "{{vars['cops_django_project_root']}}/src"
 cops_django_locale_cwd: "{{vars['cops_django_app_root']}}"
-cops_django_runserver_args: "--nothreading --noreload {{vars['cops_django_host']}}:{{vars['cops_django_port']}}"
+cops_django_runserver_args: "{{vars['cops_django_host']}}:{{vars['cops_django_port']}}"
 cops_django_environment___default:
   DJANGO_SETTINGS_MODULE: "{{vars['cops_django_DJANGO_SETTINGS_MODULE']}}"
   NOGUNICORN: ""

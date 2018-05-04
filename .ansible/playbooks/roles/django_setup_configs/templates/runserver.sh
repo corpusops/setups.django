@@ -8,6 +8,22 @@ fi
 export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE-{{data.DJANGO_SETTINGS_MODULE}}}"
 CLEARSESSIONS=${CLEARSESSIONS-}
 NOGUNICORN=${NOGUNICORN-}
+DEV=${DEV-}
+DEFAULT_ARGS="{{data.runserver_args}}"
+#
+RELOAD=${RELOAD-${DEV}}
+NOTHREADING=${NOTHREADING-${DEV}}
+#  dev: reload,   nothreading
+# prod: noreload, threading
+RS_ARGS=""
+if [[ -z "${DEV}" ]];then
+    if [[ -z ${RELOAD-} ]];then
+        RS_ARGS="$RS_ARGS --noreload"
+    fi
+    if [[ -n ${NOTHREADING} ]];then
+        RS_ARGS="$RS_ARGS --nothreading"
+    fi
+fi
 manage=
 while read i;do
     if [ -e "$i" ];then
@@ -24,7 +40,7 @@ if [[ -n ${CLEARSESSIONS} ]];then
     $manage clearsessions
 fi
 if [[ -n ${NOGUNICORN} ]];then
-    exec $manage runserver {{data.runserver_args}}
+    exec $manage runserver $RS_ARGS ${@-${DEFAULT_ARGS}}
 fi
 exec gunicorn \
     -k {{data.gunicorn_worker_class}} \
