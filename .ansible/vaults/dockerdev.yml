@@ -16,6 +16,7 @@ cops_django_secret_key: secretCHANGEMEdroA0j5G120knHZ
 cops_django_admin_password: secretCHANGEME4XxlF344P5AN0zA
 cops_db_password: secretCHANGEME504pMymRpf30S8b
 cops_django_lifecycle_ftp: true
+cops_django_project_sdir: "djangoproject"
 #
 cops_django_DJANGO_SETTINGS_MODULE: "{{vars['cops_django_PROJECT']}}.settings.dev"
 cops_django_requirements:
