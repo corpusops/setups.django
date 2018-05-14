@@ -26,5 +26,3 @@ cops_django_django_settings: |
   {% set _ = res.update(cops_django_django_settings___default) %}
   {% set _ = res.update(cops_django_django_settings___dev) %}
   {{ res|to_json }}
-cops_django_project_dir: "{{vars['cops_django_projects_dir']}}/{{vars['cops_django_name']}}"
-cops_django_project_sdir: "djangoproject"
