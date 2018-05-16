@@ -544,7 +544,7 @@ cops_django_reconfigure_unit_after: "network.target {{vars['cops_django_service'
 cops_django_reconfigure_install_wantedby: "multi-user.target"
 cops_django_reconfigure: "{{vars['cops_django_provision_dir']}}/reconfigure.sh"
 cops_django_reconfigure_passenv: >
-  COPS_ROOT NO_SILENT NO_OUTPUT NONINTERACTIVE
+  COPS_ROOT COPS_IMG NO_SILENT NO_OUTPUT NONINTERACTIVE
   ANSIBLE_CWD ANSIBLE_PLAY ANSIBLE_VARARGS ANSIBLE_ARGS
   A_VAULTS_FOLDERS A_VAULTS A_EXTRA_VAULTS
   A_INVENTORY A_ENV_NAME NO_DEFAULT_VAULTS
