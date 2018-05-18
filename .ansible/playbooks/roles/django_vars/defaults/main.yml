@@ -6,6 +6,7 @@ corpusops_core_projects_path: /srv/projects
 cops_django__supereditors_paths: |-
   {# ignore: vars['cops_django_project_root']}}/venv" #}
   {% set res = [
+    vars['cops_django_project_root'] + "/.git",
     vars['cops_django_project_root'] + "/Dockerfile",
     vars['cops_django_project_root'] + "/Dockerfile.dev",
     vars['cops_django_project_root'] + "/README.rst",
