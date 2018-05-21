@@ -1,6 +1,6 @@
 # docker build --squash -t <your/project> . -f Dockerfile --build-arg=SKIP_COPS_UPDATE=y
 #FROM corpusops/django
-FROM corpusops/ubuntu:16.04
+FROM corpusops/ubuntu:18.04
 # Rewarm apt cache
 RUN bash -c '\
   if egrep -qi "ubuntu|mint|debian" /etc/*-release 2>/dev/null;then\
@@ -43,13 +43,12 @@ RUN bash -c '\
 RUN bash -c '\
   $COPS_ROOT/hacking/docker_toggle_pm on \
   && : "install db server" \
-  && $_call_ansible .ansible/playbooks/db.yml \
-  -e "{corpusops_services_db_postgresql_do_fix_encoding: false, \
-       corpusops_services_db_postgresql_do_services: false, \
-       cops_${COPS_DB_TYPE}_s_entry_point: false, \
-       cops_${COPS_DB_TYPE}_s_workers: false, \
-       cops_${COPS_DB_TYPE}_s_managecontent: false }" \
+  && $_call_ansible .ansible/playbooks/db.yml      \
+  -e "{cops_${COPS_DB_TYPE}_s_entry_point: false,  \
+       cops_${COPS_DB_TYPE}_s_healthchecks: false, \
+       cops_${COPS_DB_TYPE}_s_manage_content: false }" \
   && $COPS_ROOT/hacking/docker_toggle_pm off'
+ 
 
 # Install django app
 RUN bash -c '\
@@ -57,18 +56,18 @@ RUN bash -c '\
   -e "{cops_${COPS_PROJECT_TYPE}_s_healthchecks: false, \
        cops_${COPS_PROJECT_TYPE}_s_manage_content: false}"'
 
-# Install sidecar dbsmartbackup
-RUN bash -c '\
-  $_call_ansible .ansible/playbooks/db_backup.yml \
-  -e "{cops_dbsmartbackup_s_managecontent: false, \
-       cops_dbsmartbackup_s_entry_point: false}"'
-
 # Install sidecar pureftpd server
 RUN bash -c '\
   $_call_ansible .ansible/playbooks/ftp.yml \
   -e "{cops_pureftpd_s_healthchecks: false, \
        cops_pureftpd_s_manage_content: false}"'
 
+# Install sidecar dbsmartbackup
+RUN bash -c '\
+  $_call_ansible .ansible/playbooks/db_backup.yml \
+  -e "{cops_dbsmartbackup_s_manage_content: false, \
+       cops_dbsmartbackup_s_entry_point: false}"'
+ 
 # Default to launch systemd, and you ll have have to mount:
 #  -v /sys/fs/cgroup:/sys/fs/cgroup:ro
 STOPSIGNAL SIGRTMIN+3

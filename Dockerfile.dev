@@ -1,5 +1,6 @@
 # docker build --squash -t <your/project:dev> . -f Dockerfile --build-arg=SKIP_COPS_UPDATE=y
-FROM corpusops/django
+FROM corpusops/setups.django
+
 # Rewarm apt cache
 RUN bash -c '\
   if egrep -qi "ubuntu|mint|debian" /etc/*-release 2>/dev/null;then\
@@ -36,11 +37,8 @@ RUN bash -c '\
   rm -rf local/corpusops.bootstrap \
   && ln -sf $COPS_ROOT local/corpusops.bootstrap \
   && .ansible/scripts/download_corpusops.sh \
-  && .ansible/scripts/setup_ansible.sh'
-
-# Install django app
-RUN bash -c '\
-  $_call_ansible .ansible/playbooks/app.yml \
+  && .ansible/scripts/setup_ansible.sh  \
+  && $_call_ansible .ansible/playbooks/app.yml \
   -e "{cops_${COPS_PROJECT_TYPE}_s_healthchecks: false, \
        cops_${COPS_PROJECT_TYPE}_s_manage_content: false}"'
 
