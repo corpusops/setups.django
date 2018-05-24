@@ -17,7 +17,7 @@
       export NONINTERACTIVE=1
       .ansible/scripts/call_ansible.sh .ansible/playbooks/db.yml \
         -e "{only_steps: true,
-             cops_{{cops_django_vars.db_role_type}}_s_managecontent: true}"
+             cops_{{cops_django_db_role_type[cops_django_db_type]}}_s_manage_content: true}"
     fi
   when: "cops_django_vars.docker_has_db"
 - become: true
