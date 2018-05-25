@@ -16,3 +16,11 @@ cops_deploy_ssh_key_paths:
       -----BEGIN RSA PRIVATE KEY-----
       yyy==
       -----END RSA PRIVATE KEY-----
+cops_django_admins:
+- foo:
+    mail: "foo@bar.net"
+    password: "xxx"
+cops_django_http_auth_restricted: true
+cops_django_http_users:
+- {user: super, password: secret}
+
