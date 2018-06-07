@@ -13,13 +13,28 @@
       dodb=1
     fi
     {% endif %}
+    {% if cops_django_db_role == 'mysql' %}
+    if ! ( echo 'SELECT 1;'|mysql \
+            --user="{{cops_django_vars.db_user}}" \
+            --password="{{cops_django_vars.db_password}}" \
+            "{{cops_django_vars.db_name}}"  2>&1 >/dev/null; );then
+      dodb=1
+    fi
+    {% endif %}
     if [ x"${dodb}" != "x" ];then
+      echo "_mchanged" >&2
       export NONINTERACTIVE=1
       .ansible/scripts/call_ansible.sh .ansible/playbooks/db.yml \
         -e "{only_steps: true,
              cops_{{cops_django_db_role_type[cops_django_db_type]}}_s_manage_content: true}"
     fi
-  when: "cops_django_vars.docker_has_db"
+  tags: [cops_django_s_setup_db]
+  when:
+  - "cops_django_vars.docker_has_db"
+  - "cops_django_s_setup_db|default(true)"
+  tags: [cops_django_s_setup_db]
+  register: _c_django_docker_mdb
+  changed_when: "'_mchanged' in _c_django_docker_mdb.stderr"
 - become: true
   become_user: "{{cops_django_vars.user}}"
   include_tasks: _sudo.yml

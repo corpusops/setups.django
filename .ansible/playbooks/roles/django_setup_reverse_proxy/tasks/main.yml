@@ -36,3 +36,4 @@
             cops_django_vars.http_users is not none and
             cops_django_vars.http_users|length > 0)"]
   tags: [cops_django_s_setup_reverse_proxy_users]
+  no_log: "{{not (cops_secret_vars_debug|default(false))}}"

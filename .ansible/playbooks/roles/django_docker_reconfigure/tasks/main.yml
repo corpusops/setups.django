@@ -36,7 +36,7 @@
     {% if cops_django_vars.docker_has_ftp %}
     .ansible/scripts/call_ansible.sh .ansible/playbooks/ftp.yml \
       -e "{only_steps: true,
-           cops_pureftpd_s_managecontent: true,
+           cops_pureftpd_s_manage_content: true,
            cops_pureftpd_s_end_fixperms: true,
            cops_pureftpd_s_setup: true}"
     {% else %}
@@ -52,44 +52,66 @@
     {% if cops_django_vars.docker_has_dbsmartbackup %}
     .ansible/scripts/call_ansible.sh .ansible/playbooks/db_backup.yml \
       -e "{only_steps: true,
-           cops_dbsmartbackup_s_managecontent: true,
+           cops_dbsmartbackup_s_manage_content: true,
            cops_dbsmartbackup_s_end_fixperms: true,
            cops_dbsmartbackup_s_setup: true}"
     {% else %}
     rm -fv /etc/cron.d/dbsmartbackup*
     {% endif %}
+# Configure things before systemd launches
+- name: maybe enable db
+  when: cops_django_docker_has_db
+  changed_when: false
+  cops_service:
+    enabled: true
+    name: "{{cops_django_db_role}}"
 - when: "cops_django_do_reconfigure_db|default(true)"
   changed_when: false
-  name: "reconfigure DB"
+  name: "Init DB"
   shell: |-
     set -ex
+    {% if not cops_django_docker_has_db %}
+    rm -fv /{etc,lib}/systemd/*/*.wants/{{cops_django_db_role}}*
+    {% else %}
     cd "{{cops_django_vars.provision_dir}}"
     export NONINTERACTIVE=1
     {% if cops_django_db_role == 'postgresql' %}
     v=$(psql --version |awk '{print $3}'|sed -re "s/\..*//g")
     export PATH=/usr/lib/postgresql/$v/bin:$PATH
     {% endif %}
-    {% if cops_django_docker_has_db %}
     {% if cops_django_db_role == 'postgresql' %}
-    cn="/etc/postgresql/$v/main"
-    c="/var/lib/postgresql/$v/main"
-    if [ ! -e "$c" ];then
-      mkdir -p "$c"
-      chown postgres:postgres "$c"
-      su postgres -c \
-       "export PATH=$PATH; \
-        initdb -D $c --locale='{{corpusops_services_db_postgresql_pg_conf_locale}}'"
-      if [ ! -e "$cn" ];then
-        mkdir -p "$cn"
-        cp -fv "$c"/*conf "$cn"
+      cn="/etc/postgresql/$v/main"
+      c="/var/lib/postgresql/$v/main"
+      if [ ! -e "$c" ];then
+        mkdir -p "$c"
+        chown postgres:postgres "$c"
+        su postgres -c \
+         "export PATH=$PATH; \
+          initdb -D $c --locale='{{corpusops_services_db_postgresql_pg_conf_locale}}'"
+        if [ ! -e "$cn" ];then
+          mkdir -p "$cn"
+          cp -fv "$c"/*conf "$cn"
+        fi
       fi
-    fi
-    chown -Rf postgres:postgres "$c" /var/log/postgresql
+      chown -Rf postgres:postgres "$c" /var/log/postgresql
+    {% elif cops_django_db_role == 'mysql' %}
+      c="/var/lib/mysql"
+      d="/usr/share/mysql"
+      if [ ! "$(ls -A $c)" ];then
+        mkdir -p "$c"
+        chown mysql:mysql "$c"
+        #mysql_install_db --user=mysql --basedir=$d --datadir=$c --insecure
+        mysqld --initialize-insecure \
+          --user=root \
+          --basedir=$d --datadir=$c \
+          --user={{corpusops_services_db_mysql_user|default('root')}} \
+          --character-set-server='{{corpusops_services_db_mysql_character_set|default('utf8')}}' \
+          --collation-server='{{corpusops_services_db_mysql_collate|default('utf8_general_ci')}}'
+      fi
+      chown -Rf mysql:mysql "$c" /var/log/mysql
     {% endif %}
     .ansible/scripts/call_ansible.sh .ansible/playbooks/db.yml \
       -e "{only_steps: true,
            cops_{{cops_django_db_role}}_s_setup: true,
            cops_{{cops_django_db_role}}_s_end_fixperms: true}"
-    {% else %}
-    rm -fv /{etc,lib}/systemd/*/*.wants/{{cops_django_db_role}}*
-    {% endif %}
+    {% endif%}
