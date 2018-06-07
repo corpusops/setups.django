@@ -48,7 +48,6 @@ RUN bash -c '\
        cops_${COPS_DB_TYPE}_s_healthchecks: false, \
        cops_${COPS_DB_TYPE}_s_manage_content: false }" \
   && $COPS_ROOT/hacking/docker_toggle_pm off'
- 
 
 # Install django app
 RUN bash -c '\
@@ -57,7 +56,22 @@ RUN bash -c '\
        cops_${COPS_PROJECT_TYPE}_s_manage_content: false}"'
 
 # Install sidecar pureftpd server
-RUN bash -c '\
+RUN bash -c 'set -ex\
+  apt-get -y --force-yes --fix-missing install dpkg-dev debhelper; \
+  apt-get -y build-dep pure-ftpd; \
+  apt-get -y install openbsd-inetd rsyslog; \
+  : build from source to add --without-capabilities flag; \
+  mkdir /tmp/pure-ftpd/; \
+  cd /tmp/pure-ftpd/; \
+  apt-get source pure-ftpd; \
+  cd pure-ftpd-*; \
+  ./configure --with-tls; \
+  sed -i "/^optflags=/ s/$/ --without-capabilities/g" ./debian/rules; \
+  dpkg-buildpackage -b -uc; \
+  dpkg -i /tmp/pure-ftpd/pure-ftpd-common*.deb; \
+  dpkg -i /tmp/pure-ftpd/pure-ftpd_*.deb;\
+  apt-mark hold pure-ftpd pure-ftpd-common; \
+  cd /provision_dir; \
   $_call_ansible .ansible/playbooks/ftp.yml \
   -e "{cops_pureftpd_s_healthchecks: false, \
        cops_pureftpd_s_manage_content: false}"'
@@ -67,7 +81,7 @@ RUN bash -c '\
   $_call_ansible .ansible/playbooks/db_backup.yml \
   -e "{cops_dbsmartbackup_s_manage_content: false, \
        cops_dbsmartbackup_s_entry_point: false}"'
- 
+
 # Default to launch systemd, and you ll have have to mount:
 #  -v /sys/fs/cgroup:/sys/fs/cgroup:ro
 STOPSIGNAL SIGRTMIN+3
