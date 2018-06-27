@@ -185,7 +185,7 @@
       {% set _ = r.update({'cops_django_lifecycle_lc_1_steps': ( cops_django_lifecycle_ftp or cops_django_lifecycle_db or cops_django_lifecycle_dbbackup or cops_django_lifecycle_app)}) %}
       {% set cops_django_lifecycle_lc_1_steps = r['cops_django_lifecycle_lc_1_steps'] %}
       #
-      {% set _ = r.update({'cops_django_s_vars': cops_django_s_vars|default(cops_django_lifecycle_lc_1_steps)}) %}
+      {% set _ = r.update({'cops_django_s_vars': cops_django_s_vars|default(cops_django_lifecycle_lc_1_steps) or only_steps}) %}
       {% set cops_django_s_vars = r['cops_django_s_vars'] %}
       #
       {{ r | to_json }}
