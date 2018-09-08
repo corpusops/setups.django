@@ -312,7 +312,7 @@ cops_django_django_settings___default:
   SITE_ID: 1
   DATABASES: "{{vars['cops_django_databases']}}"
   DEFAULT_FROM_EMAIL: "{{vars['cops_django_adminmail']}}"
-  SERVER_EMAIL: "root@{{ansible_fqdn}}"
+  SERVER_EMAIL: "{{vars['cops_django_adminmail']}}"
   MEDIA_ROOT: "{{vars['cops_django_media']}}"
   STATIC_ROOT: "{{vars['cops_django_static']}}"
   LANGUAGE_CODE: fr-fr
@@ -380,6 +380,7 @@ cops_django_sysctls: []
 cops_django_domain: "{{cops_app_name}}.corpusops.local"
 # for internal monitoring
 cops_django_query_host: "127.0.0.1"
+cops_django_query_port: "{{vars['cops_django_nginx_port']}}}"
 # for internal service access
 cops_django_restart_check_retries: 60
 cops_django_internal_host: "127.0.0.1"
@@ -614,6 +615,7 @@ cops_django_nginx_htpasswd: "{{vars['cops_django_htpasswd']}}"
 cops_django_nginx_ssl_protected: false
 cops_django_nginx_ssl_cert: ""
 cops_django_nginx_ssl_key: ""
+cops_django_nginx_client_max_body_size: "100M"
 cops_django_nginx_loglevel: crit
 cops_django_nginx_upstream_name: "{{vars['cops_django_name']}}"
 cops_django_nginx_doc_root: "{{vars['cops_django_doc_root']}}"
