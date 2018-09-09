@@ -14,7 +14,7 @@
             {% set d   = groups.get('db_backup_servers', None) %}
             {% set dbs = groups.get('db_servers',        None) %}
             {% if 'db_servers' in groups and d != dbs %}
-            export HOST="{{hostvars[groups['db_servers'][0]]['ansible_fqdn']}}"
+            export HOST="{{hostvars[groups['db_servers'][0]]['inventory_hostname']}}"
             {% else %}
             {%  if cops_django_vars.dbsmartbackup_type == 'postgresql' %}
             export HOST="localhost"
