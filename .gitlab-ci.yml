@@ -17,9 +17,9 @@ variables:
   #
   # Select the desired vault for the environment
   # -> password file
-  A_ENV_NAME: "$CI_JOB_STAGE"
+  A_ENV_NAME: "$CI_COMMIT_REF_NAME"
   # -> vaults files
-  A_VAULT_NAME: "$CI_JOB_STAGE"
+  A_VAULT_NAME: "$CI_COMMIT_REF_NAME"
   # Select the inventory to act on
   A_INVENTORY: "-i $CI_PROJECT_DIR/.ansible/inventory_$A_VAULT_NAME/"
   # non interactive mode
@@ -161,14 +161,14 @@ test:
 
 # Deploy envs
 staging_deploy:
-  <<: [ *ansible, *teardown_ansible, *setup_ansible, *deploy_env, *deploy ]
+  <<: [ *ansible, *staging_vault, *teardown_ansible, *setup_ansible, *deploy_env, *deploy ]
   only: [staging]
   variables:
     <<: [ *staging_vault_variables ]
     PLAYBOOK: ".ansible/playbooks/app.yml"
 
 production_deploy:
-  <<: [ *ansible, *teardown_ansible, *setup_ansible, *deploy_env, *deploy ]
+  <<: [ *ansible, *production_vault, *teardown_ansible, *setup_ansible, *deploy_env, *deploy ]
   only: [production]
   variables:
     <<: [ *production_vault_variables ]
