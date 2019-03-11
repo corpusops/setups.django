@@ -37,7 +37,8 @@
   changed_when: "'_mchanged' in _c_django_docker_mdb.stderr"
 - become: true
   become_user: "{{cops_django_vars.user}}"
-  include_tasks: _sudo.yml
+  block:
+  - include_tasks: _sudo.yml
 - shell: |-
     cd "{{cops_django_vars.provision_dir}}"
     if ! ( LANG=C LC_ALL=C cops_supervisor.{{cops_django_vars.name}}_ctl status django-{{cops_django_vars.name}} 2>&1 | egrep -iq running; ) ;then

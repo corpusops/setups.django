@@ -50,12 +50,14 @@
   when: ["cops_django_s_manage_content_create_admins"]
   environment:
     DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
-  include_tasks: _create_admin_wrap.yml
-  with_items: "{{cops_django_vars.admins}}"
-  loop_control: {loop_var: admins}
+  block:
+  - include_tasks: _create_admin_wrap.yml
+    with_items: "{{cops_django_vars.admins}}"
+    loop_control: {loop_var: admins}
 - tags: ["cops_django_s_manage_content_reset_site"]
   when: ["cops_django_s_manage_content_reset_site",
          "_c_cops_django_manage_content_sitetest.rc==0"]
   environment:
     DJANGO_SETTINGS_MODULE: "{{cops_django_vars.DJANGO_SETTINGS_MODULE}}"
-  include_tasks: _reset_site.yml
+  block:
+  - include_tasks: _reset_site.yml
