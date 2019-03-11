@@ -19,11 +19,11 @@
   tags: [cops_django_s_setup_reverse_proxy_vhost]
   when: [cops_django_s_setup_reverse_proxy_vhost]
 
-- name: Generate FRONT-APP virtualhost
-  include_role: {name: "corpusops.roles/nginx_vhost"}
-  vars: {_corpusops_nginx_vhost: "{{cops_django_vars.front_nginx}}"}
-  tags: ["cops_django_s_setup_reverse_proxy_front_vhost"]
-  when: ["cops_django_s_setup_reverse_proxy_front_vhost and cops_django_vars.front_domain"]
+# - name: Generate FRONT-APP virtualhost
+#   include_role: {name: "corpusops.roles/nginx_vhost"}
+#   vars: {_corpusops_nginx_vhost: "{{cops_django_vars.front_nginx}}"}
+#   tags: ["cops_django_s_setup_reverse_proxy_front_vhost"]
+#   when: ["cops_django_s_setup_reverse_proxy_front_vhost and cops_django_vars.front_domain"]
 
 # Configure http users
 - htpasswd:
