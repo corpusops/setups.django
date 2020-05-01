@@ -18,9 +18,9 @@ cops_db_password: secretCHANGEME504pMymRpf30S8b
 cops_django_lifecycle_ftp: true
 cops_django_project_sdir: "djangoproject"
 #
-cops_django_DJANGO_SETTINGS_MODULE: "{{vars['cops_django_PROJECT']}}.settings.dev"
+cops_django_DJANGO_SETTINGS_MODULE: "{{cops_django_PROJECT}}.settings.dev"
 cops_django_requirements:
-- "{{vars['cops_django_project_root']}}/requirements/dev.txt"
+- "{{cops_django_project_root}}/requirements/dev.txt"
 cops_django_django_settings: |
   {% set res = {} %}
   {% set _ = res.update(cops_django_django_settings___default) %}

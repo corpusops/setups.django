@@ -8,7 +8,7 @@
       enabled: "{{cops_django_vars.activated | ternary(True, False)}}"
       daemon_reload: yes
       name: "{{item}}"
-    with_items: "{{cops_django_vars.services}}"
+    loop: "{{cops_django_vars.services}}"
   # force a reload/restart here
   - shell: echo "force service reload/restart"
     notify: "{{cops_django_vars.rhandlers}}"

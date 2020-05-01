@@ -33,7 +33,7 @@
           {{cops_django_vars.yarn_cmd}} {{cops_django_c_yarn_extra_step}}
         tags: [cops_django_s_setup_front_build_yarn_extra_steps]
         when: [cops_django_s_setup_front_build_yarn_extra_steps]
-        with_items: "{{cops_django_vars.yarn_extra_steps}}"
+        loop: "{{cops_django_vars.yarn_extra_steps}}"
         loop_control: {loop_var: cops_django_c_yarn_extra_step}
       - shell: |
           set -ex

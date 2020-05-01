@@ -11,13 +11,13 @@ cops_postgresql__databases:
 - |
   {%- set res = {} %}
   {%- set _ = res.update({
-        'db': vars['cops_django_db_name']}) %}
-  {%- if (vars['cops_django_db_has_postgis'] or
-          vars['cops_django_db_has_postgresql']) %}
+        'db': cops_django_db_name}) %}
+  {%- if (cops_django_db_has_postgis or
+          cops_django_db_has_postgresql) %}
   {%-   set _ = res.update({
-        'owner': vars['cops_django_db_user']}) %}
+        'owner': cops_django_db_user}) %}
   {%- endif %}
-  {%- if vars['cops_django_db_has_postgis'] %}
+  {%- if cops_django_db_has_postgis %}
   {%-   set _ = res.update({'template': 'postgis'}) %}
   {%- endif %}
   {{-res|to_json}}
@@ -36,7 +36,7 @@ cops_django_nginx_port: 80
 cops_django_nginx_ssl_port: 443
 corpusops_nginx_default_vhost_port: "{{cops_django_nginx_port}}"
 corpusops_nginx_default_vhost_ssl_port: "{{cops_django_nginx_ssl_port}}"
-cops_postgresql_s_setup_server_postgis: "{{vars['cops_django_db_has_postgis']}}"
+cops_postgresql_s_setup_server_postgis: "{{cops_django_db_has_postgis}}"
 cops_django_db_type: django.db.backends.postgresql_psycopg2
 cops_django_dbsmartbackup_types:
   django.db.backends.postgresql_psycopg2: "postgresql"

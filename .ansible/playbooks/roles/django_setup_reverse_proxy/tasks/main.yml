@@ -31,7 +31,7 @@
     name: "{{item.user}}"
     password: "{{item.password}}"
     state: present
-  with_items: "{{cops_django_vars.http_users}}"
+  loop: "{{cops_django_vars.http_users}}"
   when: ["cops_django_s_setup_reverse_proxy_users and (
             cops_django_vars.http_users is not none and
             cops_django_vars.http_users|length > 0)"]

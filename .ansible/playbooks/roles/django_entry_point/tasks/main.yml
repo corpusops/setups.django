@@ -7,6 +7,6 @@
     enabled: "{{cops_django_vars.activated | ternary(True, False)}}"
     daemon_reload: yes
     name: "{{item}}"
-  with_items: "{{cops_django_vars.reconfigure_services}}"
+  loop: "{{cops_django_vars.reconfigure_services}}"
   tags: [cops_django_s_entry_point_services]
   when: [cops_django_s_entry_point_services]

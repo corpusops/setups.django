@@ -9,7 +9,7 @@
 # Generate passwords on remote box if not found in registry
 - name: "django secrets -- {{djangosecret}}}"
   loop_control: {loop_var: secretvariable}
-  with_items: "{{cops_django_secret_variables}}"
+  loop: "{{cops_django_secret_variables}}"
   no_log: "{{not (cops_vars_debug|default(false))}}"
   include_tasks: _set_secret_variable.yml
 

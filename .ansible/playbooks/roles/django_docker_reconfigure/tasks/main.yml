@@ -6,7 +6,7 @@
   file:
     state: absent
     path: "{{item}}"
-  with_items: |-
+  loop: |-
     {% set res = [] %}
     {% set s = [] %}
     {% if  not cops_django_docker_has_ftp %}
@@ -25,7 +25,7 @@
       '/lib/systemd/system/multi-user.target.wants/{0}.service'.format(i),
       ])%}
     {% endfor %}
-    {{ res|to_json }}
+    {{ res }}
 - when: "cops_django_do_reconfigure_pureftpd|default(true)"
   changed_when: false
   name: "reconfigure pureftpd"

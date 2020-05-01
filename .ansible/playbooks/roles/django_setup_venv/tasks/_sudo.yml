@@ -18,6 +18,6 @@
   include_tasks: _setup_venv_eggs.yml
 - tags: [cops_django_s_setup_venv_requirements]
   when: [cops_django_s_setup_venv_requirements]
-  with_items: "{{cops_django_vars.requirements}}"
+  loop: "{{cops_django_vars.requirements}}"
   loop_control: {loop_var: requirements}
   include_tasks: _setup_venv_reqs.yml

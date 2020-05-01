@@ -6,7 +6,7 @@
     block:
     - include_role: {name: django_db_vars}
   - set_fact:
-      cops_postgresql_do_install_postgis: "{{vars['cops_django_db_has_postgis']}}"
+      cops_postgresql_do_install_postgis: "{{cops_django_db_has_postgis}}"
 
 - import_playbook: "../../local/setups.{{cops_django_db_role}}/.ansible/playbooks/site.yml"
   tags: [cops_django_lifecycle_db]
